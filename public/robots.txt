@@ -1,0 +1,46 @@
+# ARCG Systems — robots.txt
+# Diagnosis-first operational intelligence firm
+
+User-agent: *
+Allow: /
+Disallow: /assessment/submitted
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /ai-automation
+# Legacy SourceDeck shim — product lives at sourcedeck.app, not under arcgsystems.com
+Disallow: /sourcedeck/
+
+# Sitemap
+Sitemap: https://arcgsystems.com/sitemap.xml
+
+# Crawl-delay for polite crawlers
+Crawl-delay: 1
+
+# Explicit allow for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Block AI crawlers from training on content (business decision)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /

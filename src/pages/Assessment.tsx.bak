@@ -1,0 +1,518 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, Info } from "lucide-react";
+import { Layout } from "@/components/layout/Layout";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+
+// ─── CONFIG ───────────────────────────────────────────────
+const WEB3FORMS_KEY = "4feb412f-17c5-4b04-8036-66f66f5ce5e3";
+// Airtable Backup — set your credentials to enable
+const AIRTABLE_API_KEY = ""; // e.g. "patXXXXXXXXXXXXXX"
+const AIRTABLE_BASE_ID = ""; // e.g. "appXXXXXXXXXXXXXX"
+const AIRTABLE_TABLE   = "Submissions";
+const TOTAL_STEPS = 5;
+
+// ─── STYLES ───────────────────────────────────────────────
+const inputCls    = "w-full bg-[#0D1B35] border border-[#A8B2BE]/30 text-white rounded-xl px-5 py-4 focus:border-[#C9941A] focus:ring-1 focus:ring-[#C9941A] outline-none transition-all placeholder:text-[#A8B2BE]/40 font-medium";
+const selectCls   = "w-full bg-[#0D1B35] border border-[#A8B2BE]/30 text-white rounded-xl px-5 py-4 focus:border-[#C9941A] focus:ring-1 focus:ring-[#C9941A] outline-none transition-all appearance-none font-medium";
+const textareaCls = "w-full bg-[#0D1B35] border border-[#A8B2BE]/30 text-white rounded-xl px-5 py-4 focus:border-[#C9941A] focus:ring-1 focus:ring-[#C9941A] outline-none transition-all resize-none font-medium placeholder:text-[#A8B2BE]/40";
+const labelCls    = "block text-sm font-bold text-[#A8B2BE] mb-2 uppercase tracking-wider";
+const errCls      = "text-red-400 text-xs mt-2 font-bold";
+const optCls      = "bg-[#0A0C12]";
+const fadeVariants = {
+  hidden:  { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.38 } },
+  exit:    { opacity: 0, x: -20, transition: { duration: 0.28 } },
+};
+
+// ─── BRANCH FIELDS (for reset on businessType change) ─────
+const BRANCH_FIELDS = [
+  "govconCurrentManagement","govconBreakdownArea","govconPrimaryNeed",
+  "agencyBreakdownArea","agencyCurrentOnboarding","agencyPrimaryAutomation",
+  "staffingPrimaryIssue","staffingCurrentConfirmation","staffingIdealState",
+  "propertyLocationsCount","propertyVendorDispatch","propertyProblemDiscovery",
+  "servicePrimaryLossPoint","serviceCurrentLeadHandling",
+  "professionalPipelineIssue","professionalMonthlyLeads","professionalCurrentIntake",
+  "ecommerceBottleneck","ecommercePlatform","ecommerceTicketVolume",
+  "healthcarePrimaryIssue","healthcareCurrentSystem","healthcareIdealState",
+  "otherBreakdownArea",
+];
+
+// ─── SUB-COMPONENTS ───────────────────────────────────────
+function Tooltip({ text }: { text: string }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-block ml-2 align-middle">
+      <button type="button" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} onFocus={() => setShow(true)} onBlur={() => setShow(false)} className="text-[#A8B2BE]/50 hover:text-[#C9941A] transition-colors">
+        <Info className="w-4 h-4" />
+      </button>
+      {show && (
+        <span className="absolute z-50 left-6 top-0 w-56 bg-[#0D1B35] border border-[#C9941A]/30 rounded-lg px-3 py-2 text-xs text-[#A8B2BE] font-medium shadow-xl">{text}</span>
+      )}
+    </span>
+  );
+}
+
+function StepHeader({ num, title }: { num: string; title: string }) {
+  return (
+    <h3 className="text-2xl font-black flex items-center gap-3 text-white mb-6">
+      <div className="w-10 h-10 rounded-lg bg-[#C9941A]/10 flex items-center justify-center border border-[#C9941A]/30 shrink-0">
+        <span className="text-[#C9941A] font-black text-base">{num}</span>
+      </div>
+      {title}
+    </h3>
+  );
+}
+
+export default function Assessment() {
+  const [step, setStep] = useState(1);
+  const [status, setStatus] = useState<"idle"|"submitting"|"success"|"error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [stepErrors, setStepErrors] = useState<Record<string,string>>({});
+
+  // ─── FORM STATE ───────────────────────────────────────────
+  const [form, setForm] = useState({
+    businessType: "",
+    // Step 2 — GovCon
+    govconCurrentManagement: "", govconBreakdownArea: "", govconPrimaryNeed: "",
+    // Step 2 — Agency
+    agencyBreakdownArea: "", agencyCurrentOnboarding: "", agencyPrimaryAutomation: "",
+    // Step 2 — Staffing
+    staffingPrimaryIssue: "", staffingCurrentConfirmation: "", staffingIdealState: "",
+    // Step 2 — Property / Facilities (NEW BRANCH)
+    propertyLocationsCount: "", propertyVendorDispatch: "", propertyProblemDiscovery: "",
+    // Step 2 — Service Business
+    servicePrimaryLossPoint: "", serviceCurrentLeadHandling: "",
+    // Step 2 — Professional Services (EXPANDED)
+    professionalPipelineIssue: "", professionalMonthlyLeads: "", professionalCurrentIntake: "",
+    // Step 2 — E-commerce (EXPANDED)
+    ecommerceBottleneck: "", ecommercePlatform: "", ecommerceTicketVolume: "",
+    // Step 2 — Other
+    otherBreakdownArea: "",
+    // Step 2 — Healthcare
+    healthcarePrimaryIssue: "", healthcareCurrentSystem: "", healthcareIdealState: "",
+    // Step 3a — Operational Context
+    biggestProblem: "", currentTools: "", systemUsers: "", scaleScope: "", volume: "",
+    // Step 3b — Qualification
+    urgency: "", budgetRange: "", averageLifetimeValue: "", desiredResult: "",
+    // Step 4 — Contact
+    businessName: "", contactName: "", workEmail: "", phoneNumber: "",
+  });
+
+  // Branch variable reset on businessType change (FIX 1)
+  const set = (key: string, val: string) => {
+    if (key === "businessType") {
+      const reset = BRANCH_FIELDS.reduce((a, f) => ({ ...a, [f]: "" }), {});
+      setForm(f => ({ ...f, ...reset, businessType: val }));
+    } else {
+      setForm(f => ({ ...f, [key]: val }));
+    }
+    if (stepErrors[key]) setStepErrors(e => { const n = { ...e }; delete n[key]; return n; });
+  };
+
+  // Multi-select toggle for currentTools
+  const toggleTool = (tool: string) => {
+    const current = form.currentTools ? form.currentTools.split(", ") : [];
+    const updated = current.includes(tool)
+      ? current.filter(t => t !== tool)
+      : [...current, tool];
+    setForm(f => ({ ...f, currentTools: updated.join(", ") }));
+    if (stepErrors["currentTools"]) setStepErrors(e => { const n = { ...e }; delete n["currentTools"]; return n; });
+  };
+  const toolsSelected = form.currentTools ? form.currentTools.split(", ") : [];
+
+  const bt = form.businessType;
+  const F = form as Record<string,string>;
+  const E = stepErrors;
+  const Err = ({ f }: { f: string }) => E[f] ? <p className={errCls}>{E[f]}</p> : null;
+
+  // ─── VALIDATION ───────────────────────────────────────────
+  const step2Required: Record<string, string[]> = {
+    "Government Contractor / GovCon":                          ["govconCurrentManagement","govconBreakdownArea","govconPrimaryNeed"],
+    "AI / Automation Agency":                                  ["agencyBreakdownArea","agencyCurrentOnboarding","agencyPrimaryAutomation"],
+    "Staffing / Workforce":                                    ["staffingPrimaryIssue","staffingCurrentConfirmation","staffingIdealState"],
+    "Property / Facilities Management":                        ["propertyLocationsCount","propertyVendorDispatch","propertyProblemDiscovery"],
+    "Service Business (HVAC, Cleaning, Field Services, etc.)": ["servicePrimaryLossPoint","serviceCurrentLeadHandling"],
+    "Professional Services (Legal, Medical, Consulting)":      ["professionalPipelineIssue","professionalMonthlyLeads","professionalCurrentIntake"],
+    "Healthcare / Medical Billing":                            ["healthcarePrimaryIssue","healthcareCurrentSystem","healthcareIdealState"],
+    "E-commerce / Online Business":                            ["ecommerceBottleneck","ecommercePlatform","ecommerceTicketVolume"],
+    "Other":                                                   ["otherBreakdownArea"],
+  };
+  const step3aRequired = ["biggestProblem","currentTools","systemUsers","scaleScope","volume"];
+  const step3bRequired = ["urgency","budgetRange","averageLifetimeValue","desiredResult"];
+  const step4Required  = ["businessName","contactName","workEmail"];
+
+  const validate = (fields: string[]): boolean => {
+    const errs: Record<string,string> = {};
+    fields.forEach(f => {
+      const val = (form as Record<string,string>)[f];
+      if (!val || val.trim() === "") errs[f] = "This field is required";
+    });
+    if (fields.includes("workEmail") && form.workEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.workEmail)) {
+      errs["workEmail"] = "Enter a valid email address";
+    }
+    setStepErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const next = () => {
+    let ok = false;
+    if (step === 1) ok = validate(["businessType"]);
+    if (step === 2) ok = validate(step2Required[bt] || []);
+    if (step === 3) ok = validate(step3aRequired);
+    if (step === 4) ok = validate(step3bRequired);
+    if (ok) setStep(s => Math.min(s + 1, TOTAL_STEPS));
+  };
+  const back = () => { setStepErrors({}); setStep(s => Math.max(s - 1, 1)); };
+
+  // ─── SUBMIT ───────────────────────────────────────────────
+  const submit = async () => {
+    if (!validate(step4Required)) return;
+    setStatus("submitting");
+    const urgencyTag = form.urgency === "Immediately" ? "🔴" : form.urgency === "Within 30 days" ? "🟡" : "⚪";
+    const isDQ = form.budgetRange === "Under $1K" && form.volume === "Under 20";
+    const subject = `${isDQ ? "⛔ DQ — " : ""}${urgencyTag} New ARCG Assessment — ${form.businessName} | ${bt}`;
+    const payload = {
+      access_key: WEB3FORMS_KEY, subject, from_name: "ARCG Systems Assessment",
+      replyto: form.workEmail, botcheck: "",
+      confirmation_to: form.workEmail,
+      confirmation_subject: "ARCG Systems — Your intake was received",
+      confirmation_message: "We received your intake. Your custom workflow plan will arrive within 24 hours. No commitment required. — ARCG Systems",
+      disqualified: isDQ ? "true" : "false", ...form,
+    };
+    try {
+      const res  = await fetch("https://api.web3forms.com/submit", {
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatus("success");
+        // Make.com webhook — fires silently, does not affect UX
+        fetch("https://hook.us2.make.com/6t1q8pgdy4s4zp7haj57ba45is8xhfwj", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            business_name: form.businessName,
+            email: form.workEmail,
+            phone: form.phoneNumber,
+            businessType: form.businessType,
+            biggestProblem: form.biggestProblem,
+            urgency: form.urgency,
+            budget_range: form.budgetRange,
+            disqualified: isDQ ? "true" : "false",
+            subject_line: subject,
+            submitted_at: new Date().toISOString(),
+            source: "Assessment Form",
+          }),
+        }).catch(e => console.warn("Make webhook failed:", e));
+        // Airtable backup (runs silently — does not affect user experience)
+        if (AIRTABLE_API_KEY && AIRTABLE_BASE_ID) {
+          const fields: Record<string, string> = { ...form, subject, disqualified: isDQ ? "Yes" : "No", submittedAt: new Date().toISOString() };
+          fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE)}`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ fields }),
+          }).catch(e => console.warn("Airtable backup failed:", e));
+        }
+      } else {
+        setStatus("error"); setErrorMsg(data.message || "Submission failed. Please try again.");
+      }
+    } catch {
+      setStatus("error"); setErrorMsg("Network error. Please check your connection and try again.");
+    }
+  };
+
+  // ─── HELPERS ──────────────────────────────────────────────
+  const Sel = ({ name, opts, label, tooltip }: { name: string; opts: string[]; label: string; tooltip?: string }) => (
+    <div>
+      <label className={labelCls}>{label}{tooltip && <Tooltip text={tooltip} />}</label>
+      <select value={F[name]} onChange={e => set(name, e.target.value)} className={selectCls}>
+        <option value="" className={optCls}>Select...</option>
+        {opts.map(o => <option key={o} value={o} className={optCls}>{o}</option>)}
+      </select>
+      <Err f={name} />
+    </div>
+  );
+
+  const MultiCheck = () => {
+    const opts = ["CRM","Spreadsheets","Email","QuickBooks / Accounting Software","Dispatch App","Phone / Text","None","Other"];
+    return (
+      <div>
+        <label className={labelCls}>What tools do you currently use?<Tooltip text="Select all that apply — we'll configure the system around your existing stack." /></label>
+        <div className="grid grid-cols-2 gap-2">
+          {opts.map(o => {
+            const checked = toolsSelected.includes(o);
+            return (
+              <button key={o} type="button" onClick={() => toggleTool(o)}
+                className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 text-sm font-semibold text-left transition-all duration-200 ${checked ? "border-[#C9941A] bg-[#C9941A]/10 text-white" : "border-[#A8B2BE]/20 bg-[#0D1B35] text-[#A8B2BE] hover:border-[#C9941A]/40"}`}>
+                <span className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${checked ? "border-[#C9941A] bg-[#C9941A]" : "border-[#A8B2BE]/40"}`}>
+                  {checked && <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none"><path d="M1 4l3 3 5-6" stroke="#0A0C12" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </span>
+                {o}
+              </button>
+            );
+          })}
+        </div>
+        <Err f="currentTools" />
+      </div>
+    );
+  };
+
+  const stepLabels = ["Business Type","Your Operation","Operational Context","Qualification","Contact Info"];
+
+  // ─── RENDER ───────────────────────────────────────────────
+  return (
+    <Layout>
+      <Helmet>
+        <title>Get My Workflow Plan | ARCG Systems</title>
+        <meta name="description" content="Answer 10 questions and receive a custom workflow plan and fixed-fee proposal from ARCG Systems within 24 hours." />
+        <meta property="og:title" content="Get My Workflow Plan | ARCG Systems" />
+        <meta property="og:url" content="https://arcgsystems.com/assessment" />
+      </Helmet>
+      <div className="min-h-screen pt-32 pb-24 px-4 flex items-center justify-center bg-[#0A0C12] bg-grid-pattern relative overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#C9941A]/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#1A6FA8]/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="w-full max-w-2xl relative z-10">
+          <div className="glass-panel-heavy rounded-3xl p-8 md:p-12 border-t-4 border-t-[#C9941A] shadow-2xl">
+
+            {status === "success" ? (
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
+                <div className="w-24 h-24 bg-[#0D1B35] border-2 border-[#C9941A] rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(201,148,26,0.3)]">
+                  <CheckCircle2 className="w-12 h-12 text-[#C9941A]" />
+                </div>
+                <h2 className="text-4xl font-display font-black mb-4 text-white tracking-tight">Intake Received</h2>
+                <p className="text-lg text-[#A8B2BE] max-w-md mx-auto leading-relaxed">
+                  We've received your assessment and will review it shortly. If the fit is strong, you'll receive your custom workflow plan within 24 hours.
+                </p>
+              </motion.div>
+            ) : (
+              <>
+                <div className="mb-10">
+                  <h1 className="text-3xl md:text-4xl font-display font-black mb-2 text-white">Get My Workflow Plan</h1>
+                  <p className="text-base text-[#A8B2BE]">Answer a few questions — receive a custom plan within 24 hours.</p>
+                  <div className="mt-8">
+                    <div className="flex gap-2 mb-3">
+                      {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+                        <div key={i} className={`h-2 rounded-full flex-1 transition-all duration-500 ${step > i ? "bg-[#C9941A] shadow-[0_0_10px_rgba(201,148,26,0.5)]" : "bg-[#A8B2BE]/20"}`} />
+                      ))}
+                    </div>
+                    <p className="text-xs text-[#A8B2BE]/50 font-bold uppercase tracking-widest">
+                      Step {step} of {TOTAL_STEPS} · {stepLabels[step - 1]}{bt && step > 1 && <span> · {bt}</span>}
+                    </p>
+                  </div>
+                </div>
+                <input type="checkbox" name="botcheck" className="hidden" />
+                <AnimatePresence mode="wait">
+
+                  {/* ══ STEP 1 — BUSINESS TYPE ══ */}
+                  {step === 1 && (
+                    <motion.div key="s1" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
+                      <StepHeader num="01" title="What best describes your business?" />
+                      <div className="grid gap-3">
+                        {[
+                          "Government Contractor / GovCon",
+                          "AI / Automation Agency",
+                          "Staffing / Workforce",
+                          "Property / Facilities Management",
+                          "Service Business (HVAC, Cleaning, Field Services, etc.)",
+                          "Professional Services (Legal, Medical, Consulting)",
+                          "Healthcare / Medical Billing",
+                          "E-commerce / Online Business",
+                          "Other",
+                        ].map(opt => (
+                          <button key={opt} type="button" onClick={() => set("businessType", opt)}
+                            className={`w-full text-left px-5 py-4 rounded-xl border-2 font-semibold text-sm transition-all duration-200 ${form.businessType === opt ? "border-[#C9941A] bg-[#C9941A]/10 text-white" : "border-[#A8B2BE]/20 bg-[#0D1B35] text-[#A8B2BE] hover:border-[#C9941A]/50 hover:text-white"}`}>
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                      <Err f="businessType" />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — GOVCON ══ */}
+                  {step === 2 && bt === "Government Contractor / GovCon" && (
+                    <motion.div key="s2-govcon" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="GovCon Operations" />
+                      <Sel name="govconCurrentManagement" label="How are you currently managing subcontractors or vendors?" opts={["Email / phone","Spreadsheets","Mixed tools","Structured system"]} />
+                      <Sel name="govconBreakdownArea" label="Where are breakdowns happening most?" opts={["Missed deliverables","Lack of visibility","Communication delays","Compliance / reporting issues"]} />
+                      <Sel name="govconPrimaryNeed" label="What do you need most?" opts={["Centralized subcontractor tracking","Automated reporting","Performance monitoring","Compliance tracking"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — AGENCY ══ */}
+                  {step === 2 && bt === "AI / Automation Agency" && (
+                    <motion.div key="s2-agency" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Agency Operations" />
+                      <Sel name="agencyBreakdownArea" label="Where does your workflow break down most?" opts={["Client onboarding","Project execution","Internal coordination","Delivery timelines"]} />
+                      <Sel name="agencyCurrentOnboarding" label="What happens today when a new client closes?" opts={["Manual setup every time","Some templates, still manual","Fully structured process"]} />
+                      <Sel name="agencyPrimaryAutomation" label="What do you want automated first?" opts={["Client onboarding → project setup","Task generation + assignment","Internal workflow automation"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — STAFFING ══ */}
+                  {step === 2 && bt === "Staffing / Workforce" && (
+                    <motion.div key="s2-staffing" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Workforce Operations" />
+                      <Sel name="staffingPrimaryIssue" label="What is your biggest operational issue?" opts={["Shift confirmation","No-shows","Last-minute coverage gaps","Communication with workers"]} />
+                      <Sel name="staffingCurrentConfirmation" label="How do workers currently confirm shifts?" opts={["Text","Phone","Email","No system"]} />
+                      <Sel name="staffingIdealState" label="What would ideal look like?" opts={["Auto scheduling + confirmation","Auto replacement if no response","Real-time workforce visibility"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — PROPERTY / FACILITIES MANAGEMENT (NEW BRANCH) ══ */}
+                  {step === 2 && bt === "Property / Facilities Management" && (
+                    <motion.div key="s2-property" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Facilities Operations" />
+                      <Sel name="propertyLocationsCount" label="How many properties or locations do you manage?" opts={["1–5","6–15","16–30","30+"]} tooltip="Include commercial, residential, or mixed-use properties under your direct management." />
+                      <Sel name="propertyVendorDispatch" label="How do you currently dispatch vendors or service crews?" opts={["Phone / text individually","Shared group chat","Spreadsheet + phone","Dispatch app or software"]} tooltip="Vendor dispatch includes cleaning, HVAC, pest control, maintenance, and any scheduled service." />
+                      <Sel name="propertyProblemDiscovery" label="How do you typically find out when something goes wrong at a property?" opts={["Tenant or client calls me directly","My team tells me after the fact","I check manually / site visits","I usually find out too late"]} tooltip="This tells us where your notification gap is — the gap between when something fails and when you know about it." />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — SERVICE BUSINESS ══ */}
+                  {step === 2 && bt === "Service Business (HVAC, Cleaning, Field Services, etc.)" && (
+                    <motion.div key="s2-service" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Service Operations" />
+                      <Sel name="servicePrimaryLossPoint" label="Where are you losing jobs or time?" opts={["Slow response time","Scheduling issues","Poor lead tracking","Follow-ups not happening"]} />
+                      <Sel name="serviceCurrentLeadHandling" label="How are leads or work requests handled today?" opts={["Phone only","Email","Manual tracking (notebook/whiteboard)","CRM (limited use)"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — PROFESSIONAL SERVICES (EXPANDED — 3 QUESTIONS) ══ */}
+                  {step === 2 && bt === "Professional Services (Legal, Medical, Consulting)" && (
+                    <motion.div key="s2-professional" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Client Pipeline" />
+                      <Sel name="professionalPipelineIssue" label="What is breaking your client pipeline?" opts={["Slow response to leads","No follow-up system","Poor intake / intake is unclear","No system — it all lives in my head"]} />
+                      <Sel name="professionalMonthlyLeads" label="How many new client inquiries do you receive per month?" opts={["Under 10","10–30","30–100","100+"]} tooltip="Include all inbound channels — phone, email, referrals, web form, walk-in." />
+                      <Sel name="professionalCurrentIntake" label="What does your current intake process look like?" opts={["Phone consultation only","Email back-and-forth to schedule","Online booking tool (Calendly, etc.)","Walk-in / no structured process"]} tooltip="How a new prospect goes from first contact to becoming a client today." />
+                    </motion.div>
+                  )}
+
+
+                  {/* ══ STEP 2 — HEALTHCARE / MEDICAL BILLING ══ */}
+                  {step === 2 && bt === "Healthcare / Medical Billing" && (
+                    <motion.div key="s2-healthcare" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Billing & Clinical Operations" />
+                      <Sel name="healthcarePrimaryIssue" label="What is your biggest operational issue?" opts={["Claim denials & resubmissions","Prior authorization delays","Patient intake & scheduling","Billing & coding errors","Compliance / HIPAA reporting"]} />
+                      <Sel name="healthcareCurrentSystem" label="How are you currently managing billing and claims?" opts={["Manual / spreadsheets","Practice management software","Outsourced billing company","Mixed systems"]} />
+                      <Sel name="healthcareIdealState" label="What would ideal operations look like?" opts={["Automated claim submission & tracking","Real-time denial detection & resubmission","Integrated patient intake + billing workflow","Full HIPAA compliance automation"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — E-COMMERCE (EXPANDED — 3 QUESTIONS) ══ */}
+                  {step === 2 && bt === "E-commerce / Online Business" && (
+                    <motion.div key="s2-ecom" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Operations Bottleneck" />
+                      <Sel name="ecommerceBottleneck" label="Where is your biggest operational bottleneck?" opts={["Customer support volume","Order processing delays","Returns / refund handling","Post-purchase follow-up"]} />
+                      <Sel name="ecommercePlatform" label="What platform are you operating on?" opts={["Shopify","WooCommerce","Amazon / FBA","BigCommerce","Custom / Headless","Other"]} tooltip="This determines what integrations and automation tools are compatible with your store." />
+                      <Sel name="ecommerceTicketVolume" label="How many support tickets or customer contacts do you handle weekly?" opts={["Under 50","50–200","200–500","500+"]} tooltip="Includes email, chat, DMs, and any other inbound customer contacts." />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 2 — OTHER ══ */}
+                  {step === 2 && bt === "Other" && (
+                    <motion.div key="s2-other" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="02" title="Your Operation" />
+                      <div>
+                        <label className={labelCls}>What industry are you in and what part of your operation breaks down most often?</label>
+                        <textarea value={F.otherBreakdownArea} onChange={e => set("otherBreakdownArea", e.target.value)} rows={4} className={textareaCls} placeholder="Example: We run a 7-unit franchise. Reporting across locations is fully manual and takes 2 days every month..." />
+                        <Err f="otherBreakdownArea" />
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 3 — OPERATIONAL CONTEXT (3a) ══ */}
+                  {step === 3 && (
+                    <motion.div key="s3a" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="03" title="Operational Context" />
+                      <div>
+                        <label className={labelCls}>What is the biggest operational problem slowing your business right now?</label>
+                        <textarea value={F.biggestProblem} onChange={e => set("biggestProblem", e.target.value)} rows={3} className={textareaCls} placeholder="Be specific — this is the primary input for your workflow plan..." />
+                        <Err f="biggestProblem" />
+                      </div>
+                      <MultiCheck />
+                      <Sel name="systemUsers" label="How many people would need to use or manage this system?" tooltip="Include anyone who inputs data, views dashboards, or receives notifications." opts={["Just me","2–5 people","6–15 people","16+ people"]} />
+                      <Sel name="scaleScope" label="How many locations, vendors, or teams would this need to support?" tooltip="Office locations, field crews, vendors, client accounts, or properties." opts={["1–3","4–10","11–25","25+"]} />
+                      <Sel name="volume" label="How many requests, jobs, or workflows do you handle monthly?" tooltip="Service calls, orders, leads, contracts, shifts, or client interactions." opts={["Under 20","20–100","100–300","300+"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 4 — QUALIFICATION (3b) ══ */}
+                  {step === 4 && (
+                    <motion.div key="s3b" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="04" title="Qualification" />
+                      <Sel name="urgency" label="How quickly do you need this solved?" tooltip="'Immediately' means you have active pain affecting revenue right now." opts={["Immediately","Within 30 days","1–3 months","Just exploring"]} />
+                      <Sel name="budgetRange" label="What level of investment are you prepared to make?" tooltip="Pricing is fixed-fee and determined by scope after the audit — this helps us match the right option." opts={["Under $1K","$1K–$5K","$5K–$10K","$10K+"]} />
+                      {form.budgetRange === "Under $1K" && (
+                        <div className="px-4 py-3 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm font-semibold">
+                          Our minimum engagement starts at $2,500. You can still submit — we'll share what fits your situation.
+                        </div>
+                      )}
+                      <Sel name="averageLifetimeValue" label="What is the average lifetime value of a customer or contract?" tooltip="LTV = total estimated revenue from one client over the full relationship duration." opts={["Under $1K","$1K–$10K","$10K–$50K","$50K+"]} />
+                      <Sel name="desiredResult" label="What result matters most right now?" opts={["Reduce manual work","Increase revenue","Improve execution / control","Scale operations"]} />
+                    </motion.div>
+                  )}
+
+                  {/* ══ STEP 5 — CONTACT INFO ══ */}
+                  {step === 5 && (
+                    <motion.div key="s5" variants={fadeVariants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+                      <StepHeader num="05" title="Where should we send the plan?" />
+                      <div>
+                        <label className={labelCls}>Business Name *</label>
+                        <input value={F.businessName} onChange={e => set("businessName", e.target.value)} className={inputCls} placeholder="Your company name" />
+                        <Err f="businessName" />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Your Name *</label>
+                        <input value={F.contactName} onChange={e => set("contactName", e.target.value)} className={inputCls} placeholder="First and last name" />
+                        <Err f="contactName" />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Work Email *</label>
+                        <input type="email" value={F.workEmail} onChange={e => set("workEmail", e.target.value)} className={inputCls} placeholder="you@company.com" />
+                        <Err f="workEmail" />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Phone Number <span className="text-[#A8B2BE]/40 normal-case font-normal">(optional — faster follow-up)</span></label>
+                        <input type="tel" value={F.phoneNumber} onChange={e => set("phoneNumber", e.target.value)} className={inputCls} placeholder="+1 (555) 000-0000" />
+                      </div>
+                      <p className="text-xs text-[#A8B2BE]/40 font-medium pt-1">Your plan arrives within 24 hours. No commitment required.</p>
+                    </motion.div>
+                  )}
+
+                </AnimatePresence>
+
+                {status === "error" && (
+                  <div className="mt-6 px-5 py-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-bold">⚠ {errorMsg}</div>
+                )}
+
+                <div className="mt-10 pt-8 border-t border-white/10">
+                  <div className="flex justify-between items-center">
+                    {step > 1 ? (
+                      <button type="button" onClick={back} className="px-6 py-4 rounded-xl border-2 border-[#A8B2BE]/30 text-[#A8B2BE] font-bold hover:bg-white/5 hover:border-[#A8B2BE] hover:text-white transition-all flex items-center gap-2">
+                        <ArrowLeft className="w-5 h-5" /> Back
+                      </button>
+                    ) : <div />}
+                    {step < TOTAL_STEPS ? (
+                      <button type="button" onClick={next} className="px-8 py-4 rounded-xl bg-[#C9941A] text-[#0A0C12] font-black hover:bg-[#E8B84B] transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(201,148,26,0.3)]">
+                        Next <ArrowRight className="w-5 h-5" />
+                      </button>
+                    ) : (
+                      <button type="button" onClick={submit} disabled={status === "submitting"}
+                        className="px-10 py-4 rounded-xl bg-[#C9941A] text-[#0A0C12] font-black hover:bg-[#E8B84B] hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(201,148,26,0.3)] flex items-center gap-2 disabled:opacity-70 disabled:transform-none">
+                        {status === "submitting" ? <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</> : <>Get My Workflow Plan <ArrowRight className="w-5 h-5" /></>}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}

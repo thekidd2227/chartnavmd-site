@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crestline Property Services — Operational Intelligence Report | ARCG Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f11;
+  --surface: #14161a;
+  --surface2: #1b1e24;
+  --border: #2a2d35;
+  --border-light: #33373f;
+  --text: #e8e6e0;
+  --text-muted: #7a7d87;
+  --text-dim: #4a4d57;
+  --amber: #e8a820;
+  --amber-dim: rgba(232,168,32,0.12);
+  --amber-border: rgba(232,168,32,0.3);
+  --red: #e05a38;
+  --red-dim: rgba(224,90,56,0.1);
+  --green: #2eb87a;
+  --green-dim: rgba(46,184,122,0.1);
+  --blue: #3d8ef0;
+  --blue-dim: rgba(61,142,240,0.1);
+  --white: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+/* ─── COVER ─── */
+.cover {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.cover-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(232,168,32,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,168,32,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.cover-glow {
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(232,168,32,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cover-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 80px 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-eyebrow {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cover-eyebrow::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--amber);
+}
+
+.cover-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.cover-title em {
+  font-style: normal;
+  color: var(--amber);
+}
+
+.cover-client {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 16px;
+  margin-bottom: 48px;
+  letter-spacing: -0.01em;
+}
+
+.cover-stats {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  width: fit-content;
+  margin-bottom: 56px;
+}
+.cover-stat {
+  padding: 16px 28px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cover-stat:last-child { border-right: none; }
+.stat-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--white);
+}
+.stat-val.red { color: var(--red); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.green { color: var(--green); }
+.stat-label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.cover-classification {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red-dim);
+  border: 1px solid rgba(224,90,56,0.3);
+  padding: 10px 18px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--red);
+  width: fit-content;
+}
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: blink 1.6s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.cover-footer {
+  padding: 24px 80px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.cover-footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.cover-footer-meta {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  text-align: right;
+  line-height: 1.8;
+}
+
+/* ─── NAV BAR ─── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: rgba(14,15,17,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 80px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-item {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 16px 20px;
+  white-space: nowrap;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-item:hover { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* ─── MAIN BODY ─── */
+.body-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 72px 80px 100px;
+}
+
+/* ─── SECTION ─── */
+.section {
+  margin-bottom: 80px;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-left { display: flex; align-items: baseline; gap: 16px; }
+
+.section-index {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--amber);
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.section-badge {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+/* ─── DIAGNOSIS ─── */
+.diagnosis-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--red);
+  padding: 36px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.diagnosis-card::before {
+  content: 'ROOT CAUSE IDENTIFIED';
+  position: absolute;
+  top: 18px; right: 24px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+}
+.diagnosis-text {
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--text);
+  font-weight: 300;
+}
+.diagnosis-text strong {
+  color: var(--white);
+  font-weight: 600;
+}
+.diagnosis-text .highlight {
+  background: var(--amber-dim);
+  border-bottom: 1px solid var(--amber-border);
+  color: var(--amber);
+  padding: 0 3px;
+  font-weight: 500;
+}
+
+.diagnosis-findings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+}
+.finding {
+  background: var(--surface2);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.finding-icon { font-size: 18px; }
+.finding-label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.finding-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+.finding-value.bad { color: var(--red); }
+
+/* ─── QUICK WINS ─── */
+.wins-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.win-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s;
+}
+.win-card:hover { border-color: var(--amber-border); }
+
+.win-rank-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber), transparent);
+}
+.win-rank-bar.rank2 { background: linear-gradient(90deg, var(--blue), transparent); }
+.win-rank-bar.rank3 { background: linear-gradient(90deg, var(--green), transparent); }
+
+.win-inner { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.win-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 42px;
+  line-height: 1;
+  color: var(--border-light);
+  margin-bottom: 12px;
+}
+.win-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+.win-body {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 20px;
+}
+.win-metric {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.win-metric-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--amber);
+  white-space: nowrap;
+}
+.win-metric-val.blue { color: var(--blue); }
+.win-metric-val.green { color: var(--green); }
+.win-metric-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
+
+/* ─── ROADMAP ─── */
+.roadmap { display: flex; flex-direction: column; gap: 0; }
+
+.phase {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  border: 1px solid var(--border);
+  border-bottom: none;
+}
+.phase:last-child { border-bottom: 1px solid var(--border); }
+
+.phase-label {
+  padding: 28px 28px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface);
+}
+.phase-badge {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.phase-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.phase-1 .phase-name { color: var(--blue); }
+.phase-2 .phase-name { color: var(--amber); }
+.phase-3 .phase-name { color: var(--green); }
+
+.phase-days {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+.phase-theme {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.phase-content { padding: 28px 32px; }
+
+.phase-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 16px;
+  align-items: start;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.phase-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.phase-arrow {
+  font-size: 10px;
+  color: var(--amber);
+  margin-top: 3px;
+  font-family: 'Azeret Mono', monospace;
+}
+.phase-2 .phase-arrow { color: var(--amber); }
+.phase-3 .phase-arrow { color: var(--green); }
+.phase-1 .phase-arrow { color: var(--blue); }
+
+.phase-item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.phase-item-body {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+.phase-item-body .replaces {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-decoration: line-through var(--red);
+}
+
+/* ─── TECH STACK ─── */
+.stack-table { width: 100%; border-collapse: collapse; }
+.stack-table thead tr {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.stack-table th {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 400;
+}
+.stack-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  font-size: 13px;
+}
+.stack-table tr:last-child td { border-bottom: none; }
+.stack-table tbody tr { transition: background 0.15s; }
+.stack-table tbody tr:hover { background: var(--surface); }
+
+.tool-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--amber);
+  display: block;
+}
+.tool-sub {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.cost-cell {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 12px;
+  color: var(--green);
+  white-space: nowrap;
+}
+.cost-cell.free { color: var(--blue); }
+.why-fit { color: var(--text-muted); font-size: 12.5px; line-height: 1.6; }
+
+/* ─── PRICING ─── */
+.pricing-header-note {
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+  border-left: 4px solid var(--amber);
+  padding: 18px 24px;
+  margin-bottom: 28px;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.7;
+}
+.pricing-header-note strong { color: var(--amber); }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+.pkg {
+  padding: 32px 28px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.pkg:last-child { border-right: none; }
+.pkg.recommended {
+  background: var(--surface);
+  border-top: 3px solid var(--amber);
+}
+.pkg:not(.recommended) { background: var(--bg); }
+
+.pkg-rec-label {
+  position: absolute;
+  top: 0; right: 0;
+  background: var(--amber);
+  color: var(--bg);
+  font-family: 'Azeret Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  font-weight: 500;
+}
+
+.pkg-letter {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--border);
+  margin-bottom: 8px;
+}
+.pkg.recommended .pkg-letter { color: var(--amber-border); }
+
+.pkg-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+.pkg-outcome {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.pkg-price {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.pkg.recommended .pkg-price { color: var(--amber); }
+.pkg-price-note {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.pkg-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 20px;
+}
+
+.pkg-includes-label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.pkg-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.pkg-item::before {
+  content: '✓';
+  color: var(--green);
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-family: 'Azeret Mono', monospace;
+}
+.pkg.recommended .pkg-item { color: var(--text); }
+
+.pkg-cta {
+  margin-top: auto;
+  padding-top: 20px;
+}
+.pkg-btn {
+  display: block;
+  width: 100%;
+  padding: 13px 16px;
+  text-align: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.pkg.recommended .pkg-btn {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--bg);
+}
+.pkg-btn:hover { border-color: var(--amber); color: var(--amber); }
+.pkg.recommended .pkg-btn:hover { background: #d9981a; }
+
+.choose-reason {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ─── SUPPORT ─── */
+.support-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 36px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.support-range {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+.support-range-label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.support-price {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--green);
+}
+.support-price-note {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.support-list { display: flex; flex-direction: column; gap: 10px; }
+.support-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.support-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.support-right-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.support-right-body {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+
+/* ─── PRICING RATIONALE ─── */
+.rationale-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.rationale-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px 22px;
+}
+.rationale-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.rationale-number {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--amber);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.rationale-label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+.rationale-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
+
+.rationale-statement {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  padding: 24px 28px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.8;
+  font-weight: 300;
+}
+.rationale-statement strong { color: var(--green); font-weight: 600; }
+
+/* ─── EMAIL ─── */
+.email-wrap {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+.email-toolbar {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.email-dot { width: 10px; height: 10px; border-radius: 50%; }
+.email-dot-r { background: #e05a38; }
+.email-dot-y { background: var(--amber); }
+.email-dot-g { background: var(--green); }
+.email-toolbar-label {
+  margin-left: 12px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.email-fields {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  align-items: baseline;
+}
+.email-field-key {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.email-field-val { font-size: 13px; color: var(--text); }
+.email-field-val.subject-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+}
+
+.email-body {
+  padding: 32px 36px;
+  max-width: 680px;
+}
+.email-p {
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: var(--text);
+  font-weight: 300;
+  margin-bottom: 18px;
+}
+.email-p strong { color: var(--white); font-weight: 600; }
+
+.email-sig {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+.email-sig strong {
+  display: block;
+  font-size: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--amber);
+  margin-bottom: 2px;
+}
+.certs {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ─── FOOTER ─── */
+.site-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 28px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.footer-copy {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+@media (max-width: 820px) {
+  .cover-main, .cover-footer, .body-wrap, .nav, .site-footer { padding-left: 28px; padding-right: 28px; }
+  .cover-title { font-size: 36px; }
+  .wins-grid, .pricing-grid, .rationale-grid, .diagnosis-findings { grid-template-columns: 1fr; }
+  .phase { grid-template-columns: 1fr; }
+  .phase-label { border-right: none; border-bottom: 1px solid var(--border); }
+  .support-card { grid-template-columns: 1fr; }
+  .cover-stats { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ COVER ═══════════ -->
+<div class="cover">
+  <div class="cover-grid-bg"></div>
+  <div class="cover-glow"></div>
+
+  <div class="cover-main">
+    <div class="cover-eyebrow">ARCG Systems · Operational Audit Program</div>
+
+    <div class="cover-title">Operational<br><em>Intelligence</em><br>Report</div>
+    <div class="cover-client">Crestline Property Services LLC</div>
+
+    <div class="cover-stats">
+      <div class="cover-stat">
+        <span class="stat-val">34</span>
+        <span class="stat-label">Properties Managed</span>
+      </div>
+      <div class="cover-stat">
+        <span class="stat-val">3</span>
+        <span class="stat-label">Counties Covered</span>
+      </div>
+      <div class="cover-stat">
+        <span class="stat-val red">15+ hrs</span>
+        <span class="stat-label">Wasted / Week</span>
+      </div>
+      <div class="cover-stat">
+        <span class="stat-val amber">0</span>
+        <span class="stat-label">Systems in Place</span>
+      </div>
+      <div class="cover-stat">
+        <span class="stat-val green">$74/mo</span>
+        <span class="stat-label">Full Stack Cost</span>
+      </div>
+    </div>
+
+    <div class="cover-classification">
+      <div class="pulse-dot"></div>
+      Critical exposure identified · Infrastructure failure · Immediate action required
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-footer-brand">ARCG Systems</div>
+    <div class="cover-footer-meta">
+      Prepared for: Marcus Webb &lt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="620f4c150700002201100711160e0b0c07120f4c010d0f">[email&#160;protected]</a>&gt;<br>
+      Prepared by: Jean-Max Charles Jr. · March 20, 2026 · Confidential
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ NAV ═══════════════ -->
+<nav class="nav"><div style="display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid var(--border);flex-shrink:0;font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#3d8ef0;background:rgba(61,142,240,0.08);">&#9888; EXAMPLE PROPOSAL</div>
+  <a class="nav-item" href="#diagnosis">01 · Diagnosis</a>
+  <a class="nav-item" href="#quick-wins">02 · Quick Wins</a>
+  <a class="nav-item" href="#roadmap">03 · Roadmap</a>
+  <a class="nav-item" href="#stack">04 · Tech Stack</a>
+  <a class="nav-item" href="#pricing">05 · Pricing</a>
+  <a class="nav-item" href="#support">06 · Support</a>
+  <a class="nav-item" href="#rationale">07 · ROI</a>
+  <a class="nav-item" href="#email">08 · Next Step</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════ BODY ═══════════════ -->
+<div class="body-wrap">
+
+  <!-- ── 01 DIAGNOSIS ── -->
+  <div class="section" id="diagnosis">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">01</span>
+        <span class="section-title">Operational Diagnosis</span>
+      </div>
+      <span class="section-badge">Root Cause Analysis</span>
+    </div>
+
+    <div class="diagnosis-card">
+      <p class="diagnosis-text">
+        Crestline's core failure is <strong>unstructured multi-channel intake feeding a single human router with no fallback</strong> — a 34-property, three-county operation running entirely through ad-hoc text, email, and phone with no centralized work order system, no CRM, and no vendor routing logic. The result is a <span class="highlight">coordinator bottleneck</span> where every request must be manually triaged, decoded from an unstructured message, cross-referenced against vendor assignments in someone's head, and forwarded with manually recalled site details. <strong>This is not a people problem — it is a structural one.</strong> The vendor dispatch failures (wrong site, missing access instructions) are the inevitable output of a system where every handoff is a fresh transcription event with no verified data source. Until intake is standardized and routing is automated, the failure rate is baked in.
+      </p>
+      <div class="diagnosis-findings">
+        <div class="finding">
+          <div class="finding-icon">⚡</div>
+          <div class="finding-label">Failure Point</div>
+          <div class="finding-value bad">Unstructured intake — 3 channels, zero schema</div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">⏱</div>
+          <div class="finding-label">Waste per Week</div>
+          <div class="finding-value bad">15+ coordinator hours in triage & dispatch</div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">📍</div>
+          <div class="finding-label">Dispatch Error Source</div>
+          <div class="finding-value bad">No property database · Manual recall · No confirmation loop</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 02 QUICK WINS ── -->
+  <div class="section" id="quick-wins">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">02</span>
+        <span class="section-title">Top 3 Quick Wins</span>
+      </div>
+      <span class="section-badge">Achievable in 30 Days</span>
+    </div>
+
+    <div class="wins-grid">
+      <div class="win-card">
+        <div class="win-rank-bar"></div>
+        <div class="win-inner">
+          <div class="win-num">01</div>
+          <div class="win-title">Structured Work Order Intake Form</div>
+          <div class="win-body">Replace all text/email/phone intake with a single branded Jotform. Every submission captures: property name, issue type, urgency level, contact info, and optional photo — in a consistent, structured record. No more decoding a garbled text message to figure out which of 34 properties has a broken HVAC unit.</div>
+          <div class="win-metric">
+            <div class="win-metric-val">~8–10 hrs</div>
+            <div class="win-metric-label">saved per week · triage eliminated at source</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="win-card">
+        <div class="win-rank-bar rank2"></div>
+        <div class="win-inner">
+          <div class="win-num">02</div>
+          <div class="win-title">Automated Vendor Dispatch via Zapier</div>
+          <div class="win-body">Connect the intake form to a Zapier automation that fires a vendor notification containing: the property's exact address, access instructions, priority level, and issue type — all pulled automatically from a property database. Vendors get the right info every time. Your coordinator never touches it.</div>
+          <div class="win-metric">
+            <div class="win-metric-val blue">~5–6 hrs</div>
+            <div class="win-metric-label">saved per week · vendor dispatch errors drop to zero</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="win-card">
+        <div class="win-rank-bar rank3"></div>
+        <div class="win-inner">
+          <div class="win-num">03</div>
+          <div class="win-title">Live Work Order Dashboard (Airtable)</div>
+          <div class="win-body">Stand up an Airtable base as Crestline's first real operations record. Every intake submission auto-creates a row with status, assigned vendor, property, date opened, and date closed. Marcus gets a live dashboard — no manual entry, no status-check phone calls, no "did that vendor confirm?" moments.</div>
+          <div class="win-metric">
+            <div class="win-metric-val green">~2–3 hrs</div>
+            <div class="win-metric-label">saved per week · full audit trail created</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 03 ROADMAP ── -->
+  <div class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">03</span>
+        <span class="section-title">90-Day Automation Roadmap</span>
+      </div>
+      <span class="section-badge">Phased Build Plan</span>
+    </div>
+
+    <div class="roadmap">
+      <div class="phase phase-1">
+        <div class="phase-label">
+          <div class="phase-badge">Phase 1</div>
+          <div class="phase-name">Foundation</div>
+          <div class="phase-days">Days 1 – 30</div>
+          <div class="phase-theme">Kill the Chaos</div>
+        </div>
+        <div class="phase-content">
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Deploy Jotform Work Order Intake</div>
+              <div class="phase-item-body">Branded intake form with conditional logic (HVAC, janitorial, vendor, emergency), urgency selector, and property dropdown. Every submission produces a clean, identical data record. <span class="replaces">Replaced: text threads, email chains, phone triage</span></div>
+            </div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Build Airtable Property Master Database</div>
+              <div class="phase-item-body">All 34 properties loaded with: site address, county, assigned vendor(s) by service type, access instructions, and emergency contacts. This becomes the single source of truth for every future automation. <span class="replaces">Replaced: mental recall, scattered email threads</span></div>
+            </div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Zapier: Form → Airtable Auto-Create</div>
+              <div class="phase-item-body">Every Jotform submission automatically creates an Airtable work order row — property, issue, urgency, contact — with zero manual entry. This is the backbone all future automation runs on. <span class="replaces">Replaced: manual data entry by coordinator</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase phase-2">
+        <div class="phase-label">
+          <div class="phase-badge">Phase 2</div>
+          <div class="phase-name">Integration</div>
+          <div class="phase-days">Days 31 – 60</div>
+          <div class="phase-theme">Automate the Handoff</div>
+        </div>
+        <div class="phase-content">
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Automated Vendor Dispatch Email</div>
+              <div class="phase-item-body">Zapier fires a pre-built vendor email the moment a work order is created — pulling address, access instructions, priority, and issue from the Airtable property record. Vendor gets everything they need. Coordinator is removed from the loop entirely. <span class="replaces">Replaced: manual vendor forwarding, wrong-site dispatch</span></div>
+            </div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Client Confirmation Auto-Reply</div>
+              <div class="phase-item-body">Submitter receives an instant email: "Work Order #[ID] received. Estimated response: [X hrs] based on priority level." Stops follow-up calls before they happen. Builds client confidence without any manual step. <span class="replaces">Replaced: "did you get my request?" phone calls</span></div>
+            </div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">HubSpot CRM Foundation</div>
+              <div class="phase-item-body">Import all client contacts into HubSpot Free. Link to Airtable work order records. Begin building client relationship history, property ownership records, and communication timeline — Crestline's first real CRM. <span class="replaces">Replaced: no CRM / contacts scattered across email</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase phase-3">
+        <div class="phase-label">
+          <div class="phase-badge">Phase 3</div>
+          <div class="phase-name">Scale</div>
+          <div class="phase-days">Days 61 – 90</div>
+          <div class="phase-theme">Build the Loop</div>
+        </div>
+        <div class="phase-content">
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Vendor Completion Confirmation Loop</div>
+              <div class="phase-item-body">Vendor submits a simple completion form (or replies to dispatch email) → Airtable status auto-updates to "Closed" → client receives a completion notification. Full closed-loop accountability with no coordinator follow-up required. <span class="replaces">Replaced: "did the vendor finish?" coordinator check-ins</span></div>
+            </div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Weekly Ops Digest to Marcus</div>
+              <div class="phase-item-body">Automated Monday morning report: open work orders, overdue items, vendor response times by county, volume trend. Marcus gets full operational visibility in a 60-second read — no manual reporting required. <span class="replaces">Replaced: reactive status checking, no visibility</span></div>
+            </div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div>
+              <div class="phase-item-title">Evaluate Jobber Migration (If Volume Warrants)</div>
+              <div class="phase-item-body">If monthly volume consistently exceeds 60 work orders, assess Jobber — a purpose-built field service platform with mobile vendor app, GPS check-in, client portal, and invoicing. The Airtable system is designed to export cleanly into Jobber. No rebuild required. <span class="replaces">Replaced: manual tracking as business scales</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 04 TECH STACK ── -->
+  <div class="section" id="stack">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">04</span>
+        <span class="section-title">Recommended Tech Stack</span>
+      </div>
+      <span class="section-badge">No CRM Starting Point</span>
+    </div>
+
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Purpose</th>
+          <th>Why It Fits Crestline</th>
+          <th>Est. Cost/Mo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tool-name">Jotform Pro</span><span class="tool-sub">Intake Layer</span></td>
+          <td>Structured work order intake — replaces all unstructured intake channels</td>
+          <td class="why-fit">Supports conditional logic for 5+ service types, photo upload for HVAC/janitorial evidence, and Zapier integration out of the box</td>
+          <td><span class="cost-cell">~$34</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool-name">Airtable Plus</span><span class="tool-sub">Operations Database</span></td>
+          <td>Property master database + live work order tracker + ops dashboard</td>
+          <td class="why-fit">34 properties and 3-county logic map cleanly to Airtable views. Non-technical enough for Marcus to manage directly without a developer</td>
+          <td><span class="cost-cell">~$20</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool-name">Zapier Starter</span><span class="tool-sub">Automation Engine</span></td>
+          <td>Connects form → database → vendor dispatch → status updates → reporting</td>
+          <td class="why-fit">All tools in this stack (Jotform, Airtable, HubSpot, Gmail) have native Zapier connectors. No code required for the full automation chain</td>
+          <td><span class="cost-cell">~$20</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool-name">HubSpot CRM</span><span class="tool-sub">Client Relationship Layer</span></td>
+          <td>Client contact management, property relationship records, email tracking</td>
+          <td class="why-fit">Currently operating with zero CRM. HubSpot Free handles 34 property contacts with no cost and integrates with Gmail they already use</td>
+          <td><span class="cost-cell free">$0</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool-name">Gmail (Existing)</span><span class="tool-sub">Communication Layer</span></td>
+          <td>Vendor dispatch channel — no new email tool needed, leveraged via Zapier</td>
+          <td class="why-fit">Keeps the stack familiar. All automated vendor emails send from the existing address. No vendor behavior change required</td>
+          <td><span class="cost-cell free">$0</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool-name">Jobber</span><span class="tool-sub">Phase 3 Option · Field Service</span></td>
+          <td>Full field service platform — mobile vendor app, GPS, client portal, invoicing</td>
+          <td class="why-fit">Only deploy if volume exceeds 60 orders/month consistently. Airtable system exports cleanly. Purpose-built for multi-site facilities management at Crestline's scale</td>
+          <td><span class="cost-cell">~$69</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 05 PRICING ── -->
+  <div class="section" id="pricing">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">05</span>
+        <span class="section-title">Pricing & Implementation Options</span>
+      </div>
+      <span class="section-badge">Fixed-Price Packages</span>
+    </div>
+
+    <div class="pricing-header-note">
+      All packages are <strong>fixed-price, outcome-based</strong>. You are not paying for hours — you are paying to eliminate a structural failure that is currently costing Crestline 15+ coordinator hours per week and producing measurable vendor dispatch errors. Every package includes full build, testing, and handoff documentation.
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- OPTION A -->
+      <div class="pkg">
+        <div class="pkg-letter">A</div>
+        <div class="pkg-name">Foundation System</div>
+        <div class="pkg-outcome">Stabilizes intake. Stops the bleeding.</div>
+        <div class="pkg-price">$2,500</div>
+        <div class="pkg-price-note">One-time build · Fixed price</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes-label">What's Included</div>
+        <div class="pkg-item">Custom Jotform work order intake form (all issue types, conditional logic)</div>
+        <div class="pkg-item">Airtable property master database (all 34 properties loaded)</div>
+        <div class="pkg-item">Zapier: Form → Airtable auto-create connection</div>
+        <div class="pkg-item">Client confirmation auto-reply on submission</div>
+        <div class="pkg-item">Basic vendor directory setup in Airtable</div>
+        <div class="pkg-item">Handoff documentation + 30-min walkthrough</div>
+        <div class="pkg-cta">
+          <button class="pkg-btn">Start Here</button>
+          <div class="choose-reason">Choose this if budget is the primary constraint and you want to stop chaos immediately — but be ready to come back for Phase 2 once you see the results.</div>
+        </div>
+      </div>
+
+      <!-- OPTION B -->
+      <div class="pkg recommended">
+        <div class="pkg-rec-label">Recommended</div>
+        <div class="pkg-letter">B</div>
+        <div class="pkg-name">Automated Operations System</div>
+        <div class="pkg-outcome">Removes manual coordination entirely.</div>
+        <div class="pkg-price">$4,500</div>
+        <div class="pkg-price-note">One-time build · Fixed price</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes-label">Everything in A, Plus:</div>
+        <div class="pkg-item">Automated vendor dispatch email with property data lookup (address, access instructions, priority)</div>
+        <div class="pkg-item">Vendor routing logic by service type × county</div>
+        <div class="pkg-item">HubSpot CRM setup with contact import + Gmail sync</div>
+        <div class="pkg-item">Work order status tracking dashboard in Airtable</div>
+        <div class="pkg-item">Airtable → HubSpot work order linkage</div>
+        <div class="pkg-item">60-day post-build check-in included</div>
+        <div class="pkg-cta">
+          <button class="pkg-btn">Build This System</button>
+          <div class="choose-reason">Choose this if you want your coordinator out of the dispatch loop entirely. This is the version where the system does the work — not your team.</div>
+        </div>
+      </div>
+
+      <!-- OPTION C -->
+      <div class="pkg">
+        <div class="pkg-letter">C</div>
+        <div class="pkg-name">Full Operational Intelligence System</div>
+        <div class="pkg-outcome">Fully scalable. System-driven. Zero manual ops.</div>
+        <div class="pkg-price">$7,500</div>
+        <div class="pkg-price-note">One-time build · Fixed price</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes-label">Everything in B, Plus:</div>
+        <div class="pkg-item">Vendor completion confirmation loop (auto-close on job done)</div>
+        <div class="pkg-item">Automated weekly ops digest (open orders, overdue, response times by county)</div>
+        <div class="pkg-item">Escalation alerts for overdue work orders (24/48 hr triggers)</div>
+        <div class="pkg-item">Jobber migration plan + data export architecture (if/when needed)</div>
+        <div class="pkg-item">Full SOP documentation + team training session</div>
+        <div class="pkg-item">90-day priority support window included</div>
+        <div class="pkg-cta">
+          <button class="pkg-btn">Go Full System</button>
+          <div class="choose-reason">Choose this if you're done doing operations reactively and want a system that manages itself — with full visibility and zero dependency on manual check-ins.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 06 SUPPORT ── -->
+  <div class="section" id="support">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">06</span>
+        <span class="section-title">Ongoing Support</span>
+      </div>
+      <span class="section-badge">Post-Build Retainer</span>
+    </div>
+
+    <div class="support-card">
+      <div>
+        <div class="support-range-label">Monthly Retainer Range</div>
+        <div class="support-price">$750 – $1,500<span style="font-size:16px;font-weight:400;color:var(--text-dim)">/month</span></div>
+        <div class="support-price-note" style="margin-top:6px;font-size:12px;color:var(--text-dim)">Based on system complexity and volume tier</div>
+
+        <div style="margin-top:28px;margin-bottom:12px;font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);">What Support Covers</div>
+        <div class="support-list">
+          <div class="support-item"><div class="support-dot"></div>System monitoring — catching automation failures before they cause a dispatch error</div>
+          <div class="support-item"><div class="support-dot"></div>Automation adjustments as vendor rosters, properties, or workflows change</div>
+          <div class="support-item"><div class="support-dot"></div>New work order categories or routing rules added within 48 hours</div>
+          <div class="support-item"><div class="support-dot"></div>Monthly system health report + optimization recommendations</div>
+          <div class="support-item"><div class="support-dot"></div>Priority response for urgent issues — same business day</div>
+        </div>
+      </div>
+      <div>
+        <div class="support-right-title">Why Retainer Support Makes Sense for Crestline</div>
+        <div class="support-right-body">
+          A 34-property portfolio is not static. Vendors turn over. Properties get added. Issue categories change. A system built in Month 1 that no one maintains will drift — and you'll be back to manual workarounds inside six months.<br><br>
+          The retainer keeps your automation stack aligned with your actual operations. Think of it as having an ops systems engineer on call — without the full-time salary. At $750/month, that's less than a single misrouted vendor dispatch costs in labor, rescheduling, and client fallout.<br><br>
+          <strong style="color:var(--amber)">Lower tier ($750):</strong> Foundation or B-tier builds with stable, low-change workflows.<br>
+          <strong style="color:var(--amber)">Upper tier ($1,500):</strong> Full Intelligence System with active scaling, new integrations, and priority SLA.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 07 RATIONALE ── -->
+  <div class="section" id="rationale">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">07</span>
+        <span class="section-title">Why This Investment Makes Sense</span>
+      </div>
+      <span class="section-badge">ROI Case</span>
+    </div>
+
+    <div class="rationale-grid">
+      <div class="rationale-card">
+        <div class="rationale-icon">⏱</div>
+        <div class="rationale-number">780 hrs</div>
+        <div class="rationale-label">Recovered Per Year</div>
+        <div class="rationale-body">At 15 wasted coordinator hours per week, that's 780 hours per year spent on triage, forwarding, and dispatch error cleanup. At a $25/hr fully-loaded rate, that's <strong style="color:var(--amber)">$19,500/year</strong> in recoverable labor cost — before accounting for client satisfaction impact.</div>
+      </div>
+      <div class="rationale-card">
+        <div class="rationale-icon">📍</div>
+        <div class="rationale-number">Zero</div>
+        <div class="rationale-label">Dispatch Errors After Build</div>
+        <div class="rationale-body">Vendor dispatch failures currently occur because site details are recalled manually from memory and forwarded via free-text messages. Once routing pulls directly from a verified property database, wrong-site dispatches become structurally impossible — not just less likely.</div>
+      </div>
+      <div class="rationale-card">
+        <div class="rationale-icon">📈</div>
+        <div class="rationale-number">34 → 60+</div>
+        <div class="rationale-label">Properties You Can Handle</div>
+        <div class="rationale-body">The current manual model caps Crestline's growth. Every new property adds more intake volume, more dispatch complexity, and more coordinator load. A system-driven operation scales linearly — adding properties doesn't require adding headcount to manage work orders.</div>
+      </div>
+    </div>
+
+    <div class="rationale-statement">
+      The Option B system at <strong>$4,500</strong> pays for itself in under <strong>3 months</strong> of recovered coordinator time alone — without counting the reduction in vendor re-dispatch costs, client satisfaction improvement, or the operational capacity Crestline gains to take on additional properties without hiring. This is not a software expense. <strong>This is infrastructure that compounds.</strong>
+    </div>
+  </div>
+
+  <!-- ── 08 EMAIL ── -->
+  <div class="section" id="email">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-index">08</span>
+        <span class="section-title">Next Step — ARCG Proposal Email</span>
+      </div>
+      <span class="section-badge">Ready to Send</span>
+    </div>
+
+    <div class="email-wrap">
+      <div class="email-toolbar">
+        <div class="email-dot email-dot-r"></div>
+        <div class="email-dot email-dot-y"></div>
+        <div class="email-dot email-dot-g"></div>
+        <span class="email-toolbar-label">Draft · Outbound · High Priority</span>
+      </div>
+
+      <div class="email-fields">
+        <span class="email-field-key">From</span>
+        <span class="email-field-val">Jean-Max Charles Jr. &lt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84eee9c4e5f6e7e3f7fdf7f0e1e9f7aae7ebe9">[email&#160;protected]</a>&gt;</span>
+        <span class="email-field-key">To</span>
+        <span class="email-field-val">Marcus Webb &lt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a37742d3f38381a39283f292e3633343f2a3774393537">[email&#160;protected]</a>&gt;</span>
+        <span class="email-field-key">Subject</span>
+        <span class="email-field-val subject-val">Marcus — your coordinator is solving a systems problem with human labor. Here's how to fix it.</span>
+      </div>
+
+      <div class="email-body">
+        <p class="email-p">
+          Marcus — I went through your audit submission in detail. You're managing 34 properties across three counties, and right now the only thing standing between a client's HVAC call and the right vendor showing up at the right address is your coordinator's memory and a forwarded email. I've seen this exact failure pattern before, and it's not about your team — it's about running a multi-site operation without the infrastructure to support it.
+        </p>
+        <p class="email-p">
+          The good news: this is entirely fixable in 30 days. I've put together a full Operational Intelligence Report for Crestline — diagnosis, 90-day roadmap, tech stack, and three implementation options starting at $2,500. The full automated system (the one that removes your coordinator from the dispatch loop completely) comes in at $4,500 one-time, and it pays for itself inside the first quarter on coordinator time savings alone.
+        </p>
+        <p class="email-p">
+          I'd like 20 minutes with you this week to walk through the build plan. No pitch, no pressure — you'll leave with a clear execution path whether we work together or not. But based on what you described, I think once you see how fast this moves, you'll want us on it. <strong>Reply with two windows that work and I'll send a calendar link.</strong>
+        </p>
+
+        <div class="email-sig">
+          <strong>Jean-Max Charles Jr.</strong>
+          Founder & President · ARCG Systems<br>
+          Hyattsville, Maryland
+          <div class="certs">SDVOSB · HUBZone · MBE · DBE · SBE Certified Federal Contractor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /body-wrap -->
+
+<!-- ═══════════════�

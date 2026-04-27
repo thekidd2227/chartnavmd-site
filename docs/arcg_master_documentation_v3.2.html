@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCG Systems — Master Operational Documentation v3.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0C12;--panel:#121621;--panel2:#171c28;--border:#272f3d;--blt:#1e2533;--gold:#C9941A;--glt:#e0a820;--gdim:rgba(201,148,26,0.12);--text:#E8ECF2;--muted:#98A3B3;--dim:#5a6478;--green:#3ec878;--red:#e06060;--blue:#6ea8f7;--teal:#4ec9b0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.35}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,148,26,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(201,148,26,.018) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,148,26,.3)}50%{box-shadow:0 0 0 8px rgba(201,148,26,0)}}
+
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 32px 120px}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:100;background:rgba(10,12,18,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;margin:0 -32px;display:flex;align-items:center;overflow-x:auto;gap:0}
+.nav-part{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);padding:14px 14px;border-bottom:2px solid transparent;white-space:nowrap;opacity:.6}
+.nav a{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:14px 11px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.nav a:hover{color:var(--gold);border-bottom-color:rgba(201,148,26,.4)}
+.nav-sep{width:1px;height:20px;background:var(--border);flex-shrink:0;margin:0 4px}
+
+/* ── HERO ── */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border);animation:fadeUp .7s ease both}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,58px);font-weight:300;line-height:1.08;letter-spacing:-.5px;margin-bottom:14px}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--gold) 0%,var(--glt) 50%,var(--gold) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite}
+.hero p{font-size:15px;color:var(--muted);max-width:600px;margin-bottom:28px;font-weight:300}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 11px;border-radius:2px}
+.t-gold{color:var(--gold);border:1px solid rgba(201,148,26,.3);background:var(--gdim)}
+.t-dim{color:var(--dim);border:1px solid var(--border)}
+.t-green{color:var(--green);border:1px solid rgba(62,200,120,.25);background:rgba(62,200,120,.08)}
+.t-teal{color:var(--teal);border:1px solid rgba(78,201,176,.3);background:rgba(78,201,176,.08)}
+.t-red{color:var(--red);border:1px solid rgba(224,96,96,.3);background:rgba(224,96,96,.08)}
+
+/* ── CTA ── */
+.cta{margin:40px 0;padding:40px 46px;background:linear-gradient(135deg,#13171f,#0f1219);border:1px solid rgba(201,148,26,.25);border-radius:4px;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.cta::after{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,rgba(201,148,26,.06),transparent 70%);pointer-events:none}
+.cta h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;margin-bottom:8px}
+.cta p{color:var(--muted);font-size:13.5px;margin-bottom:24px;max-width:440px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:var(--gold);color:#0A0C12;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.5px;text-decoration:none;border-radius:2px;transition:all .2s;animation:pulse 3s ease-in-out infinite}
+.btn:hover{background:var(--glt);transform:translateY(-1px)}
+
+/* ── DOC PART DIVIDER ── */
+.part-hdr{margin-top:72px;padding:28px 34px;background:linear-gradient(135deg,#0f131c,#0c1018);border:1px solid rgba(201,148,26,.2);border-radius:4px;position:relative;overflow:hidden}
+.part-hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.part-hdr::after{content:'';position:absolute;bottom:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(201,148,26,.05),transparent 70%);pointer-events:none}
+.part-num{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.part-hdr h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;margin-bottom:6px}
+.part-hdr p{font-size:13.5px;color:var(--muted);font-weight:300;max-width:560px}
+
+/* ── SECTION ── */
+.sec{margin-top:52px}
+.sec-hdr{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--blt)}
+.sec-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);padding:3px 8px;border:1px solid rgba(201,148,26,.25);background:var(--gdim);border-radius:2px;flex-shrink:0;margin-top:4px}
+.sec-ttl h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;letter-spacing:-.2px;margin-bottom:3px}
+.sec-ttl p{font-size:12.5px;color:var(--muted);font-weight:300}
+
+/* ── PANELS ── */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:22px 26px;margin-bottom:12px;position:relative}
+.panel::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.panel:hover::before{opacity:1}
+.plbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.plbl::after{content:'';flex:1;height:1px;background:var(--blt)}
+.p2{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:14px 18px;margin-bottom:10px}
+
+/* ── TABLES ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl thead th{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+.tbl tbody tr{border-bottom:1px solid var(--blt);transition:background .15s}
+.tbl tbody tr:hover{background:rgba(255,255,255,.012)}
+.tbl td{padding:11px 13px;color:var(--muted);vertical-align:top}
+.tbl td:first-child{color:var(--text);font-weight:500}
+.g{color:var(--gold)!important;font-weight:600!important}
+.gr{color:var(--green)!important}
+.rd{color:var(--red)!important}
+.te{color:var(--teal)!important}
+.mo{font-family:'DM Mono',monospace!important;font-size:10.5px!important;color:var(--dim)!important}
+.mono{background:var(--panel2);padding:2px 6px;border-radius:2px;font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)}
+
+/* ── PILLS ── */
+.pill{display:inline-block;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:500}
+.p-gold{background:var(--gdim);color:var(--gold);border:1px solid rgba(201,148,26,.25)}
+.p-green{background:rgba(46,157,96,.1);color:var(--green);border:1px solid rgba(46,157,96,.2)}
+.p-red{background:rgba(201,64,64,.1);color:var(--red);border:1px solid rgba(201,64,64,.2)}
+.p-teal{background:rgba(78,201,176,.08);color:var(--teal);border:1px solid rgba(78,201,176,.25)}
+.p-blue{background:rgba(42,107,201,.1);color:var(--blue);border:1px solid rgba(42,107,201,.2)}
+.p-dim{background:transparent;color:var(--dim);border:1px solid var(--border)}
+
+/* ── RULES ── */
+.rule{padding:14px 20px;border-left:2px solid var(--border);margin-bottom:10px;background:var(--panel);border-radius:0 3px 3px 0;transition:border-color .2s}
+.rule:hover{border-left-color:var(--gold)}
+.rule-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:4px}
+.rule h4{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px}
+.rule p{font-size:12.5px;color:var(--muted);font-weight:300}
+
+/* ── PHASE GRID ── */
+.phase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}
+.pc{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:20px;position:relative;overflow:hidden;transition:border-color .2s}
+.pc:hover{border-color:rgba(201,148,26,.3)}
+.pc::after{content:'';position:absolute;bottom:0;right:0;width:50px;height:50px;background:radial-gradient(circle at bottom right,rgba(201,148,26,.05),transparent)}
+.ph-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.ph-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:7px}
+.pc h4{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;margin-bottom:9px}
+.pc ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.pc li{font-size:12px;color:var(--muted);padding-left:13px;position:relative;line-height:1.5}
+.pc li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:10px;top:1px}
+
+/* ── SCENARIO LIST ── */
+.scen-list{display:flex;flex-direction:column;gap:8px}
+.scen{display:grid;grid-template-columns:100px 1fr auto;align-items:center;gap:12px;padding:11px 16px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;transition:border-color .2s}
+.scen:hover{border-color:rgba(201,148,26,.2)}
+.scen-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)}
+.scen-nm{font-size:13px;color:var(--text)}
+.scen-dt{font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-top:2px;word-break:break-all}
+
+/* ── FAILURE CARDS ── */
+.fail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+.fail{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:17px 19px}
+.fail-id{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);margin-bottom:6px}
+.fail h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
+.sig{font-size:12px;color:var(--red);margin-bottom:7px;padding:6px 10px;background:rgba(201,64,64,.06);border-left:2px solid rgba(201,64,64,.35);border-radius:0 2px 2px 0}
+.fix{font-size:12px;color:var(--muted);line-height:1.6}
+.fix strong{color:var(--gold);font-weight:500}
+
+/* ── TOOL GRID ── */
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tool{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:15px 17px;transition:border-color .2s}
+.tool:hover{border-color:rgba(201,148,26,.3)}
+.tool-nm{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.tool-ac{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);margin-bottom:7px;word-break:break-all}
+
+/* ── EMAIL INFRA ── */
+.email-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+.ecard{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:16px 19px}
+.erole{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.eaddr{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);margin-bottom:4px;word-break:break-all}
+.edesc{font-size:12px;color:var(--muted)}
+.strike{text-decoration:line-through;opacity:.4}
+
+/* ── ROUTING FLOW ── */
+.flow-wrap{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:20px 24px}
+.flow-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--blt)}
+.flow-row:last-child{border-bottom:none}
+.flow-cond{background:var(--gdim);border:1px solid rgba(201,148,26,.2);border-radius:2px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);flex-shrink:0;min-width:120px;text-align:center}
+.flow-arr{color:var(--dim);font-size:15px;flex-shrink:0;margin-top:2px}
+.flow-dest strong{display:block;font-size:13px;color:var(--text);margin-bottom:2px}
+.flow-dest span{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim);line-height:1.7}
+
+/* ── INSTANTLY ── */
+.inst-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.icard{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:18px 20px}
+.i-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.i-val{font-family:'DM Mono',monospace;font-size:22px;color:var(--gold);font-weight:500;margin-bottom:3px}
+.i-sub{font-size:12px;color:var(--muted)}
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.tb{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:12px;text-align:center}
+.tb-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.tb-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--gold)}
+.mkt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.mkt{padding:10px 14px;background:var(--panel2);border:1px solid var(--blt);border-radius:2px;display:flex;justify-content:space-between;align-items:center}
+.mkt-nm{font-size:12px;color:var(--muted)}
+.mkt-v{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)}
+
+/* ── CHECKLIST ── */
+.chk{list-style:none;display:flex;flex-direction:column;gap:7px}
+.chk li{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--muted);padding:8px 12px;background:var(--panel2);border:1px solid var(--blt);border-radius:2px}
+.cb{width:14px;height:14px;border:1px solid var(--border);border-radius:2px;flex-shrink:0;margin-top:2px}
+
+/* ── FORM SPEC ── */
+.branch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:11px}
+.bcard{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:14px;position:relative;overflow:hidden;transition:border-color .2s}
+.bcard:hover{border-color:rgba(201,148,26,.3)}
+.bcard.nb{border-color:rgba(78,201,176,.3)!important}
+.bcard.nb::before{content:'NEW';position:absolute;top:7px;right:7px;font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:1.5px;color:var(--teal);background:rgba(78,201,176,.1);border:1px solid rgba(78,201,176,.2);border-radius:2px;padding:1px 4px}
+.bc-id{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);margin-bottom:4px}
+.bc-trig{font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.4}
+.bc-fields{font-family:'DM Mono',monospace;font-size:8.5px;color:var(--dim);line-height:1.7}
+
+.q-spec{background:var(--panel2);border:1px solid var(--border);border-radius:3px;margin-bottom:10px;overflow:hidden}
+.q-hdr{padding:10px 16px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--blt);display:flex;justify-content:space-between;align-items:center}
+.q-hdr strong{font-size:12px;color:var(--text)}
+.q-body{padding:14px 16px}
+.q-row{display:grid;grid-template-columns:110px 1fr;border-bottom:1px solid var(--blt);align-items:start}
+.q-row:last-child{border-bottom:none}
+.q-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);padding:8px 12px 8px 0;letter-spacing:.5px}
+.q-val{font-size:12px;color:var(--muted);padding:8px 0}
+.q-val.hi{color:var(--text);font-weight:500}
+.opts{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.opt{font-size:10.5px;color:var(--muted);padding:2px 9px;border:1px solid var(--blt);border-radius:2px;background:rgba(255,255,255,.02)}
+.route-audit{color:var(--teal);background:rgba(78,201,176,.08);border:1px solid rgba(78,201,176,.2);font-family:'DM Mono',monospace;font-size:9.5px;padding:3px 9px;border-radius:2px;display:inline-block}
+.route-leads{color:var(--gold);background:var(--gdim);border:1px solid rgba(201,148,26,.2);font-family:'DM Mono',monospace;font-size:9.5px;padding:3px 9px;border-radius:2px;display:inline-block}
+
+/* ── PATH SCENARIOS ── */
+.path-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+.pcard{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:16px 18px;position:relative}
+.pcard.np{border-color:rgba(78,201,176,.3)}
+.pcard.np::after{content:'NEW';position:absolute;top:9px;right:9px;font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:1.5px;color:var(--teal);background:rgba(78,201,176,.1);border:1px solid rgba(78,201,176,.2);border-radius:2px;padding:1px 4px}
+.path-id{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--gold);margin-bottom:5px}
+.path-type{font-size:12px;font-weight:600;color:var(--text);margin-bottom:9px}
+.pr{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--blt);gap:10px}
+.pr:last-child{border-bottom:none}
+.pr-k{font-size:10.5px;color:var(--dim);flex-shrink:0;min-width:100px}
+.pr-v{font-size:11px;color:var(--muted);text-align:right}
+.pr-v.em{color:var(--gold)}
+
+/* ── CODE ── */
+.code{background:#0d1017;border:1px solid var(--border);border-radius:3px;padding:14px 18px;font-family:'DM Mono',monospace;font-size:11.5px;color:#a8c0d4;line-height:1.8;overflow-x:auto;margin:8px 0;white-space:pre}
+.code .kw{color:var(--gold)}.code .st{color:#7ec8a4}.code .cm{color:var(--dim)}.code .hl{color:var(--teal)}
+
+/* ── RISK LIST ── */
+.risk-list{display:flex;flex-direction:column;gap:9px}
+.risk{padding:13px 17px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;display:flex;gap:12px}
+.risk-sev{flex-shrink:0;padding:2px 7px;border-radius:2px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;height:fit-content;margin-top:2px}
+.risk-body h4{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:3px}
+.risk-body p{font-size:11.5px;color:var(--muted);line-height:1.6}
+.risk-impact{font-size:10.5px;color:var(--dim);margin-top:5px;padding:5px 9px;background:rgba(0,0,0,.2);border-radius:2px;font-style:italic}
+
+/* ── CHANGE LOG ── */
+.cl-item{padding:16px 20px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;margin-bottom:10px}
+.cl-date{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--gold);letter-spacing:1px;margin-bottom:5px}
+.cl-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:7px}
+.cl-body{font-size:12px;color:var(--muted);line-height:1.8}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:44px 0}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+@media(max-width:700px){.phase-grid,.fail-grid,.tool-grid,.email-grid,.inst-grid,.mkt-grid,.time-grid,.branch-grid,.path-grid{grid-template-columns:1fr}.scen{grid-template-columns:1fr}.wrap{padding:0 16px 80px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav-part">I·Bible</span>
+  <a href="#email">Email</a><a href="#rules">Rules</a><a href="#delivery">Delivery</a><a href="#qualify">Qualify</a><a href="#routing">Routing</a><a href="#failure">Failure</a><a href="#ops">Cadence</a>
+  <div class="nav-sep"></div>
+  <span class="nav-part">II·Blueprint</span>
+  <a href="#scenarios">Scenarios</a><a href="#notif">Notifications</a><a href="#instantly">Instantly</a><a href="#airtable">Airtable</a><a href="#tools">Tools</a>
+  <div class="nav-sep"></div>
+  <span class="nav-part">III·Form</span>
+  <a href="#form-overview">Overview</a><a href="#form-flow">Flow</a><a href="#form-questions">Questions</a><a href="#form-branching">Branching</a><a href="#form-variables">Variables</a><a href="#form-paths">Paths</a><a href="#form-risks">Risks</a><a href="#multiselect">Multi-Select</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="eyebrow">ARCG Systems · Master Operational Documentation</div>
+  <h1>Master <em>Intelligence</em><br>Documentation</h1>
+  <p>Complete operational reference — Operational Bible v3.1 · System Blueprint v3.1 · Assessment Form Branching Spec v1.1. All three documents unified. Canonical, enforced, Grade A.</p>
+  <div class="badges">
+    <span class="tag t-gold">v3.2 · 2026-04-04</span>
+    <span class="tag t-dim">SDVOSB · HUBZone · MBE · DBE · SBE</span>
+    <span class="tag t-dim">UEI KPHJM83ZJLJ4 · CAGE 8FJ78</span>
+    <span class="tag t-green">Warmup 100/100 ✅</span>
+    <span class="tag t-teal">Healthcare Branch Verified ✅</span>
+    <span class="tag t-dim">8 Form Branches · 3 Parts</span>
+    <span class="tag t-gold">9 Multi-Select Diagnostic Fields</span>
+  </div>
+</header>
+
+<div class="cta">
+  <h2>Start With a System Diagnosis</h2>
+  <p>Most operations don't fail from lack of demand. They fail from broken process. Get a free blueprint specific to your operation — delivered within 24 hours.</p>
+  <a href="https://arcgsystems.com/assessment" class="btn" target="_blank">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Get Your Free Assessment
+  </a>
+</div>
+
+<!-- ══════════════ PART I — OPERATIONAL BIBLE ══════════════ -->
+<div class="part-hdr">
+  <div class="part-num">Part I</div>
+  <h2>Operational Bible</h2>
+  <p>Enforced doctrine governing delivery timelines, system model constraints, phase advance conditions, and failure protocols. Version 3.1.</p>
+</div>
+
+<!-- §00 EMAIL -->
+<div class="sec" id="email">
+  <div class="sec-hdr"><div class="sec-num">00</div><div class="sec-ttl"><h2>Email Infrastructure</h2><p>Canonical address routing — enforced across all systems. <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f59f90949b98948db594879c83908792879a8085db969a98">[email&#160;protected]</a> permanently retired.</p></div></div>
+  <div class="email-grid">
+    <div class="ecard"><div class="erole">Primary Send / Contact</div><div class="eaddr"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c2d3e2f2b3f353f3829213f0c2b212d2520622f2321">[email&#160;protected]</a></div><div class="edesc">All Make.com FROM fields, all signatures, Instantly reply-to, Web3Forms login, conn 8125092</div></div>
+    <div class="ecard"><div class="erole">Notification Receive</div><div class="eaddr" style="color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ea83848c85aa8b98839c8f988d98859f9ac4898587">[email&#160;protected]</a></div><div class="edesc">Where Make.com alerts are delivered (TO field only — not a sending address)</div></div>
+    <div class="ecard"><div class="erole">Cold Outreach Send</div><div class="eaddr"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aac9c2cbd8c6c3cfeacec3cdc3cbd8c9cdd9d3d9decfc7d984c9c5c7">[email&#160;protected]</a></div><div class="edesc">Instantly campaign sending domain only · Warmup 100/100 ✅ · Reply-to → <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1574677672666c6661707866557278747c793b767a78">[email&#160;protected]</a></div></div>
+    <div class="ecard" style="opacity:.45"><div class="erole">Retired</div><div class="eaddr strike"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b5dfd0d4dbd8d4cdf5d4c7dcc3d0c7d2c7dac0c59bd6dad8">[email&#160;protected]</a></div><div class="edesc">Removed from all systems 2026-04-04. Any detection = fix immediately.</div></div>
+  </div>
+</div>
+
+<!-- §01 RULES -->
+<div class="sec" id="rules">
+  <div class="sec-hdr"><div class="sec-num">01</div><div class="sec-ttl"><h2>Non-Negotiable Rules</h2><p>Fixed delivery windows and system constraints — no exceptions</p></div></div>
+  <div class="panel" style="margin-bottom:18px">
+    <div class="plbl">Delivery Timeline — Fixed</div>
+    <table class="tbl"><thead><tr><th>Event</th><th>Window</th></tr></thead><tbody>
+      <tr><td>Assessment diagnosis delivered</td><td class="g">24 hours from form submission</td></tr>
+      <tr><td>Fast-track system live</td><td class="g">14 days from signed scope</td></tr>
+      <tr><td>Standard system live</td><td class="g">14–30 days from signed scope</td></tr>
+      <tr><td>Complex multi-system build</td><td class="g">30–45 days from signed scope</td></tr>
+    </tbody></table>
+    <p style="font-size:11px;color:var(--dim);margin-top:9px;font-style:italic">"90-day roadmap" and all references to a 90-day delivery cycle are permanently banned from all ARCG output.</p>
+  </div>
+  <div class="rule"><div class="rule-n">1.2</div><h4>No Deviation from the System Model</h4><p>Every engagement uses Make.com + Airtable. Substitution requires owner sign-off and blueprint update before client work begins.</p></div>
+  <div class="rule"><div class="rule-n">1.3</div><h4>No Manual Workarounds</h4><p>Fix the pipeline, not the symptom. Any manual intervention must be logged in the Airtable record's Notes field with reason, action, and root cause.</p></div>
+  <div class="rule"><div class="rule-n">1.4</div><h4>No Make UI Edits Without a Validated Blueprint</h4><p>The Make UI generates invalid IML for raw JSON body fields. All blueprint changes go through the JSON blueprint editor only — validate externally before pasting.</p></div>
+  <div class="rule"><div class="rule-n">1.5</div><h4>Field Naming is Locked</h4><p>Webhook payload field <span class="mono">contactName</span> must remain camelCase across form, webhook, and every Make module. Changes to Assessment.tsx require simultaneous Make module updates.</p></div>
+</div>
+
+<!-- §02 DELIVERY -->
+<div class="sec" id="delivery">
+  <div class="sec-hdr"><div class="sec-num">02</div><div class="sec-ttl"><h2>Delivery System</h2><p>Four-phase build and launch cadence with hard handoff conditions</p></div></div>
+  <div class="phase-grid">
+    <div class="pc"><div class="ph-lbl">Phase 0</div><div class="ph-day">Day 0</div><h4>Intake</h4><ul><li>Client submits arcgsystems.com/assessment</li><li>Airtable record created (Leads or Audit Intake)</li><li>Gmail alert to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="68091a0b0f1b111b1c0d051b280f05090104460b0705">[email&#160;protected]</a></li><li>Confirmation email to client via Web3Forms</li></ul></div>
+    <div class="pc"><div class="ph-lbl">Phase 1</div><div class="ph-day">Day 0–1</div><h4>Diagnosis</h4><ul><li>Owner reviews Airtable record</li><li>biggestProblem + budget + businessType confirmed</li><li>System plan + fixed-fee proposal within 24 hours</li></ul></div>
+    <div class="pc"><div class="ph-lbl">Phase 2</div><div class="ph-day">Day 1–3</div><h4>Architecture</h4><ul><li>Budget confirmed ≥ $1,500</li><li>Client tech stack documented</li><li>Airtable Status → Qualified</li><li>No build starts without this</li></ul></div>
+    <div class="pc"><div class="ph-lbl">Phase 3</div><div class="ph-day">Day 3–14</div><h4>Build</h4><ul><li>Automation deployed in staging</li><li>All modules tested</li><li>Zero critical errors before advance</li></ul></div>
+  </div>
+  <div class="pc" style="margin-bottom:12px"><div class="ph-lbl">Phase 4</div><div class="ph-day">Day 14–30</div><h4>Launch</h4><ul style="flex-direction:row;flex-wrap:wrap;gap:5px 20px"><li>System live in production</li><li>Client trained on dashboard</li><li>Post-launch review Day 14 + Day 30</li><li>5 consecutive days without manual intervention</li></ul></div>
+  <div class="panel"><div class="plbl">What Blocks Phase Advance</div>
+    <table class="tbl"><thead><tr><th>Transition</th><th>Blocker</th></tr></thead><tbody>
+      <tr><td>Phase 0 → 1</td><td class="rd">Airtable record missing biggestProblem</td></tr>
+      <tr><td>Phase 1 → 2</td><td class="rd">No response within 5 business days → nurture</td></tr>
+      <tr><td>Phase 2 → 3</td><td class="rd">Budget not confirmed — no build starts</td></tr>
+      <tr><td>Phase 3 → 4</td><td class="rd">Critical test failure — do not go live</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- §03 QUALIFY -->
+<div class="sec" id="qualify">
+  <div class="sec-hdr"><div class="sec-num">03</div><div class="sec-ttl"><h2>Lead Qualification</h2><p>Accept, reject, and flag logic for all inbound submissions</p></div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px">
+    <div class="panel" style="border-color:rgba(62,200,120,.3)"><div class="plbl" style="color:var(--green)">Accept</div><ul style="list-style:none;display:flex;flex-direction:column;gap:6px"><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--green)">✓</span>Any of the 8 businessType values</li><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--green)">✓</span>Budget ≥ $1,500</li><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--green)">✓</span>Work email preferred</li></ul></div>
+    <div class="panel" style="border-color:rgba(224,96,96,.3)"><div class="plbl" style="color:var(--red)">Reject</div><ul style="list-style:none;display:flex;flex-direction:column;gap:6px"><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--red)">✗</span>Budget "Under $1K" — no proposal</li><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--red)">✗</span>No biggestProblem (blank)</li><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--red)">✗</span>Spam or test submissions</li></ul></div>
+    <div class="panel" style="border-color:rgba(201,148,26,.3)"><div class="plbl">Flag — Review</div><ul style="list-style:none;display:flex;flex-direction:column;gap:6px"><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--gold)">!</span>"Just exploring" budget + urgency</li><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--gold)">!</span>Healthcare + budget under $1K</li><li style="font-size:12px;color:var(--muted);padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--gold)">!</span>Duplicate within 7 days</li></ul></div>
+  </div>
+  <div class="panel"><div class="plbl">Priority Scoring</div>
+    <div style="border-bottom:1px solid var(--blt);padding:10px 16px;display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Urgency = "Immediately" or Budget = $5K–$10K+ or Healthcare + high claims</span><span class="pill p-red">High</span></div>
+    <div style="border-bottom:1px solid var(--blt);padding:10px 16px;display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Urgency = "Within 30 days" or Budget = $1K–$5K</span><span class="pill p-gold">Medium</span></div>
+    <div style="padding:10px 16px;display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Urgency = "Just exploring"</span><span class="pill p-blue">Low</span></div>
+  </div>
+</div>
+
+<!-- §04 ROUTING -->
+<div class="sec" id="routing">
+  <div class="sec-hdr"><div class="sec-num">04</div><div class="sec-ttl"><h2>Intake Routing</h2><p>Every form submission routes to exactly one Airtable table</p></div></div>
+  <div class="flow-wrap">
+    <div class="flow-row"><div class="flow-cond">Healthcare / Medical Billing</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Audit Intake Table</strong><span>tblog9Y7WSLhD4xCp · healthcarePrimaryIssue · healthcareCurrentSystem · healthcareIdealState · Contact info · biggestProblem<br>✅ ROUTING VERIFIED 2026-04-04 07:21 via live test payload</span></div></div>
+    <div class="flow-row"><div class="flow-cond">All Other Types (7)</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Leads Table</strong><span>tbl695ilVYkzMxHso · Business Name · Status=New · Email · Contact Name · Phone · Date Added · Priority Rationale</span></div></div>
+    <div class="flow-row"><div class="flow-cond" style="background:rgba(201,148,26,.06)">Always</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Gmail Alert</strong><span>FROM <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ed8c9f8e8a9e949e9988809ead8a808c8481c38e8280">[email&#160;protected]</a> (conn 8125092) → TO <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="432a2d252c0322312a35263124312c36336d202c2e">[email&#160;protected]</a> · Via Make PROD-01 (4583057)</span></div></div>
+  </div>
+</div>
+
+<!-- §05 FAILURE -->
+<div class="sec" id="failure">
+  <div class="sec-hdr"><div class="sec-num">05</div><div class="sec-ttl"><h2>Failure &amp; Escalation</h2><p>Response procedures for all system failure modes</p></div></div>
+  <div class="fail-grid">
+    <div class="fail"><div class="fail-id">PROD-01 · 4583057</div><h4>Make Assessment Form</h4><div class="sig">No Gmail alert · History shows error status</div><div class="fix"><strong>Fix:</strong> Open 4583057 → History → If BlueprintValidationError, paste clean JSON via blueprint editor → Activate → Process queue → Verify status 1, 4 ops</div></div>
+    <div class="fail"><div class="fail-id">Airtable · HTTP 422/401</div><h4>Write Failure</h4><div class="sig">Module 5 or 2 shows HTTP error</div><div class="fix"><strong>422:</strong> Correct field value + typecast:true at root + validate JSON.<br><strong>401:</strong> Rotate token → update Bearer in Modules 5 and 2.</div></div>
+    <div class="fail"><div class="fail-id">Web3Forms</div><h4>Client Confirmation Failure</h4><div class="sig">No confirmation email · No owner alert</div><div class="fix"><strong>Fix:</strong> Login web3forms.com with <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8decffeeeafef4fef9e8e0fecdeae0ece4e1a3eee2e0">[email&#160;protected]</a>. Check submission logs. If down, assessment still sends to Make webhook.</div></div>
+    <div class="fail"><div class="fail-id">Gmail · conn 8125092</div><h4>Gmail Connection Failure</h4><div class="sig">PROD-01/05/06 show Google email error</div><div class="fix"><strong>Fix:</strong> Make → Connections → 8125092 → Reconnect <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f392819094808a8087969e80b3949e929a9fdd909c9e">[email&#160;protected]</a>. OAuth token expiration is most likely cause.</div></div>
+    <div class="fail"><div class="fail-id">Instantly · 72ca8b8b</div><h4>Campaign Failure</h4><div class="sig">PROD-03: 0 lead inserts · Dashboard: 0 sends</div><div class="fix"><strong>PROD-03:</strong> Confirm Status = "Synced to Notion" + Campaign ID set.<br><strong>Sending:</strong> Confirm active, daily 192, Mon–Sat.</div></div>
+    <div class="fail"><div class="fail-id">GPT-4o · 4620963</div><h4>Analysis Engine Failure</h4><div class="sig">HTTP 400 Bad Request from OpenAI API</div><div class="fix"><strong>Fix:</strong> Switch bodyType="json" → bodyType="raw". Set contentType="application/json". Wrap content in toJSON().</div></div>
+  </div>
+</div>
+
+<!-- §06 OPS CADENCE -->
+<div class="sec" id="ops">
+  <div class="sec-hdr"><div class="sec-num">06</div><div class="sec-ttl"><h2>Operations Cadence</h2><p>Daily, weekly, and monthly system verification protocol</p></div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px">
+    <div class="panel"><div class="plbl">Daily · &lt;5 Min</div><ul class="chk"><li><div class="cb"></div>Make PROD-01 — status 1, 4 operations</li><li><div class="cb"></div>Gmail (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ed8c9f8e8a9e949e9988809ead8a808c8481c38e8280">[email&#160;protected]</a>) — scan alerts</li><li><div class="cb"></div>Airtable Leads — new "New" records, blank fields</li></ul></div>
+    <div class="panel"><div class="plbl">Weekly · Monday</div><ul class="chk"><li><div class="cb"></div>PROD-03: Airtable → Instantly sync</li><li><div class="cb"></div>PROD-04 Reply Intelligence: execution count</li><li><div class="cb"></div>PROD-07: Weekly reminder arrived</li><li><div class="cb"></div>Instantly: bounce rate &lt;5%</li><li><div class="cb"></div>"Replied" leads — respond to all open</li></ul></div>
+    <div class="panel"><div class="plbl">Monthly · 1st Monday</div><ul class="chk"><li><div class="cb"></div>Total submissions count</li><li><div class="cb"></div>Qualified leads count</li><li><div class="cb"></div>Instantly report — &lt;5,000 cap</li><li><div class="cb"></div>Make operations vs plan limit</li><li><div class="cb"></div>Update Weekly Reports table</li></ul></div>
+  </div>
+</div>
+
+<!-- ══════════════ PART II — SYSTEM BLUEPRINT ══════════════ -->
+<div class="part-hdr">
+  <div class="part-num">Part II</div>
+  <h2>System Blueprint</h2>
+  <p>Canonical scenario registry, webhook endpoints, Airtable structure, notification routing, and Instantly outbound configuration.</p>
+</div>
+
+<!-- §07 SCENARIOS -->
+<div class="sec" id="scenarios">
+  <div class="sec-hdr"><div class="sec-num">07</div><div class="sec-ttl"><h2>Make.com Scenario Registry</h2><p>All production scenarios with IDs, webhooks, and status</p></div></div>
+  <div class="scen-list">
+    <div class="scen"><div><div class="scen-id">PROD-01</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4583057</div></div><div><div class="scen-nm">Assessment Form Routing</div><div class="scen-dt">https://hook.us2.make.com/6t1q8pgdy4s4zp7haj57ba45is8xhfwj · Healthcare → Audit Intake, All other → Leads</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">PROD-02</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4583264</div></div><div><div class="scen-nm">Airtable → Notion Leads DB</div><div class="scen-dt">Polling every 15 min</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">PROD-03</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4608082</div></div><div><div class="scen-nm">Airtable → Instantly Campaign</div><div class="scen-dt">Every 15 min · Campaign 72ca8b8b-3e1e-47d5-902c-49c140e5d677</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">PROD-04</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4570684</div></div><div><div class="scen-nm">Reply Intelligence Polling</div><div class="scen-dt">Every 15 min</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">PROD-05</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4583063</div></div><div><div class="scen-nm">Booking Link + Pre-Call Brief</div><div class="scen-dt">https://hook.us2.make.com/ti5tlit9s9ir0sr1vha7vqjyemcuvlnq</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">PROD-06</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4586344</div></div><div><div class="scen-nm">Follow-Up Enforcement Engine</div><div class="scen-dt">Every 15 min</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">PROD-07</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4594888</div></div><div><div class="scen-nm">Weekly Content Reminder</div><div class="scen-dt">Monday 9AM → <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fe9f8c9d998d878d8a9b938dbe99939f9792d09d9193">[email&#160;protected]</a></div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">INT-01</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4501119</div></div><div><div class="scen-nm">Assessment Form → Digest + Airtable Log</div><div class="scen-dt">FROM <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4524372622363c3631202836052228242c296b262a28">[email&#160;protected]</a> → TO <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8fe6e1e9e0cfeefde6f9eafde8fde0faffa1ece0e2">[email&#160;protected]</a> · conn 8125092</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">INT-02</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4501121</div></div><div><div class="scen-nm">Site Contact Form → Instant Alert</div><div class="scen-dt">FROM <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4f2e3d2c283c363c3b2a223c0f28222e2623612c2022">[email&#160;protected]</a> → TO <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="20494e464f6041524956455247524f55500e434f4d">[email&#160;protected]</a> · conn 8125092</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen"><div><div class="scen-id">INT-03</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4501192</div></div><div><div class="scen-nm">Weekly Ops Digest — Monday 8AM</div><div class="scen-dt">FROM <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c5a4b7a6a2b6bcb6b1a0a8b685a2a8a4aca9eba6aaa8">[email&#160;protected]</a> → TO <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0861666e6748697a617e6d7a6f7a677d78266b6765">[email&#160;protected]</a> · conn 8125092</div></div><span class="pill p-green">Active</span></div>
+    <div class="scen" style="border-color:rgba(201,148,26,.2)"><div><div class="scen-id">GPT-01</div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">4620963</div></div><div><div class="scen-nm">Scenario Analysis Engine (GPT-4o)</div><div class="scen-dt">KNOWN ISSUE: bodyType="json" → OpenAI 400. Fix: bodyType="raw" + toJSON(). Webhook: /vuhclwigraxdmh76powapk1mg9avmfhp</div></div><span class="pill p-gold">Fix Pending</span></div>
+  </div>
+</div>
+
+<!-- §08 NOTIFICATIONS -->
+<div class="sec" id="notif">
+  <div class="sec-hdr"><div class="sec-num">08</div><div class="sec-ttl"><h2>Email &amp; Notification Layer</h2><p>Complete routing table for all outbound email paths</p></div></div>
+  <div class="panel"><div class="plbl">Full Notification Matrix</div>
+    <table class="tbl"><thead><tr><th>Layer</th><th>From</th><th>To</th><th>Method / Scenario</th></tr></thead><tbody>
+      <tr><td>Assessment Alert</td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f6e7d6c687c767c7b6a627c4f68626e6663216c6062">[email&#160;protected]</a></td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="442d2a222b0425362d32213623362b31346a272b29">[email&#160;protected]</a></td><td>Make INT-01 (4501119) · conn 8125092</td></tr>
+      <tr><td>Contact Form Alert</td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2f4e5d4c485c565c5b4a425c6f48424e4643014c4042">[email&#160;protected]</a></td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="83eaede5ecc3e2f1eaf5e6f1e4f1ecf6f3ade0ecee">[email&#160;protected]</a></td><td>Make INT-02 (4501121) · conn 8125092</td></tr>
+      <tr><td>Weekly Ops Digest</td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0b6a79686c7872787f6e66784b6c666a626725686466">[email&#160;protected]</a></td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="670e0901082706150e11021500150812174904080a">[email&#160;protected]</a></td><td>Make INT-03 (4501192) · conn 8125092</td></tr>
+      <tr><td>Client Confirmation</td><td class="mo">Web3Forms</td><td class="mo">submitter email</td><td>Web3Forms (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2342514044505a5057464e5063444e424a4f0d404c4e">[email&#160;protected]</a> acct) · key 4feb412f</td></tr>
+      <tr><td>Cold Outreach</td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d0b3b8b1a2bcb9b590b4b9b7b9b1a2b3b7a3a9a3a4b5bda3feb3bfbd">[email&#160;protected]</a></td><td class="mo">leads</td><td>Instantly · 72ca8b8b · Reply-to: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7d1c0f1e1a0e040e0918100e3d1a101c1411531e1210">[email&#160;protected]</a></td></tr>
+      <tr><td>Analysis Email</td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4d5c6d7d3c7cdc7c0d1d9c7f4d3d9d5ddd89ad7dbd9">[email&#160;protected]</a></td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b7d6c5d4d0c4cec4c3d2dac4f7d0dad6dedb99d4d8da">[email&#160;protected]</a></td><td>Make GPT-01 (4620963)</td></tr>
+      <tr><td>Booking Brief</td><td class="mo"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="214053424652585255444c5261464c40484d0f424e4c">[email&#160;protected]</a></td><td class="mo">lead + owner</td><td>PROD-05 (4583063)</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- §09 INSTANTLY -->
+<div class="sec" id="instantly">
+  <div class="sec-hdr"><div class="sec-num">09</div><div class="sec-ttl"><h2>Instantly Outbound Configuration</h2><p>Campaign 72ca8b8b — warmup 100/100, ready to launch</p></div></div>
+  <div class="inst-grid" style="margin-bottom:12px">
+    <div class="icard"><div class="i-lbl">Warmup Score</div><div class="i-val">100/100</div><div class="i-sub" style="color:var(--green)">✅ Campaign ready to activate</div></div>
+    <div class="icard"><div class="i-lbl">Daily Send Limit</div><div class="i-val">192</div><div class="i-sub">Mon–Sat · Monthly cap 4,992</div></div>
+    <div class="icard"><div class="i-lbl">Reply-to Address</div><div class="i-val" style="font-size:13px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="caabb8a9adb9b3b9beafa7b98aada7aba3a6e4a9a5a7">[email&#160;protected]</a></div><div class="i-sub">Set on account + campaign level</div></div>
+    <div class="icard"><div class="i-lbl">Campaign ID</div><div class="i-val" style="font-size:12px;word-break:break-all">72ca8b8b</div><div class="i-sub">-3e1e-47d5-902c-49c140e5d677</div></div>
+  </div>
+  <div class="panel" style="margin-bottom:11px"><div class="plbl">Daily Send Blocks</div>
+    <div class="time-grid"><div class="tb"><div class="tb-lbl">Morning</div><div class="tb-val">64</div></div><div class="tb"><div class="tb-lbl">Afternoon</div><div class="tb-val">64</div></div><div class="tb"><div class="tb-lbl">Evening</div><div class="tb-val">64</div></div></div>
+  </div>
+  <div class="panel" style="margin-bottom:11px"><div class="plbl">Market Allocation</div>
+    <div class="mkt-grid"><div class="mkt"><span class="mkt-nm">US Priority</span><span class="mkt-v">58</span></div><div class="mkt"><span class="mkt-nm">Remaining US</span><span class="mkt-v">29</span></div><div class="mkt"><span class="mkt-nm">Spanish Caribbean</span><span class="mkt-v">62</span></div><div class="mkt"><span class="mkt-nm">Colombia</span><span class="mkt-v">43</span></div></div>
+  </div>
+  <div class="panel"><div class="plbl">Email Sequence — 5 Steps</div>
+    <table class="tbl"><thead><tr><th>Step</th><th>Day</th><th>Subject</th></tr></thead><tbody>
+      <tr><td>1</td><td class="g">Day 0</td><td>Quick question about your service requests</td></tr>
+      <tr><td>2</td><td class="g">Day 5</td><td>The part that is probably not documented</td></tr>
+      <tr><td>3</td><td class="g">Day 12</td><td>What we found when we looked under the hood</td></tr>
+      <tr><td>4</td><td class="g">Day 19</td><td>If your operation runs because you remember everything</td></tr>
+      <tr><td>5</td><td class="g">Day 26</td><td>Last note from me</td></tr>
+    </tbody></table>
+    <p style="font-size:10.5px;color:var(--dim);margin-top:8px">Signature on all steps: Jean-Max Charles · ARCG Systems | AI Automation & Operational Intelligence · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0b6a79686c7872787f6e66784b6c666a626725686466">[email&#160;protected]</a> · Stop on reply: ON</p>
+  </div>
+</div>
+
+<!-- §10 AIRTABLE -->
+<div class="sec" id="airtable">
+  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-ttl"><h2>Airtable Structure</h2><p>Base appfQRV1tGk3sWMCb — all tables, IDs, and purpose</p></div></div>
+  <div class="panel">
+    <table class="tbl"><thead><tr><th>Table</th><th>ID</th><th>Purpose</th><th>Receives From</th></tr></thead><tbody>
+      <tr><td>Leads</td><td class="mo">tbl695ilVYkzMxHso</td><td>Non-healthcare outbound pipeline</td><td>PROD-01 (7 non-Healthcare branches)</td></tr>
+      <tr style="background:rgba(78,201,176,.03)"><td style="color:var(--teal)">Audit Intake ★</td><td class="mo">tblog9Y7WSLhD4xCp</td><td>Healthcare assessment submissions</td><td>PROD-01 (Healthcare / Medical Billing only)</td></tr>
+      <tr><td>Clinics</td><td class="mo">tblNgr6RTqGNAcFf8</td><td>Healthcare client clinics</td><td>Future</td></tr>
+      <tr><td>Providers</td><td class="mo">tblT5hFUrLZ0KJf0T</td><td>Healthcare providers</td><td>Future</td></tr>
+      <tr><td>Claims</td><td class="mo">tblcEmxGJCPjh3Rp7</td><td>Insurance claims tracking</td><td>Future</td></tr>
+      <tr><td>Denials</td><td class="mo">tble3GUB2ssWVWSfH</td><td>Claim denial tracking</td><td>Future</td></tr>
+      <tr><td>Follow-Ups</td><td class="mo">tblXSwWOFsaEOCKZj</td><td>Follow-up task queue</td><td>PROD-06</td></tr>
+      <tr><td>Tasks</td><td class="mo">tbl1P066UMpYSXmi1</td><td>Internal task management</td><td>Manual</td></tr>
+      <tr><td>Weekly Reports</td><td class="mo">tblWGjXUGixP2I0zb</td><td>Weekly performance snapshots</td><td>Monthly cadence</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- §11 TOOLS -->
+<div class="sec" id="tools">
+  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-ttl"><h2>Tool Ownership</h2><p>Account registry and status for all system tools</p></div></div>
+  <div class="tool-grid">
+    <div class="tool"><div class="tool-nm">Make.com</div><div class="tool-ac">team 2049492 · org 7022889</div><span class="pill p-green">Active</span></div>
+    <div class="tool"><div class="tool-nm">Airtable</div><div class="tool-ac">base appfQRV1tGk3sWMCb</div><span class="pill p-green">Active</span></div>
+    <div class="tool"><div class="tool-nm">Instantly.ai</div><div class="tool-ac"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bfdcd7decdd3d6daffdbd6d8d6decddcd8ccc6cccbdad2cc91dcd0d2">[email&#160;protected]</a></div><span class="pill p-green">100/100 ✅</span></div>
+    <div class="tool"><div class="tool-nm">GitHub</div><div class="tool-ac">thekidd2227/website · main</div><span class="pill p-green">Active</span></div>
+    <div class="tool"><div class="tool-nm">Web3Forms</div><div class="tool-ac"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b2a39282c3832383f2e26380b2c262a222765282426">[email&#160;protected]</a> · key 4feb412f</div><span class="pill p-green">Active</span></div>
+    <div class="tool"><div class="tool-nm">Gmail (Make)</div><div class="tool-ac"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="315043525642484245545c4271565c50585d1f525e5c">[email&#160;protected]</a> · conn 8125092</div><span class="pill p-green">Active</span></div>
+    <div class="tool"><div class="tool-nm">OpenAI GPT-4o</div><div class="tool-ac">arcgsystems · scenario 4620963</div><span class="pill p-gold">Fix Pending</span></div>
+    <div class="tool"><div class="tool-nm">GoDaddy DNS</div><div class="tool-ac">arcgsystems.com · 4× A records</div><span class="pill p-green">Active</span></div>
+    <div class="tool"><div class="tool-nm">Notion</div><div class="tool-ac">Secondary CRM · PROD-02 target</div><span class="pill p-green">Active</span></div>
+  </div>
+</div>
+
+<!-- ══════════════ PART III — ASSESSMENT FORM ══════════════ -->
+<div class="part-hdr" style="border-color:rgba(78,201,176,.2)">
+  <div class="part-num" style="color:var(--teal)">Part III</div>
+  <h2>Assessment Form Branching Logic</h2>
+  <p>Complete technical specification of the ARCG Systems intake form — all questions, answer choices, branch conditions, variable names, path scenarios, and routing logic. v1.2 — Healthcare branch added (v1.1) + Multi-select diagnostic fields (v1.2).</p>
+</div>
+
+<!-- §12 FORM OVERVIEW -->
+<div class="sec" id="form-overview">
+  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-ttl"><h2>Form Overview</h2><p>Purpose, technical stack, and business outcome</p></div></div>
+  <div style="margin-bottom:10px;padding:12px 18px;background:rgba(78,201,176,.05);border:1px solid rgba(78,201,176,.2);border-radius:3px;font-size:12.5px;color:var(--muted)">
+    <strong style="color:var(--teal)">v1.1:</strong> Branch 2H Healthcare added. Routing verified 2026-04-04 07:21. &nbsp;|&nbsp; <strong style="color:var(--gold)">v1.2:</strong> 9 diagnostic fields converted to multi-select (checkbox cards). Stored as string[] in UI state, serialized as comma-separated string on submission. See §19 for full spec.
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+    <div class="panel"><div class="plbl">Endpoint</div><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">api.web3forms.com/submit</div><div style="font-size:12px;color:var(--muted);margin-top:6px">fetch() POST from Assessment.tsx</div></div>
+    <div class="panel"><div class="plbl">Access Key</div><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">4feb412f-17c5-4b04-8036-66f66f5ce5e3</div></div>
+    <div class="panel"><div class="plbl">Structure</div><div style="font-size:13px;color:var(--text)">4 Steps · 8 Branches</div><div style="font-size:12px;color:var(--muted);margin-top:4px">React + TypeScript (Vite) · Custom useState · v1.2 multi-select</div></div>
+  </div>
+  <div class="panel"><div class="plbl">Step Structure</div>
+    <table class="tbl"><thead><tr><th>Step</th><th>Label</th><th>Purpose</th><th>Questions</th><th>Branching</th></tr></thead><tbody>
+      <tr><td>1</td><td class="g">Business Type</td><td>Identify category to route Step 2</td><td>1 card select</td><td><span class="pill p-red">YES — 8 branches</span></td></tr>
+      <tr><td>2</td><td class="g">Your Operation</td><td>Industry-specific context</td><td>1–3 branch-dependent</td><td><span class="pill p-dim">Content varies</span></td></tr>
+      <tr><td>3</td><td class="g">Scope &amp; Qualification</td><td>Volume, budget, urgency, LTV</td><td>9 universal</td><td><span class="pill p-dim">Same all paths</span></td></tr>
+      <tr><td>4</td><td class="g">Contact Info</td><td>Collect contact + trigger submit</td><td>3 universal</td><td><span class="pill p-dim">Same all paths</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- §13 FORM FLOW -->
+<div class="sec" id="form-flow">
+  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-ttl"><h2>Form Flow &amp; Branch Map</h2><p>Complete branch diagram with all 8 paths and Airtable destinations</p></div></div>
+  <div class="flow-wrap">
+    <div class="flow-row"><div class="flow-cond" style="background:rgba(0,0,0,.2)">Step 1</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Select Business Type</strong><span>8 options · single-select card buttons · sets bt variable · determines Step 2 content</span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2A</div><div class="flow-arr">→</div><div class="flow-dest"><strong>GovCon</strong><span>govconCurrentManagement · govconBreakdownArea · govconPrimaryNeed → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2B</div><div class="flow-arr">→</div><div class="flow-dest"><strong>AI / Automation Agency</strong><span>agencyBreakdownArea · agencyCurrentOnboarding · agencyPrimaryAutomation → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2C</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Staffing / Workforce</strong><span>staffingPrimaryIssue · staffingCurrentConfirmation · staffingIdealState → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2D</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Service Business</strong><span>servicePrimaryLossPoint · serviceCurrentLeadHandling → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2E</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Professional Services</strong><span>professionalPipelineIssue → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2F</div><div class="flow-arr">→</div><div class="flow-dest"><strong>E-commerce / Online</strong><span>ecommerceBottleneck → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row"><div class="flow-cond">Branch 2G</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Other</strong><span>otherBreakdownArea (free textarea) → <span style="color:var(--gold)">Leads table</span></span></div></div>
+    <div class="flow-row" style="background:rgba(78,201,176,.04)"><div class="flow-cond" style="background:rgba(78,201,176,.1);border-color:rgba(78,201,176,.3);color:var(--teal)">Branch 2H ★</div><div class="flow-arr">→</div><div class="flow-dest"><strong style="color:var(--teal)">Healthcare / Medical Billing <span class="pill p-teal" style="margin-left:6px">NEW · VERIFIED</span></strong><span>healthcarePrimaryIssue · healthcareCurrentSystem · healthcareIdealState → <span style="color:var(--teal)">Audit Intake table</span> (ONLY branch with special routing)</span></div></div>
+    <div class="flow-row" style="border-bottom:1px solid var(--border)"><div class="flow-cond" style="background:rgba(0,0,0,.2)">All merge</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Step 3 — Universal Qualification</strong><span>biggestProblem · currentTools · systemUsers · scaleScope · urgency · budgetRange · volume · averageLifetimeValue · desiredResult</span></div></div>
+    <div class="flow-row"><div class="flow-cond" style="background:rgba(0,0,0,.2)">Step 4</div><div class="flow-arr">→</div><div class="flow-dest"><strong>Contact → Submit</strong><span>businessName · contactName · workEmail → fetch() POST → Web3Forms → <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c2d3e2f2b3f353f3829213f0c2b212d2520622f2321">[email&#160;protected]</a></span></div></div>
+  </div>
+</div>
+
+<!-- §14 FORM QUESTIONS -->
+<div class="sec" id="form-questions">
+  <div class="sec-hdr"><div class="sec-num">14</div><div class="sec-ttl"><h2>Question Specification</h2><p>All 8 branches with variable names, labels, input types, and answer choices</p></div></div>
+
+  <!-- Branch overview cards -->
+  <div class="branch-grid">
+    <div class="bcard"><div class="bc-id">2A · GovCon</div><div class="bc-trig">Government Contractor / GovCon</div><div class="bc-fields">govconCurrentManagement<br>govconBreakdownArea<br>govconPrimaryNeed</div></div>
+    <div class="bcard"><div class="bc-id">2B · Agency</div><div class="bc-trig">AI / Automation Agency</div><div class="bc-fields">agencyBreakdownArea<br>agencyCurrentOnboarding<br>agencyPrimaryAutomation</div></div>
+    <div class="bcard"><div class="bc-id">2C · Staffing</div><div class="bc-trig">Staffing / Workforce</div><div class="bc-fields">staffingPrimaryIssue<br>staffingCurrentConfirmation<br>staffingIdealState</div></div>
+    <div class="bcard"><div class="bc-id">2D · Service</div><div class="bc-trig">Service Business (HVAC…)</div><div class="bc-fields">servicePrimaryLossPoint<br>serviceCurrentLeadHandling</div></div>
+    <div class="bcard"><div class="bc-id">2E · Professional</div><div class="bc-trig">Professional Services</div><div class="bc-fields">professionalPipelineIssue</div></div>
+    <div class="bcard"><div class="bc-id">2F · E-com</div><div class="bc-trig">E-commerce / Online</div><div class="bc-fields">ecommerceBottleneck</div></div>
+    <div class="bcard"><div class="bc-id">2G · Other</div><div class="bc-trig">Other</div><div class="bc-fields">otherBreakdownArea<br>(free textarea)</div></div>
+    <div class="bcard nb"><div class="bc-id" style="color:var(--teal)">2H · Healthcare</div><div class="bc-trig" style="color:var(--teal)">Healthcare / Medical Billing</div><div class="bc-fields" style="color:rgba(78,201,176,.6)">healthcarePrimaryIssue<br>healthcareCurrentSystem<br>healthcareIdealState</div></div>
+  </div>
+
+  <!-- Branch 2H detail -->
+  <div class="panel" style="border-color:rgba(78,201,176,.3)">
+    <div class="plbl" style="color:var(--teal)">Branch 2H — Healthcare / Medical Billing (NEW · Routing Verified ✅)</div>
+    <div style="margin-bottom:10px;padding:9px 13px;background:rgba(78,201,176,.05);border:1px solid rgba(78,201,176,.15);border-radius:2px;font-size:12px;color:var(--muted)">⚠ <strong style="color:var(--teal)">Special routing:</strong> Routes to Audit Intake (tblog9Y7WSLhD4xCp). All other 7 branches → Leads. Verified via live test payload 2026-04-04 07:21.</div>
+    <div class="q-spec" style="margin-bottom:9px">
+      <div class="q-hdr"><strong>healthcarePrimaryIssue — What is your primary billing challenge?</strong><span class="pill p-teal">Required</span></div>
+      <div class="q-body"><div class="q-row"><div class="q-lbl">Options</div><div class="q-val"><div class="opts"><span class="opt">Claim denials</span><span class="opt">Slow collections / A/R days</span><span class="opt">Coding errors</span><span class="opt">Eligibility verification failures</span><span class="opt">Underpayments</span></div></div></div></div>
+    </div>
+    <div class="q-spec" style="margin-bottom:9px">
+      <div class="q-hdr"><strong>healthcareCurrentSystem — What system are you currently using?</strong><span class="pill p-teal">Required</span></div>
+      <div class="q-body"><div class="q-row"><div class="q-lbl">Options</div><div class="q-val"><div class="opts"><span class="opt">Manual / spreadsheets</span><span class="opt">Legacy EHR/PM</span><span class="opt">Modern EHR/PM (limited automation)</span><span class="opt">No system</span></div></div></div></div>
+    </div>
+    <div class="q-spec">
+      <div class="q-hdr"><strong>healthcareIdealState — What would your ideal billing operation look like?</strong><span class="pill p-teal">Required</span></div>
+      <div class="q-body"><div class="q-row"><div class="q-lbl">Options</div><div class="q-val"><div class="opts"><span class="opt">Automated claim submission</span><span class="opt">Real-time denial alerts</span><span class="opt">Full revenue cycle visibility</span><span class="opt">Reduced A/R days</span></div></div></div></div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="panel">
+    <div class="plbl">Step 3 — Scope &amp; Qualification (Universal — all 8 paths)</div>
+    <table class="tbl"><thead><tr><th>#</th><th>Variable</th><th>Label</th><th>Options</th></tr></thead><tbody>
+      <tr><td>3.1</td><td class="mo">biggestProblem</td><td>Biggest operational problem right now?</td><td>Free textarea · Required</td></tr>
+      <tr><td>3.2</td><td class="mo">currentTools</td><td>What tools do you currently use?</td><td>CRM · Spreadsheets · Email · QuickBooks · Phone · None · Other</td></tr>
+      <tr><td>3.3</td><td class="mo">systemUsers</td><td>How many people would use this system?</td><td>Just me · 2–5 · 6–15 · 16+</td></tr>
+      <tr><td>3.4</td><td class="mo">scaleScope</td><td>How many locations, vendors, or teams?</td><td>1–3 · 4–10 · 11–25 · 25+</td></tr>
+      <tr><td>3.5</td><td class="mo">urgency</td><td>How quickly do you need this solved?</td><td>Immediately · Within 30 days · 1–3 months · Just exploring</td></tr>
+      <tr><td>3.6</td><td class="mo">budgetRange</td><td>Investment level prepared for?</td><td>Under $1K · $1K–$5K · $5K–$10K · $10K+</td></tr>
+      <tr><td>3.7</td><td class="mo">volume</td><td>Monthly requests, jobs, or workflows?</td><td>Under 20 · 20–100 · 100–300 · 300+</td></tr>
+      <tr><td>3.8</td><td class="mo">averageLifetimeValue</td><td>Average LTV of a customer or contract?</td><td>Under $1K · $1K–$10K · $10K–$50K · $50K+</td></tr>
+      <tr><td>3.9</td><td class="mo">desiredResult</td><td>What result matters most right now?</td><td>Reduce manual work · Increase revenue · Improve execution/control · Scale operations</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- §15 BRANCHING -->
+<div class="sec" id="form-branching">
+  <div class="sec-hdr"><div class="sec-num">15</div><div class="sec-ttl"><h2>Branching Logic &amp; Decision Table</h2><p>All 8 branches with Airtable routing and field counts</p></div></div>
+  <div class="panel">
+    <table class="tbl"><thead><tr><th>businessType Value</th><th>Branch</th><th>Step 2 Fields</th><th>Airtable Dest</th><th>Total Fields</th></tr></thead><tbody>
+      <tr><td>Government Contractor / GovCon</td><td class="g">2A</td><td>govconCurrentManagement · govconBreakdownArea · govconPrimaryNeed</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr><td>AI / Automation Agency</td><td class="g">2B</td><td>agencyBreakdownArea · agencyCurrentOnboarding · agencyPrimaryAutomation</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr><td>Staffing / Workforce</td><td class="g">2C</td><td>staffingPrimaryIssue · staffingCurrentConfirmation · staffingIdealState</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr><td>Service Business (HVAC…)</td><td class="g">2D</td><td>servicePrimaryLossPoint · serviceCurrentLeadHandling</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr><td>Professional Services</td><td class="g">2E</td><td>professionalPipelineIssue</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr><td>E-commerce / Online Business</td><td class="g">2F</td><td>ecommerceBottleneck</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr><td>Other</td><td class="g">2G</td><td>otherBreakdownArea (textarea)</td><td><span class="route-leads">Leads</span></td><td>26</td></tr>
+      <tr style="background:rgba(78,201,176,.04)"><td style="color:var(--teal)">Healthcare / Medical Billing ★</td><td class="te">2H NEW</td><td style="color:var(--teal)">healthcarePrimaryIssue · healthcareCurrentSystem · healthcareIdealState</td><td><span class="route-audit">Audit Intake</span></td><td>26</td></tr>
+    </tbody></table>
+    <div style="margin-top:10px;padding:9px 13px;background:rgba(78,201,176,.05);border:1px solid rgba(78,201,176,.15);border-radius:2px;font-size:12px;color:var(--muted)">★ Healthcare is the only branch routing to Audit Intake. Enforced in Make PROD-01 (4583057). Verified 2026-04-04 via live payload test.</div>
+  </div>
+</div>
+
+<!-- §16 VARIABLES -->
+<div class="sec" id="form-variables">
+  <div class="sec-hdr"><div class="sec-num">16</div><div class="sec-ttl"><h2>Variable / Field Dictionary</h2><p>All 29 form variables with type, requirement, use, and possible values</p></div></div>
+  <div class="panel">
+    <table class="tbl"><thead><tr><th>Variable</th><th>Type</th><th>Req.</th><th>Used For</th><th>Possible Values / Notes</th></tr></thead><tbody>
+      <tr><td class="mo">businessType</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Routing, email</td><td>8 values (Step 1 options)</td></tr>
+      <tr style="background:rgba(0,0,0,.08)"><td colspan="5" style="padding:5px 13px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;color:var(--dim)">── Branch 2A GovCon ──────────────────────────</td></tr>
+      <tr><td class="mo">govconCurrentManagement</td><td>Enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Email/phone · Spreadsheets · Mixed tools · Structured system</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">govconBreakdownArea ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Missed deliverables · Lack of visibility · Communication delays · Compliance/reporting</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">govconPrimaryNeed ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Routing, email</td><td>Centralized tracking · Automated reporting · Performance monitoring · Compliance tracking</td></tr>
+      <tr style="background:rgba(0,0,0,.08)"><td colspan="5" style="padding:5px 13px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;color:var(--dim)">── Branches 2B–2G ────────────────────────────</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">agencyBreakdownArea ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Client onboarding · Project execution · Internal coordination · Delivery timelines</td></tr>
+      <tr><td class="mo">agencyCurrentOnboarding</td><td>Enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Manual setup · Some templates · Fully structured</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">agencyPrimaryAutomation ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Routing</td><td>Client onboarding → project setup · Task generation · Internal workflow</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">staffingPrimaryIssue ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Shift confirmation · No-shows · Coverage gaps · Communication</td></tr>
+      <tr><td class="mo">staffingCurrentConfirmation</td><td>Enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Text · Phone · Email · No system</td></tr>
+      <tr><td class="mo">staffingIdealState</td><td>Enum</td><td><span class="pill p-dim">Cond.</span></td><td>Routing</td><td>Auto scheduling · Auto replacement · Real-time visibility</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">servicePrimaryLossPoint ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Slow response · Scheduling issues · Poor lead tracking · Follow-ups</td></tr>
+      <tr><td class="mo">serviceCurrentLeadHandling</td><td>Enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Phone only · Email · Manual tracking · CRM (limited)</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">professionalPipelineIssue ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Slow response · No follow-up system · Poor intake process</td></tr>
+      <tr><td class="mo" style="color:var(--gold)">ecommerceBottleneck ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Customer support · Order processing · Returns/refunds</td></tr>
+      <tr><td class="mo">otherBreakdownArea</td><td>Free text</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis</td><td>Open — no enum constraints</td></tr>
+      <tr style="background:rgba(78,201,176,.04)"><td colspan="5" style="padding:5px 13px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;color:var(--teal)">── Branch 2H Healthcare (NEW) ────────────────</td></tr>
+      <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--gold)">healthcarePrimaryIssue ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-teal">Cond.</span></td><td>Diagnosis, Audit Intake</td><td>Claim denials · Slow collections · Coding errors · Eligibility failures · Underpayments</td></tr>
+      <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--teal)">healthcareCurrentSystem</td><td>Enum</td><td><span class="pill p-teal">Cond.</span></td><td>Diagnosis, Audit Intake</td><td>Manual/spreadsheets · Legacy EHR/PM · Modern EHR/PM · No system</td></tr>
+      <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--teal)">healthcareIdealState</td><td>Enum</td><td><span class="pill p-teal">Cond.</span></td><td>Routing, Audit Intake</td><td>Automated claim submission · Real-time denial alerts · Full revenue cycle visibility · Reduced A/R days</td></tr>
+      <tr style="background:rgba(0,0,0,.08)"><td colspan="5" style="padding:5px 13px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;color:var(--dim)">── Step 3 Universal ──────────────────────────</td></tr>
+      <tr><td class="mo">biggestProblem</td><td>Free text</td><td><span class="pill p-red">YES</span></td><td>Diagnosis, pricing</td><td>Open — primary diagnostic input</td></tr>
+      <tr><td class="mo">currentTools</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Diagnosis</td><td>CRM · Spreadsheets · Email · QuickBooks · Phone · None · Other</td></tr>
+      <tr><td class="mo">systemUsers</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Pricing</td><td>Just me · 2–5 · 6–15 · 16+</td></tr>
+      <tr><td class="mo">scaleScope</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Pricing</td><td>1–3 · 4–10 · 11–25 · 25+</td></tr>
+      <tr><td class="mo">urgency</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Qualification, routing</td><td>Immediately · Within 30 days · 1–3 months · Just exploring</td></tr>
+      <tr><td class="mo">budgetRange</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Pricing, qualification</td><td>Under $1K · $1K–$5K · $5K–$10K · $10K+</td></tr>
+      <tr><td class="mo">volume</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Pricing</td><td>Under 20 · 20–100 · 100–300 · 300+</td></tr>
+      <tr><td class="mo">averageLifetimeValue</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Pricing</td><td>Under $1K · $1K–$10K · $10K–$50K · $50K+</td></tr>
+      <tr><td class="mo">desiredResult</td><td>Enum</td><td><span class="pill p-red">YES</span></td><td>Routing</td><td>Reduce manual work · Increase revenue · Improve execution/control · Scale operations</td></tr>
+      <tr style="background:rgba(0,0,0,.08)"><td colspan="5" style="padding:5px 13px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;color:var(--dim)">── Step 4 Contact ────────────────────────────</td></tr>
+      <tr><td class="mo">businessName</td><td>String</td><td><span class="pill p-red">YES</span></td><td>Email subject, CRM</td><td>Free text — used in subject line formula</td></tr>
+      <tr><td class="mo">contactName</td><td>String</td><td><span class="pill p-red">YES</span></td><td>Email output, CRM</td><td>Free text</td></tr>
+      <tr><td class="mo">workEmail</td><td>Email</td><td><span class="pill p-red">YES</span></td><td>replyto, CRM</td><td>Valid email format — set as replyto in Web3Forms payload</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- §17 PATH SCENARIOS -->
+<div class="sec" id="form-paths">
+  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-ttl"><h2>Path Scenarios</h2><p>Sample submission data for all 8 paths including Healthcare</p></div></div>
+  <div class="path-grid">
+    <div class="pcard"><div class="path-id">Path A · 2A</div><div class="path-type">GovCon</div><div class="pr"><div class="pr-k">Management</div><div class="pr-v">Spreadsheets</div></div><div class="pr"><div class="pr-k">Breakdown</div><div class="pr-v">Compliance / reporting</div></div><div class="pr"><div class="pr-k">Need</div><div class="pr-v">Automated reporting</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$5K–$10K · Immediately</div></div><div class="pr"><div class="pr-k">Business</div><div class="pr-v">Apex Federal Services LLC</div></div></div>
+    <div class="pcard"><div class="path-id">Path B · 2D</div><div class="path-type">Service Business (HVAC)</div><div class="pr"><div class="pr-k">Loss Point</div><div class="pr-v">Slow response time</div></div><div class="pr"><div class="pr-k">Lead Handling</div><div class="pr-v">Phone only</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$5K–$10K · Immediately</div></div><div class="pr"><div class="pr-k">Business</div><div class="pr-v">Riverside HVAC Co.</div></div></div>
+    <div class="pcard"><div class="path-id">Path C · 2C</div><div class="path-type">Staffing / Workforce</div><div class="pr"><div class="pr-k">Issue</div><div class="pr-v">No-shows</div></div><div class="pr"><div class="pr-k">Confirmation</div><div class="pr-v">Text</div></div><div class="pr"><div class="pr-k">Ideal State</div><div class="pr-v">Auto replacement if no response</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$5K–$10K · Immediately</div></div></div>
+    <div class="pcard"><div class="path-id">Path D · 2B</div><div class="path-type">AI / Automation Agency</div><div class="pr"><div class="pr-k">Breakdown</div><div class="pr-v">Client onboarding</div></div><div class="pr"><div class="pr-k">Onboarding</div><div class="pr-v">Manual setup every time</div></div><div class="pr"><div class="pr-k">Automate First</div><div class="pr-v">Client onboarding → project setup</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$5K–$10K · Within 30 days</div></div></div>
+    <div class="pcard"><div class="path-id">Path E · 2E</div><div class="path-type">Professional Services</div><div class="pr"><div class="pr-k">Pipeline Issue</div><div class="pr-v">No follow-up system</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$1K–$5K · Within 30 days</div></div><div class="pr"><div class="pr-k">LTV</div><div class="pr-v">$10K–$50K</div></div></div>
+    <div class="pcard"><div class="path-id">Path F · 2F</div><div class="path-type">E-commerce / Online</div><div class="pr"><div class="pr-k">Bottleneck</div><div class="pr-v">Customer support</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$5K–$10K · Immediately</div></div><div class="pr"><div class="pr-k">Volume</div><div class="pr-v">300+ / mo</div></div></div>
+    <div class="pcard"><div class="path-id">Path G · 2G</div><div class="path-type">Other</div><div class="pr"><div class="pr-k">Breakdown</div><div class="pr-v" style="font-size:10.5px">Franchise 8 units. Compliance tracking manual. 2 days/month.</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$10K+ · Within 30 days</div></div></div>
+    <div class="pcard np"><div class="path-id" style="color:var(--teal)">Path H · 2H · NEW ✅</div><div class="path-type" style="color:var(--teal)">Healthcare / Medical Billing</div><div class="pr"><div class="pr-k">Primary Issue</div><div class="pr-v">Claim denials</div></div><div class="pr"><div class="pr-k">Current System</div><div class="pr-v">Legacy EHR/PM</div></div><div class="pr"><div class="pr-k">Ideal State</div><div class="pr-v">Real-time denial alerts</div></div><div class="pr"><div class="pr-k">Budget/Urgency</div><div class="pr-v em">$5K–$10K · Immediately</div></div><div class="pr"><div class="pr-k">Airtable Route</div><div class="pr-v"><span class="route-audit">Audit Intake</span></div></div><div class="pr"><div class="pr-k">Live Verified</div><div class="pr-v" style="color:var(--green)">2026-04-04 07:21 ✅</div></div></div>
+  </div>
+</div>
+
+<!-- §18 RISKS -->
+<div class="sec" id="form-risks">
+  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-ttl"><h2>Logic Risks &amp; Improvements</h2><p>Identified risks ordered by severity and recommended fixes</p></div></div>
+  <div class="risk-list">
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>Branch Variable Pollution</h4><p>Switching businessType after filling Step 2 leaves prior branch fields populated in the payload.</p><div class="risk-impact">Fix: reset all healthcare*, govcon*, agency*, staffing*, service*, professional*, ecommerce*, otherBreakdown* fields to [] or "" on businessType change. Now also resets multi-select arrays to []. 30 min. Critical.</div></div></div>
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>Healthcare Routing Failure Risk</h4><p>If Make PROD-01 routing logic isn't maintained, Healthcare submissions route to Leads instead of Audit Intake — silent failure.</p><div class="risk-impact">Currently verified ✅. Re-verify after any PROD-01 blueprint change.</div></div></div>
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>No Confirmation Email to Submitter</h4><p>No automated confirmation to workEmail after submission. User sees success screen only.</p><div class="risk-impact">Add Web3Forms confirmation payload field. 1 hour.</div></div></div>
+    <div class="risk"><div class="risk-sev p-gold">MED</div><div class="risk-body"><h4>Budget Disqualification Gap</h4><p>"Under $1K" leads receive same success screen as qualified leads. No DQ logic exists.</p><div class="risk-impact">Soft banner added (v1.2) + disqualified: true flag in payload. 1 hour.</div></div></div>
+    <div class="risk"><div class="risk-sev p-gold">MED</div><div class="risk-body"><h4>Thin Professional Services Branch (2E)</h4><p>Only 1 question vs 3 in most branches including Healthcare.</p><div class="risk-impact">Add professionalMonthlyClients + professionalIntakeProcess. 30 min.</div></div></div>
+  </div>
+</div>
+
+<!-- §19 MULTI-SELECT SPEC -->
+<div class="sec" id="multiselect">
+  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-ttl"><h2>Multi-Select Diagnostic Fields</h2><p>v1.2 — 9 diagnostic fields converted from single-select to checkbox card multi-select</p></div></div>
+  <div style="margin-bottom:12px;padding:12px 18px;background:rgba(201,148,26,.06);border:1px solid rgba(201,148,26,.25);border-radius:3px;font-size:12.5px;color:var(--muted)">
+    <strong style="color:var(--gold)">Rule:</strong> Only diagnostic/breakdown/pain-point fields are multi-select. Current state, process, size, urgency, budget, ideal state remain single-select. 9 converted · 21 kept single-select.
+  </div>
+  <div class="panel">
+    <div class="plbl">Fields Converted to Multi-Select ★</div>
+    <table class="tbl"><thead><tr><th>Field</th><th>Branch</th><th>Question</th><th>State Type</th><th>Payload Format</th></tr></thead><tbody>
+      <tr><td class="mo g">govconBreakdownArea</td><td>2A GovCon</td><td>Where are breakdowns happening most?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">govconPrimaryNeed</td><td>2A GovCon</td><td>What do you need most?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">agencyBreakdownArea</td><td>2B Agency</td><td>Where does workflow break down most?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">agencyPrimaryAutomation</td><td>2B Agency</td><td>What do you want automated first?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">staffingPrimaryIssue</td><td>2C Staffing</td><td>What is your biggest operational issue?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">servicePrimaryLossPoint</td><td>2D Service</td><td>Where are you losing jobs or time?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">professionalPipelineIssue</td><td>2E Professional</td><td>What is breaking your client pipeline?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr style="background:rgba(78,201,176,.03)"><td class="mo g">healthcarePrimaryIssue</td><td>2H Healthcare</td><td>What are your primary billing challenges?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      <tr><td class="mo g">ecommerceBottleneck</td><td>2F E-com</td><td>Where is the bottleneck?</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+    </tbody></table>
+  </div>
+  <div class="panel">
+    <div class="plbl">Fields Intentionally Kept Single-Select</div>
+    <table class="tbl"><thead><tr><th>Field</th><th>Reason</th></tr></thead><tbody>
+      <tr><td class="mo">govconCurrentManagement</td><td>Current process — one answer</td></tr>
+      <tr><td class="mo">agencyCurrentOnboarding</td><td>Current process state</td></tr>
+      <tr><td class="mo">staffingCurrentConfirmation</td><td>Current workflow method</td></tr>
+      <tr><td class="mo">staffingIdealState</td><td>Ideal future state — single direction</td></tr>
+      <tr><td class="mo">serviceCurrentLeadHandling</td><td>Current process</td></tr>
+      <tr><td class="mo">healthcareCurrentSystem</td><td>Current system classification</td></tr>
+      <tr><td class="mo">healthcareIdealState</td><td>Ideal state</td></tr>
+      <tr><td class="mo">businessType</td><td>Factual classification — drives routing</td></tr>
+      <tr><td class="mo">All Step 3 fields (9)</td><td>Size, urgency, budget, volume, LTV, desired result — single-value signals</td></tr>
+      <tr><td class="mo">otherBreakdownArea</td><td>Free text textarea</td></tr>
+    </tbody></table>
+  </div>
+  <div class="panel">
+    <div class="plbl">Data Model · Serialization · Validation · Downstream Compatibility</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px">
+      <div class="p2" style="margin:0"><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:7px;letter-spacing:1px">UI STATE</div><div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">string[]</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Array during interaction. Preserved on navigation.</div></div>
+      <div class="p2" style="margin:0"><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:7px;letter-spacing:1px">SERIALIZATION</div><div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">.join(", ")</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Consistent across all 9 fields via serializeForm().</div></div>
+      <div class="p2" style="margin:0"><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:7px;letter-spacing:1px">VALIDATION</div><div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">arr.length &gt; 0</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Error: "Select at least one option."</div></div>
+    </div>
+    <table class="tbl"><thead><tr><th>System</th><th>Receives</th><th>Format</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Web3Forms email</td><td>All 9 fields</td><td class="mo">"Missed deliverables, Compliance / reporting issues"</td><td><span class="pill p-green">✅</span></td></tr>
+      <tr><td>Make PROD-01 webhook</td><td>All form fields</td><td class="mo">CSV string — no arrays reach Make</td><td><span class="pill p-green">✅</span></td></tr>
+      <tr><td>Airtable Notes</td><td>Diagnostic fields</td><td class="mo">Readable string — no [object Object]</td><td><span class="pill p-green">✅</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="panel">
+    <div class="plbl">QA Results — 4 Branches Verified</div>
+    <table class="tbl"><thead><tr><th>Branch</th><th>Renders</th><th>Multi-select</th><th>Min 1 validation</th><th>Sample payload</th><th>Branch clear</th></tr></thead><tbody>
+      <tr><td class="g">2A GovCon</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"Missed deliverables, Compliance / reporting issues"</td><td><span class="pill p-green">→ []</span></td></tr>
+      <tr style="background:rgba(78,201,176,.03)"><td class="te">2H Healthcare</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"Claim denials, Coding errors"</td><td><span class="pill p-green">→ []</span></td></tr>
+      <tr><td>2E Professional</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"No follow-up system, Poor intake process"</td><td><span class="pill p-green">→ []</span></td></tr>
+      <tr><td>2F E-commerce</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"Customer support, Order processing"</td><td><span class="pill p-green">→ []</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- CHANGE LOG -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">LOG</div><div class="sec-ttl"><h2>Change Log</h2><p>Audit trail of all system and form modifications</p></div></div>
+  <div class="cl-item">
+    <div class="cl-date">2026-04-04 · Form v1.1 → v1.2</div>
+    <div class="cl-title">Multi-Select Diagnostic Fields</div>
+    <div class="cl-body">
+      <strong style="color:var(--text)">Converted (9 fields):</strong> govconBreakdownArea, govconPrimaryNeed, agencyBreakdownArea, agencyPrimaryAutomation, staffingPrimaryIssue, servicePrimaryLossPoint, professionalPipelineIssue, healthcarePrimaryIssue, ecommerceBottleneck.<br><br>
+      <strong style="color:var(--text)">Data model:</strong> string[] in useState · .join(", ") serialization · arr.length &gt; 0 validation · arrays reset to [] on branch switch.<br><br>
+      <strong style="color:var(--text)">Downstream:</strong> Web3Forms, Make webhook, Airtable all receive clean CSV strings.<br>
+      <strong style="color:var(--text)">File:</strong> src/components/Assessment.tsx v1.2 · <strong style="color:var(--text)">Who:</strong> Jean-Max Charles Jr. via Claude
+    </div>
+  </div>
+  <div class="cl-item">
+    <div class="cl-date">2026-04-04 · v3.0 → v3.1 + Form v1.0 → v1.1</div>
+    <div class="cl-title">Email Infrastructure Consolidation + Healthcare Branch</div>
+    <div class="cl-body">
+      <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c8a2ada9a6a5a9b088a9baa1beadbaafbaa7bdb8e6aba7a5">[email&#160;protected]</a> retired. <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0362716064707a7077666e7043646e626a6f2d606c6e">[email&#160;protected]</a> canonical. Make scenarios 4501119/4501121/4501192 activated on Gmail conn 8125092. Instantly reply-to → <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="accddecfcbdfd5dfd8c9c1dfeccbc1cdc5c082cfc3c1">[email&#160;protected]</a>. Warmup 100/100. Branch 2H Healthcare added → routes to Audit Intake, verified 2026-04-04 07:21.<br>
+      <strong style="color:var(--text)">Who:</strong> Jean-Max Charles Jr. via Claude
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<div class="cta" style="margin-top:0">
+  <h2>Ready to Build Your Operational System?</h2>
+  <p>ARCG Systems delivers automation infrastructure for contractors, service companies, and government vendors. Systems live in 14 days. Diagnosis in 24 hours.</p>
+  <a href="https://arcgsystems.com/assessment" class="btn" target="_blank">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Get Your Free Assessment
+  </a>
+</div>
+
+<footer style="margin-top:44px;padding-top:22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+  <div><div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);margin-bottom:3px">ARCG Systems</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:1.5px">AI AUTOMATION · OPERATIONAL INTELLIGENCE</div></div>
+  <div style="text-align:right"><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim)">Master Operational Documenta
+<section id="assessment-system">
+<h2>Assessment Form System — Complete Reference</h2>
+<p><strong>URL:</strong> arcgsystems.com/assessment &nbsp;|&nbsp; <strong>Source:</strong> src/pages/Assessment.tsx v1.2 &nbsp;|&nbsp; <strong>Updated:</strong> Apr 14 2026</p>
+
+<h3>Submission Flow</h3>
+<pre style="background:#0D1B35;padding:14px;border-radius:6px;font-size:11px;color:#C4CFD9;overflow-x:auto">
+Visitor submits form
+    ↓ (3 parallel fires, non-blocking)
+    ├─ Web3Forms → arcgsystems@gmail.com (email backup)
+    ├─ PROD-01-v2 (4628614) → intake card email + Airtable routing
+    │    ├─ Healthcare → Airtable tblog9Y7WSLhD4xCp
+    │    └─ All others → Airtable tbl695ilVYkzMxHso (Leads)
+    └─ PROD-06 (4727100) → GPT-4o → AI brief email → jeanmax@arivergroup.com
+</pre>
+
+<h3>Step 1 — Business Type</h3>
+<p>8 options: Government Contractor/GovCon · AI/Automation Agency · Staffing/Workforce · Service Business · Professional Services · E-commerce · Other · Healthcare/Medical Billing</p>
+<p><strong>Healthcare is the only branch that routes to a separate Airtable table.</strong> All other branches write to the main Leads table.</p>
+
+<h3>Step 2 — Branch Questions</h3>
+<p>Multi-select fields (stored as string[], serialized comma-separated on submit): govconBreakdownArea, govconPrimaryNeed, agencyBreakdownArea, agencyPrimaryAutomation, staffingPrimaryIssue, servicePrimaryLossPoint, professionalPipelineIssue, healthcarePrimaryIssue, ecommerceBottleneck</p>
+
+<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px">
+<thead><tr style="background:#0D1B35"><th>Branch</th><th>Fields</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td>GovCon</td><td>govconCurrentManagement<br>govconBreakdownArea<br>govconPrimaryNeed</td><td>Single<br>Multi<br>Multi</td></tr>
+<tr><td>Agency</td><td>agencyBreakdownArea<br>agencyCurrentOnboarding<br>agencyPrimaryAutomation</td><td>Multi<br>Single<br>Multi</td></tr>
+<tr><td>Staffing</td><td>staffingPrimaryIssue<br>staffingCurrentConfirmation<br>staffingIdealState</td><td>Multi<br>Single<br>Single</td></tr>
+<tr><td>Service</td><td>servicePrimaryLossPoint<br>serviceCurrentLeadHandling</td><td>Multi<br>Single</td></tr>
+<tr><td>Professional</td><td>professionalPipelineIssue</td><td>Multi</td></tr>
+<tr><td>E-commerce</td><td>ecommerceBottleneck</td><td>Multi</td></tr>
+<tr><td>Other</td><td>otherBreakdownArea</td><td>Free text</td></tr>
+<tr><td>Healthcare</td><td>healthcarePrimaryIssue<br>healthcareCurrentSystem<br>healthcareIdealState</td><td>Multi<br>Single<br>Single</td></tr>
+</tbody></table>
+
+<h3>Step 3 — Universal Qualification</h3>
+<p>biggestProblem (free text) · currentTools · systemUsers · scaleScope · urgency · volume · averageLifetimeValue · desiredResult</p>
+<p><strong>Budget field removed Apr 14 2026.</strong> No pricing collected at assessment stage.</p>
+
+<h3>Step 4 — Contact</h3>
+<p>businessName · contactName · workEmail (validated)</p>
+
+<h3>Urgency Tiers</h3>
+<p>🔴 Immediately (hot) · 🟡 Within 30 days (warm) · ⚪ Just exploring (cold)</p>
+
+<h3>PROD-06 AI Diagnosis</h3>
+<p>Scenario ID: 4727100 · Webhook: hook.us2.make.com/8dw1vgnzn5stl67274pphirtk13ulpa9</p>
+<p>Model: gpt-4o · Max tokens: 1500 · Temperature: 0.3</p>
+<p>Output: 6-section brief — Operational Diagnosis, Annual Impact Estimate, Engagement Recommendation (DIAGNOSTIC ONLY / DIAGNOSTIC + BLUEPRINT / FULL IMPLEMENTATION), Top 3 Audit Priorities, Red Flags, Discovery Call Opener</p>
+<p>Fires: from form JS (non-blocking) AND will fire from PROD-01-v2 canvas once wire-prod06-canvas command is run</p>
+</section>

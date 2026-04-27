@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCG Systems — Content Engine</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0A0C12; color: #E8E8E8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; padding: 24px; }
+  .header { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+  .logo-dot { width: 10px; height: 10px; background: #C9941A; border-radius: 50%; }
+  .logo-text { font-size: 13px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #C9941A; }
+  h1 { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #A8B2BE; margin-bottom: 28px; }
+  .layout { display: grid; grid-template-columns: 1fr 380px; gap: 20px; max-width: 1100px; }
+  @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+  .panel { background: #0D1118; border: 1px solid #1a1f2e; border-radius: 12px; padding: 24px; }
+  .panel-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #C9941A; margin-bottom: 16px; }
+  .drop-zone { border: 2px dashed #1a1f2e; border-radius: 10px; padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #0A0C12; position: relative; margin-bottom: 16px; }
+  .drop-zone:hover, .drop-zone.dragover { border-color: #C9941A; background: rgba(201,148,26,0.04); }
+  .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .drop-icon { font-size: 28px; margin-bottom: 8px; }
+  .drop-main { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .drop-sub { font-size: 11px; color: #A8B2BE; }
+  .queue { display: flex; flex-direction: column; gap: 10px; min-height: 40px; }
+  .queue-empty { font-size: 12px; color: #555; text-align: center; padding: 20px; }
+  .queue-item { background: #0A0C12; border: 1px solid #1a1f2e; border-radius: 8px; padding: 12px; display: flex; gap: 12px; align-items: flex-start; transition: border-color 0.2s; }
+  .queue-item.active { border-color: #C9941A; }
+  .queue-item.done { border-color: #22c55e; opacity: 0.7; }
+  .queue-item.error { border-color: #ef4444; }
+  .thumb { width: 52px; height: 52px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #1a1f2e; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .thumb img { width: 52px; height: 52px; border-radius: 6px; object-fit: cover; }
+  .item-body { flex: 1; min-width: 0; }
+  .item-name { font-size: 12px; font-weight: 600; color: #C9941A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+  .item-caption { width: 100%; background: #0D1118; border: 1px solid #1a1f2e; border-radius: 6px; padding: 8px 10px; color: #E8E8E8; font-size: 12px; font-family: inherit; outline: none; resize: vertical; min-height: 60px; transition: border-color 0.2s; }
+  .item-caption:focus { border-color: #C9941A; }
+  .item-caption::placeholder { color: #555; }
+  .item-status { font-size: 11px; margin-top: 6px; font-weight: 600; }
+  .item-status.uploading { color: #C9941A; }
+  .item-status.done { color: #22c55e; }
+  .item-status.error { color: #ef4444; }
+  .item-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-direction: column; }
+  .icon-btn { background: none; border: 1px solid #1a1f2e; border-radius: 6px; padding: 5px 7px; cursor: pointer; color: #A8B2BE; font-size: 12px; transition: all 0.2s; }
+  .icon-btn:hover { border-color: #C9941A; color: #C9941A; }
+  .icon-btn.danger:hover { border-color: #ef4444; color: #ef4444; }
+  .progress-wrap { display: none; margin-top: 8px; }
+  .progress-wrap.show { display: block; }
+  .progress-bar { background: #1a1f2e; border-radius: 4px; height: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #C9941A; border-radius: 4px; transition: width 0.3s; }
+  .btn-primary { width: 100%; padding: 14px; background: #C9941A; color: #0A0C12; font-size: 14px; font-weight: 900; border: none; border-radius: 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; margin-top: 16px; }
+  .btn-primary:hover { background: #E8B84B; transform: translateY(-1px); }
+  .btn-primary:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
+  .btn-secondary { width: 100%; padding: 10px; background: transparent; color: #A8B2BE; font-size: 12px; font-weight: 700; border: 1px solid #1a1f2e; border-radius: 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; margin-top: 8px; }
+  .btn-secondary:hover { border-color: #C9941A; color: #C9941A; }
+  label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #A8B2BE; margin-bottom: 6px; margin-top: 14px; }
+  textarea.global-caption { width: 100%; background: #0A0C12; border: 1px solid #1a1f2e; border-radius: 8px; padding: 10px 12px; color: #E8E8E8; font-size: 13px; font-family: inherit; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
+  textarea.global-caption:focus { border-color: #C9941A; }
+  .cta-preview { background: #0A0C12; border: 1px solid #1a1f2e; border-left: 3px solid #C9941A; border-radius: 8px; padding: 12px 14px; margin-top: 14px; }
+  .cta-preview p { font-size: 10px; color: #A8B2BE; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .cta-preview pre { font-size: 11px; color: #E8E8E8; font-family: monospace; white-space: pre-wrap; line-height: 1.6; }
+  .sidebar .panel { margin-bottom: 16px; }
+  .stat { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a1f2e; }
+  .stat:last-child { border-bottom: none; }
+  .stat-label { font-size: 12px; color: #A8B2BE; }
+  .stat-val { font-size: 13px; font-weight: 700; color: #fff; }
+  .stat-val.gold { color: #C9941A; }
+  .stat-val.green { color: #22c55e; }
+  .log { font-size: 11px; color: #A8B2BE; line-height: 1.8; max-height: 200px; overflow-y: auto; font-family: monospace; }
+  .log-entry { padding: 2px 0; }
+  .log-entry.ok { color: #22c55e; }
+  .log-entry.err { color: #ef4444; }
+  .log-entry.info { color: #C9941A; }
+  .fb-notice { display: none; background: #0a1520; border: 1px solid #1a4a6e; border-left: 3px solid #1877f2; border-radius: 8px; padding: 14px; margin-top: 20px; font-size: 12px; color: #A8B2BE; line-height: 1.7; max-width: 1100px; }
+  .fb-notice.show { display: block; }
+  .fb-notice strong { color: #4a9fd4; }
+  .caption-copy { background: #0A0C12; border: 1px solid #1a1f2e; border-radius: 6px; padding: 8px 10px; margin: 8px 0; font-size: 11px; color: #E8E8E8; cursor: pointer; white-space: pre-wrap; }
+  .caption-copy:hover { border-color: #C9941A; }
+  .fb-btn { display: inline-block; margin-top: 8px; padding: 8px 18px; background: #1877f2; color: #fff; font-size: 12px; font-weight: 700; border-radius: 20px; text-decoration: none; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .badge-img { background: rgba(201,148,26,0.15); color: #C9941A; border: 1px solid rgba(201,148,26,0.3); }
+  .badge-vid { background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+</style>
+</head>
+<body>
+<div class="header"><div class="logo-dot"></div><span class="logo-text">ARCG Systems — Content Engine</span></div>
+<h1>Instagram + Facebook Post Engine</h1>
+<p class="sub">Upload multiple images or videos at once. Write global or per-post captions. Post queue fires automatically.</p>
+<div class="layout">
+  <div>
+    <div class="panel">
+      <div class="panel-title">📁 Upload Media — Images &amp; Videos</div>
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="image/jpeg,image/jpg,video/mp4,video/quicktime,video/mov" multiple />
+        <div class="drop-icon">🖼️</div>
+        <div class="drop-main">Click to select or drag multiple files here</div>
+        <div class="drop-sub">JPEG images + MP4 / MOV videos · Multiple files supported · Upload all before posting</div>
+      </div>
+      <label>Global Caption (applied to all posts — or write per-post below)</label>
+      <textarea class="global-caption" id="globalCaption" placeholder="Leave blank to write individual captions per post in the queue below..."></textarea>
+      <button class="btn-secondary" onclick="applyGlobalCaption()">↓ Apply to all posts in queue</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📋 Post Queue — <span id="queueCount">0</span> item(s)</div>
+      <div class="queue" id="queue">
+        <div class="queue-empty" id="queueEmpty">No files added yet. Upload above to build your queue.</div>
+      </div>
+      <div class="progress-wrap" id="globalProgress">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:11px;color:#A8B2BE;" id="progressLabel">Processing...</span>
+          <span style="font-size:11px;color:#C9941A;" id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+      <button class="btn-primary" id="postAllBtn" onclick="postAll()">🚀 Post All to Instagram + Open Facebook →</button>
+      <button class="btn-secondary" onclick="clearQueue()">Clear Queue</button>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">📊 Session Stats</div>
+      <div class="stat"><span class="stat-label">In Queue</span><span class="stat-val gold" id="statQueued">0</span></div>
+      <div class="stat"><span class="stat-label">Posted</span><span class="stat-val green" id="statPosted">0</span></div>
+      <div class="stat"><span class="stat-label">Failed</span><span class="stat-val" id="statFailed" style="color:#ef4444">0</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">⚙️ Config</div>
+      <div class="stat"><span class="stat-label">Instagram</span><span class="stat-val green">@arcg.ai ✓</span></div>
+      <div class="stat"><span class="stat-label">CTA Block</span><span class="stat-val green">Auto-appended ✓</span></div>
+      <div class="stat"><span class="stat-label">Facebook</span><span class="stat-val" style="color:#4a9fd4;">Opens on post ✓</span></div>
+      <div class="stat"><span class="stat-label">Post delay</span><span class="stat-val">2s between posts</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📝 Activity Log</div>
+      <div class="log" id="activityLog"><div class="log-entry info">Engine ready. Add files above.</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📌 Auto-Appended CTA</div>
+      <div class="cta-preview">
+        <p>Added to every caption automatically</p>
+        <pre>→ arcgsystems.com/assessment
+→ DM AUDIT on Instagram
+→ info@arivergroup.com
+
+#OperationalSystems #AIAutomation
+#BusinessSystems #GovCon
+#ARCGSystems #SDVOSBCertified</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="fb-notice" id="fbNotice">
+  <strong>✅ Instagram posts sent.</strong> Facebook Business opened automatically.<br>
+  Paste each caption manually on Facebook. Click below to copy the last caption used.<br><br>
+  <strong>Last caption (click to copy):</strong>
+  <div class="caption-copy" id="lastCaption" onclick="copyLastCaption()">—</div>
+  <span style="font-size:10px;color:#C9941A;" id="copyHint">↑ Click to copy to clipboard</span><br>
+  <a class="fb-btn" href="https://business.facebook.com/latest/home" target="_blank">Re-open Facebook Business →</a>
+</div>
+<script>
+const IMGBB_KEY = 'de72d868fdc5f8a13c0f9e06c7d05cd3';
+const WEBHOOK   = 'https://hook.us2.make.com/xmgnr2x9yaagzmft7a0vsje97pp4a87g';
+const FB_URL    = 'https://business.facebook.com/latest/home';
+const CTA_BLOCK = '\n\n→ arcgsystems.com/assessment\n→ DM AUDIT on Instagram\n→ info@arivergroup.com\n\n#OperationalSystems #AIAutomation #BusinessSystems #GovCon #PropertyManagement #ARCGSystems #BusinessAutomation #SDVOSBCertified #HUBZone';
+
+let queue = [];
+let posted = 0, failed = 0;
+
+const fileInput = document.getElementById('fileInput');
+const dropZone  = document.getElementById('dropZone');
+
+fileInput.addEventListener('change', e => { addFiles(Array.from(e.target.files)); fileInput.value = ''; });
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  addFiles(Array.from(e.dataTransfer.files));
+});
+
+function addFiles(files) {
+  let added = 0;
+  files.forEach(file => {
+    const isImg = /jpeg|jpg/i.test(file.type);
+    const isVid = /mp4|quicktime|mov/i.test(file.type);
+    if (!isImg && !isVid) { log(`Skipped (unsupported): ${file.name}`, 'err'); return; }
+    if (isImg && file.size > 8*1024*1024)  { log(`Skipped (>8MB): ${file.name}`, 'err'); return; }
+    if (isVid && file.size > 100*1024*1024){ log(`Skipped (>100MB): ${file.name}`, 'err'); return; }
+    const id = `${Date.now()}-${Math.random()}`;
+    queue.push({ id, file, caption: '', status: 'pending', isVideo: isVid, previewUrl: null });
+    log(`Added: ${file.name}`, 'info');
+    added++;
+    if (isImg) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const item = queue.find(x => x.id === id);
+        if (item) { item.previewUrl = e.target.result; renderQueue(); }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  if (added) renderQueue();
+}
+
+function renderQueue() {
+  const el    = document.getElementById('queue');
+  const empty = document.getElementById('queueEmpty');
+  document.getElementById('queueCount').textContent   = queue.length;
+  document.getElementById('statQueued').textContent   = queue.length;
+  if (!queue.length) {
+    el.innerHTML = '';
+    el.appendChild(empty);
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  el.innerHTML = '';
+  queue.forEach(item => {
+    const div = document.createElement('div');
+    div.className = `queue-item${item.status === 'done' ? ' done' : item.status === 'error' ? ' error' : item.status === 'uploading' ? ' active' : ''}`;
+    div.id = `item-${item.id}`;
+    const thumbHTML = item.isVideo
+      ? `<div class="thumb" style="font-size:24px;">🎬</div>`
+      : item.previewUrl
+        ? `<div class="thumb"><img src="${item.previewUrl}" /></div>`
+        : `<div class="thumb" style="font-size:24px;">🖼️</div>`;
+    const statusHTML = item.status === 'uploading' ? `<div class="item-status uploading">⏳ Uploading & posting...</div>`
+                     : item.status === 'done'      ? `<div class="item-status done">✅ Posted to Instagram</div>`
+                     : item.status === 'error'     ? `<div class="item-status error">❌ ${item.error || 'Failed'}</div>`
+                     : '';
+    div.innerHTML = `${thumbHTML}
+      <div class="item-body">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <div class="item-name">${item.file.name}</div>
+          <span class="badge ${item.isVideo ? 'badge-vid' : 'badge-img'}">${item.isVideo ? 'Video' : 'Image'}</span>
+        </div>
+        <textarea class="item-caption" placeholder="Caption for this post (leave blank to use global caption)...">${item.caption}</textarea>
+        ${statusHTML}
+      </div>
+      <div class="item-actions">
+        <button class="icon-btn" onclick="moveItem('${item.id}',-1)" title="Move up">↑</button>
+        <button class="icon-btn" onclick="moveItem('${item.id}',1)"  title="Move down">↓</button>
+        <button class="icon-btn danger" onclick="removeItem('${item.id}')" title="Remove">✕</button>
+      </div>`;
+    div.querySelector('textarea').addEventListener('change', e => {
+      const it = queue.find(x => x.id === item.id);
+      if (it) it.caption = e.target.value;
+    });
+    el.appendChild(div);
+  });
+}
+
+function updateCaption(id, val) { const i = queue.find(x => x.id === id); if (i) i.caption = val; }
+function removeItem(id)         { queue = queue.filter(x => x.id !== id); renderQueue(); }
+function moveItem(id, dir) {
+  const i = queue.findIndex(x => x.id === id), j = i + dir;
+  if (j < 0 || j >= queue.length) return;
+  [queue[i], queue[j]] = [queue[j], queue[i]];
+  renderQueue();
+}
+function clearQueue() { queue = []; posted = 0; failed = 0; renderQueue(); document.getElementById('statPosted').textContent = 0; document.getElementById('statFailed').textContent = 0; log('Queue cleared.', 'info'); }
+function applyGlobalCaption() {
+  const gc = document.getElementById('globalCaption').value.trim();
+  if (!gc) return;
+  queue.forEach(item => item.caption = gc);
+  renderQueue();
+  log(`Global caption applied to ${queue.length} item(s).`, 'info');
+}
+
+async function postAll() {
+  const pending = queue.filter(x => x.status === 'pending');
+  if (!pending.length) { log('No pending items.', 'err'); return; }
+  const btn = document.getElementById('postAllBtn');
+  btn.disabled = true;
+  showProgress(true, `Starting ${pending.length} post(s)...`, 0);
+  let lastCaption = '', anyPosted = false;
+  for (let i = 0; i < pending.length; i++) {
+    const item = pending[i];
+    const pct = Math.round((i / pending.length) * 100);
+    showProgress(true, `Posting ${i+1} of ${pending.length}: ${item.file.name}`, pct);
+    item.status = 'uploading';
+    renderQueue();
+    try {
+      let imageUrl;
+      if (item.isVideo) {
+        const b64 = await toBase64(item.file);
+        imageUrl = b64;
+      } else {
+        const form = new FormData();
+        form.append('key', IMGBB_KEY);
+        form.append('image', item.file);
+        form.append('name', `arcg_${Date.now()}`);
+        const res  = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: form });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error?.message || 'imgbb upload failed');
+        imageUrl = data.data.display_url;
+        log(`Uploaded to imgbb: ${imageUrl.substring(0,60)}...`, 'info');
+      }
+      const caption = (item.caption.trim() || document.getElementById('globalCaption').value.trim());
+      const wRes = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_url: imageUrl, caption })
+      });
+      if (!wRes.ok) throw new Error(`Webhook ${wRes.status}`);
+      item.status = 'done';
+      lastCaption = caption + CTA_BLOCK;
+      posted++; anyPosted = true;
+      log(`✅ Posted: ${item.file.name}`, 'ok');
+    } catch(err) {
+      item.status = 'error';
+      item.error  = err.message;
+      failed++;
+      log(`❌ Failed: ${item.file.name} — ${err.message}`, 'err');
+    }
+    document.getElementById('statPosted').textContent = posted;
+    document.getElementById('statFailed').textContent = failed;
+    renderQueue();
+    if (i < pending.length - 1) await sleep(2000);
+  }
+  showProgress(true, `Done — ${posted} posted${failed ? `, ${failed} failed` : ''}`, 100);
+  setTimeout(() => showProgress(false), 4000);
+  btn.disabled = false;
+  if (anyPosted) {
+    document.getElementById('lastCaption').textContent = lastCaption;
+    document.getElementById('fbNotice').classList.add('show');
+    window.open(FB_URL, '_blank');
+    log('Facebook Business opened.', 'info');
+  }
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function showProgress(show, label = '', pct = 0) {
+  const w = document.getElementById('globalProgress');
+  w.classList.toggle('show', show);
+  if (show) {
+    document.getElementById('progressLabel').textContent = label;
+    document.getElementById('progressPct').textContent   = pct + '%';
+    document.getElementById('progressFill').style.width  = pct + '%';
+  }
+}
+function copyLastCaption() {
+  const txt = document.getElementById('lastCaption').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    document.getElementById('copyHint').textContent = '✓ Copied!';
+    document.getElementById('copyHint').style.color = '#22c55e';
+    setTimeout(() => {
+      document.getElementById('copyHint').textContent = '↑ Click to copy to clipboard';
+      document.getElementById('copyHint').style.color = '#C9941A';
+    }, 2500);
+  });
+}
+function log(msg, type = 'info') {
+  const el = document.getElementById('activityLog');
+  const d  = document.createElement('div');
+  d.className = `log-entry ${type}`;
+  const t = new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  d.textContent = `[${t}] ${msg}`;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+</script>
+</body>
+</html>

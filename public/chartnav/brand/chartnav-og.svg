@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="ChartNav — Ophthalmology-First Practice Workflow">
+  <title>ChartNav — Ophthalmology-First Practice Workflow</title>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#F4F8FA"/>
+
+  <!-- Subtle teal halo -->
+  <defs>
+    <radialGradient id="halo" cx="78%" cy="28%" r="55%">
+      <stop offset="0%"  stop-color="#0B6E79" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#0B6E79" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#halo)"/>
+
+  <!-- Hairline rule, top -->
+  <line x1="88" y1="96" x2="1112" y2="96" stroke="#DCE5EA" stroke-width="1"/>
+
+  <!-- Eyebrow -->
+  <text x="88" y="78"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="18" letter-spacing="4" font-weight="600"
+        fill="#0B6E79">
+    OPHTHALMOLOGY-FIRST PLATFORM
+  </text>
+
+  <!-- Logo lockup -->
+  <g transform="translate(88 220)">
+    <rect x="0"   y="56" width="32" height="18" rx="3" fill="#0B6E79"/>
+    <rect x="70"  y="56" width="32" height="18" rx="3" fill="#0B6E79"/>
+    <rect x="43"  y="16" width="16" height="98" rx="5" fill="#DC2626"/>
+    <g font-family="Inter, system-ui, sans-serif"
+       font-weight="700" font-size="100" letter-spacing="-0.02em">
+      <text x="140" y="96" fill="#0F172A">Chart</text>
+      <text x="387" y="96" fill="#0B6E79">Nav</text>
+    </g>
+  </g>
+
+  <!-- Tagline -->
+  <text x="88" y="430"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="42" font-weight="500" letter-spacing="-0.01em"
+        fill="#0F172A">
+    Built for the way eye care actually runs.
+  </text>
+  <text x="88" y="478"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="22" font-weight="400"
+        fill="#64748B">
+    Charting · Imaging · Intake · Scheduling · Billing visibility
+  </text>
+
+  <!-- Footer lockup -->
+  <line x1="88" y1="548" x2="1112" y2="548" stroke="#DCE5EA" stroke-width="1"/>
+  <text x="88" y="590"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="16" letter-spacing="3" font-weight="600"
+        fill="#94A3B8">
+    BY ARCG SYSTEMS  ·  ARCGSYSTEMS.COM/CHARTNAV
+  </text>
+</svg>

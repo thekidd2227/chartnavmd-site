@@ -1,0 +1,254 @@
+{
+  "nav": {
+    "brand": "ChartNav",
+    "subBrand": "by ARCG Systems",
+    "links": [
+      { "label": "Why ChartNav",   "href": "/chartnav/why-chartnav" },
+      { "label": "Platform",       "href": "/chartnav/platform" },
+      { "label": "Ophthalmology",  "href": "/chartnav/ophthalmology" },
+      { "label": "Implementation", "href": "/chartnav/implementation" },
+      { "label": "Assessment",     "href": "/chartnav/assessment" }
+    ],
+    "ctaPrimary": { "label": "Workflow Assessment", "action": "open-assessment-modal" }
+  },
+  "hero": {
+    "eyebrow": "OPHTHALMOLOGY WORKFLOW PLATFORM",
+    "headline": "Every visit gets rebuilt. ChartNav stops that.",
+    "subhead": "ChartNav connects intake, technician workup, imaging, hands-free physician documentation, consult letters, and billing visibility into one ophthalmology workflow. The chart is ready before the physician opens it.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "ctaSecondary": { "label": "See the Platform",              "href":   "/chartnav/platform" }
+  },
+  "trust": {
+    "items": [
+      "Charting", "Transcript → Findings → Draft", "Provider Signoff",
+      "Role-Based Views", "Audit Trail", "Implementation-Led"
+    ]
+  },
+  "problem": {
+    "eyebrow": "WHAT BREAKS WITHOUT IT",
+    "headline": "Without one ophthalmology workflow, every visit costs you twice.",
+    "body": "An EHR that wasn't built for eye care, imaging that exports its own way, a paper intake, a scheduler that doesn't know about dilation, and billing that learns about the visit last. The visit gets rebuilt at every handoff. ChartNav is the connective tissue.",
+    "cards": [
+      { "icon": "chart-break", "title": "Physicians rebuild visits.",
+        "body": "Without a prepared chart, the exam starts by hunting for the workup, the imaging, and the prior plan. The patient watches you click." },
+      { "icon": "schedule-gap", "title": "Imaging lives outside the encounter.",
+        "body": "OCTs and visual fields land somewhere other than the chart. The physician opens a separate viewer to see what was just captured down the hall." },
+      { "icon": "billing-late", "title": "Billing finds problems too late.",
+        "body": "Missing modifiers and incomplete documentation surface days after the visit, when the patient and the workflow context are long gone." },
+      { "icon": "handoff-gap", "title": "The lane and the front desk work from different facts.",
+        "body": "Schedulers, technicians, physicians, and billers each see a partial truth. ChartNav makes the encounter a single source of record." }
+    ]
+  },
+
+  "beforeAfter": {
+    "eyebrow": "WHAT CHANGES",
+    "headline": "What changes with ChartNav",
+    "columns": {
+      "before": {
+        "label": "Without ChartNav",
+        "items": [
+          "Intake requires re-entry",
+          "Technician workup doesn't carry forward",
+          "Imaging sits in another system",
+          "Physician rebuilds the visit",
+          "Billing visibility comes too late"
+        ]
+      },
+      "after": {
+        "label": "With ChartNav",
+        "items": [
+          "Intake appears structured instantly",
+          "Workup flows into the encounter",
+          "Imaging is attached automatically",
+          "Physician documents hands-free",
+          "Billing is visible in real time"
+        ]
+      }
+    }
+  },
+
+  "productProof": {
+    "eyebrow": "ALREADY RUNNING",
+    "headline": "These workflows aren't slides. They run.",
+    "lead": "These workflows are already running — intake, charting, consult letters, and KPI tracking — without manual handoffs. The clips above are captured against the live product.",
+    "items": [
+      { "title": "Intake → staff queue, no re-entry.",
+        "body": "Patients complete intake on their device. The encounter and queue update directly — staff don't retype." },
+      { "title": "Workup carries into the exam.",
+        "body": "The technician's findings, imaging, and prior plan are in the chart before the physician opens it." },
+      { "title": "Imaging lands inside the encounter.",
+        "body": "OCT, fundus, and visual-field studies route into the visit — not into a separate viewer." },
+      { "title": "Consult letters render from the signed note.",
+        "body": "The referring-provider letter is generated from the encounter record, not retyped into a separate tool." },
+      { "title": "KPIs update live.",
+        "body": "Approvals, blocked notes, and operational signals appear on the admin dashboard as the day runs — not at month-end." }
+    ],
+    "disclaimer": "We don't publish customer logos or testimonials we haven't earned. Proof here is what is wired and runnable today."
+  },
+
+  "trustEnv": {
+    "eyebrow": "BUILT FOR CLINICAL ENVIRONMENTS",
+    "headline": "Designed to support how clinical environments actually work.",
+    "items": [
+      { "title": "Role-based access by design",
+        "body": "Clinicians, reviewers, technicians, billers, front desk, and admins each see a workspace scoped to what they do. No one sees data they shouldn't." },
+      { "title": "Audit visibility on every meaningful write",
+        "body": "An append-oriented security audit table records every write, with per-org scoping and optional outbound forwarding." },
+      { "title": "Workflow transparency",
+        "body": "Status transitions, sign attestations, and immutability after sign are surfaced in the UI and in the audit log — not buried in vendor support." },
+      { "title": "Structured data capture",
+        "body": "Encounter templates produce structured outputs the practice can map to its own quality-reporting and billing workflows." },
+      { "title": "Implementation-staged rollout",
+        "body": "Standalone, integrated read-through, and integrated write-through deployment modes are decided per practice during the workflow assessment — not promised on a marketing page." }
+    ],
+    "disclaimer": "ChartNav is designed to support clinical environments. It is not ONC-certified and is not represented as a HIPAA Business Associate of any external messaging or imaging vendor by default."
+  },
+  "platform": {
+    "eyebrow": "WHAT CHARTNAV IS TODAY",
+    "headline": "Charting-first, piloted alongside your existing clinic systems.",
+    "lead": "ChartNav's current pilot scope is the clinical documentation workflow. It is introduced alongside your existing intake, imaging, and billing tools, not on top of them — so the rest of the practice keeps running while the documentation layer is moved onto a system shaped for ophthalmology.",
+    "cards": [
+      { "icon": "chart",     "title": "Ophthalmology charting",
+        "body": "Structured transcript → findings → draft → provider review → signed note flow, shaped around how eye care is actually practiced." },
+      { "icon": "roles",     "title": "Role-based views",
+        "body": "Clinicians, reviewers, front desk, and admins each see a screen scoped to their work — not everyone else's." },
+      { "icon": "trust",     "title": "Signed-note discipline",
+        "body": "Three-tier trust model (transcript / findings / draft) with immutability after sign and a pre-sign safety checkpoint for low-confidence drafts." },
+      { "icon": "audit",     "title": "Audit trail on every write",
+        "body": "Every meaningful action lands in an append-oriented security-audit table with per-org scoping, retention controls, and optional outbound forwarding to a JSONL file or HTTPS webhook." },
+      { "icon": "bridge",    "title": "Works alongside your EHR",
+        "body": "FHIR R4 read-through lets ChartNav ingest encounters from an external EHR during pilot, without forcing a replacement." },
+      { "icon": "kpi",       "title": "Pilot KPIs, not just vibes",
+        "body": "Time-to-signed-note, missing-data rate, and revision rate are measured per-provider so the pilot can be evaluated on numbers." }
+    ],
+    "roadmap": {
+      "title": "On the roadmap, scoped at assessment",
+      "items": [
+        "Patient intake and patient messaging",
+        "Imaging routing (OCT, fundus, visual field, topography)",
+        "Charge capture and billing visibility",
+        "Enterprise SSO (SAML / OIDC) and SCIM provisioning",
+        "Vendor adapters for named EHRs"
+      ]
+    },
+    "cta": { "label": "Explore the Platform", "href": "/chartnav/platform" }
+  },
+  "audience": {
+    "eyebrow": "BUILT FOR",
+    "headline": "Ophthalmology practices where documentation is the bottleneck.",
+    "body": "ChartNav's pilot offer is for practices where notes drift into the evening, reviewer queues build up, and a general-purpose EHR's note experience is actively slowing the day.",
+    "rows": [
+      { "title": "Multi-provider ophthalmology groups",
+        "body": "Standardize charting discipline across providers and locations — without replacing imaging or billing yet." },
+      { "title": "Retina, glaucoma, and cataract subspecialists",
+        "body": "Subspecialty-native findings shape + provider shortcut pack reduce the time between exam and signed note." },
+      { "title": "Administrators measuring documentation quality",
+        "body": "Per-provider time-to-signed-note and missing-data rate are available as pilot KPIs from day one." },
+      { "title": "Practices running a hybrid stack today",
+        "body": "Bring-your-own intake, imaging, and billing. ChartNav replaces the documentation layer first." }
+    ]
+  },
+  "shift": {
+    "eyebrow": "THE PILOT SHIFT",
+    "headline": "From late, inconsistent notes to measured documentation discipline.",
+    "columns": { "before": "Before", "after": "With ChartNav (pilot scope)" },
+    "rows": [
+      { "before": "Notes finished after hours, often the next day.",
+        "after":  "Time-to-signed-note measured per provider, per week." },
+      { "before": "Missing IOP, VA, or plan caught only in post-visit review.",
+        "after":  "Missing-data flags surfaced on the draft, before sign." },
+      { "before": "Reviewer catches issues by re-reading free text.",
+        "after":  "Structured transcript → findings → draft carries context explicitly." },
+      { "before": "Provider-level throughput is a feeling, not a number.",
+        "after":  "Per-provider throughput and revision rate, visible in the admin KPI view." },
+      { "before": "A single integration is a six-month commitment.",
+        "after":  "FHIR R4 read-through ingests encounters; pilot runs alongside your current stack." }
+    ]
+  },
+  "implementation": {
+    "eyebrow": "HOW WE DEPLOY",
+    "headline": "Implementation-led, charting-first.",
+    "body": "ChartNav is delivered through a four-step approach built around the realities of an ophthalmology practice. Every engagement begins with an assessment of how the practice runs today, and every pilot is scoped to the documentation layer first.",
+    "steps": [
+      { "step": "1", "title": "Assessment",
+        "body": "We map the current documentation workflow — transcript capture, draft review, provider sign, reviewer loop — and identify what the pilot should measure." },
+      { "step": "2", "title": "Configuration",
+        "body": "ChartNav is configured to the practice's templates, roles, providers, and locations — and to the existing EHR via FHIR R4 read-through when available." },
+      { "step": "3", "title": "Charting-first pilot",
+        "body": "The documentation workflow is deployed in stages alongside current intake, imaging, and billing systems. Nothing in those layers is changed during pilot." },
+      { "step": "4", "title": "Measured review",
+        "body": "Per-provider time-to-signed-note, missing-data rate, and revision rate are reviewed on a cadence agreed up front — the numbers drive what happens next." }
+    ],
+    "callout": "Every engagement starts with an assessment and a written plan before any configuration begins.",
+    "cta": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
+  },
+  "outcomes": {
+    "eyebrow": "WHAT CHANGES",
+    "headline": "A documentation layer that runs on discipline, not memory.",
+    "cards": [
+      { "title": "A clearer chart.",         "body": "Transcript, findings, and draft carry explicit provenance — not retrieved from memory." },
+      { "title": "Earlier signed notes.",    "body": "Time-to-signed-note tracked per provider, reviewable weekly." },
+      { "title": "Fewer missing fields.",    "body": "Missing-data flags surface on the draft, before the note is signed." },
+      { "title": "Implementation control.",  "body": "Pilot scope is deliberate — intake, imaging, and billing remain on your current stack." }
+    ]
+  },
+  "proof": {
+    "eyebrow": "HOW WE BUILD",
+    "headline": "ChartNav is built by ARCG Systems.",
+    "body": "ChartNav is developed and delivered by ARCG Systems. It is ophthalmology-first in its product direction, security-minded in its design, and built for a structured, charting-first pilot rather than a drop-in install.",
+    "columns": [
+      { "title": "Ophthalmology-first product direction.",
+        "body": "The charting workflow is shaped around eye care findings, shortcuts, and subspecialty phrasing — not retrofitted from a general-purpose EHR." },
+      { "title": "Security-minded design.",
+        "body": "Access controls, audit trails, org-scoped data access, MFA-required-claim enforcement, session idle/absolute timeouts with admin revocation, outbound audit forwarding (JSONL or HTTPS webhook), and SBOM-per-release are treated as design requirements — not afterthoughts. Enterprise SSO (SAML / OIDC) and SCIM remain on the roadmap; current pilots run against a customer-managed identity provider via bearer JWT." },
+      { "title": "Charting-first rollout.",
+        "body": "Every engagement begins with an assessment and a written plan. Pilots replace the documentation layer first; additional layers are scoped at the assessment." }
+    ]
+  },
+  "workflow": {
+    "eyebrow": "THE DOCUMENTATION WORKFLOW",
+    "headline": "Transcript → findings → draft → signed note.",
+    "subhead": "ChartNav's pilot scope is the documentation layer inside the encounter — shaped end-to-end so every step has explicit provenance.",
+    "microcopy": [
+      "Transcript capture is the source of record.",
+      "Findings are extracted and reviewable before the draft appears.",
+      "Drafts are provider-editable and immutable after sign."
+    ],
+    "cta": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
+  },
+  "finalCta": {
+    "eyebrow": "NEXT STEP",
+    "headline": "See what ChartNav would change in your clinic.",
+    "body": "We review your intake, scheduling, charting, imaging, and billing workflow, then return a practical rollout view — providers, templates, deployment mode, and exit criteria — before any production-credentialed account is provisioned.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "note": "Private conversations. No mass outreach."
+  },
+  "footer": {
+    "groups": [
+      { "title": "Platform", "links": [
+        { "label": "Overview",     "href": "/chartnav" },
+        { "label": "Charting",     "href": "/chartnav/platform" },
+        { "label": "Roles",        "href": "/chartnav/platform" },
+        { "label": "Ophthalmology","href": "/chartnav/ophthalmology" }
+      ]},
+      { "title": "For Practices", "links": [
+        { "label": "Ophthalmology",         "href": "/chartnav/ophthalmology" },
+        { "label": "Multi-Provider Groups", "href": "/chartnav/ophthalmology" },
+        { "label": "Retina & Glaucoma",     "href": "/chartnav/ophthalmology" },
+        { "label": "Administrators",        "href": "/chartnav/ophthalmology" }
+      ]},
+      { "title": "Company", "links": [
+        { "label": "About ChartNav", "href": "/chartnav#proof" },
+        { "label": "ARCG Systems",   "href": "/" },
+        { "label": "Implementation", "href": "/chartnav/implementation" }
+      ]},
+      { "title": "Resources", "links": [
+        { "label": "Assessment", "href": "/chartnav/assessment" },
+        { "label": "Contact",    "href": "mailto:info@arivergroup.com" }
+      ]}
+    ],
+    "legal": {
+      "line": "ChartNav is built by ARCG Systems. © 2026 ARCG Systems."
+    }
+  }
+}

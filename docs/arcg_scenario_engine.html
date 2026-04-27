@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCG Scenario Engine v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0e0f11;--panel:#0D1B35;--panel2:#0a1628;--gold:#e8a820;--text:#E8E8E8;--muted:#8A9BB0;--border:#1a2d4a;--green:#22c55e;--red:#ef4444;--purple:#a78bfa;--r:10px}
+body{font-family:"Instrument Sans",sans-serif;background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
+.header{padding:24px 28px 20px;border-bottom:1px solid var(--border)}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-family:"Syne",sans-serif;font-weight:800;font-size:15px;color:var(--gold)}
+.badge{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:var(--green);font-family:"Azeret Mono",monospace;font-size:9px;padding:3px 8px;border-radius:4px}
+.badge-blue{background:rgba(26,111,168,0.1);border:1px solid rgba(26,111,168,0.25);color:#60a5fa;font-family:"Azeret Mono",monospace;font-size:9px;padding:3px 8px;border-radius:4px}
+.subtitle{color:var(--muted);font-size:12px;margin-top:4px}
+.controls{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{padding:8px 18px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.15s;font-family:"Instrument Sans",sans-serif}
+.btn-gold{background:var(--gold);color:#000}
+.btn-gold:hover{background:#f0b830}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.status-bar{font-family:"Azeret Mono",monospace;font-size:10px;color:var(--muted);margin-left:auto}
+.spinner{display:inline-block;width:11px;height:11px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scenarios{padding:20px 28px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.card-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.card-header:hover{background:rgba(232,168,32,0.04)}
+.card-title{font-family:"Syne",sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;gap:10px}
+.branch-tag{font-family:"Azeret Mono",monospace;font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(26,111,168,0.15);color:#60a5fa;border:1px solid rgba(26,111,168,0.25)}
+.card-body{padding:14px 16px;display:none}
+.card-body.open{display:block}
+.section-label{font-family:"Azeret Mono",monospace;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.fields-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:14px}
+.field-item{background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:8px 10px}
+.field-k{font-size:10px;color:var(--muted);margin-bottom:2px;font-family:"Azeret Mono",monospace}
+.field-v{font-size:12px;color:var(--text);font-weight:500}
+.problem-box{background:var(--panel2);border-left:3px solid var(--gold);border-radius:0 7px 7px 0;padding:10px 12px;margin-bottom:14px;font-size:12px;line-height:1.6;color:var(--text)}
+.analysis-box{margin-top:14px;padding:14px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.15);border-radius:8px}
+.analysis-box.loading{background:rgba(232,168,32,0.04);border-color:rgba(232,168,32,0.15)}
+.analysis-box.emailed{background:rgba(26,111,168,0.04);border-color:rgba(26,111,168,0.2)}
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+@media(max-width:600px){.analysis-grid{grid-template-columns:1fr}}
+.analysis-item{background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:10px 12px}
+.analysis-title{font-size:10px;color:var(--muted);font-family:"Azeret Mono",monospace;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px}
+.analysis-content{font-size:12px;color:var(--text);line-height:1.6}
+.price-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,168,32,0.1);border:1px solid rgba(232,168,32,0.3);border-radius:6px;padding:6px 12px;font-family:"Syne",sans-serif;font-weight:700;font-size:16px;color:var(--gold);margin-top:8px}
+.price-range{font-size:11px;color:var(--muted);font-family:"Azeret Mono",monospace;margin-top:2px}
+.submit-row{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.submit-status{font-size:11px;font-family:"Azeret Mono",monospace}
+.submitted{color:var(--green)}
+.failed{color:var(--red)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-title{font-family:"Syne",sans-serif;font-weight:700;font-size:16px;color:var(--text);margin-bottom:6px}
+.summary-bar{display:flex;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:rgba(13,27,53,0.3)}
+.summary-item{font-family:"Azeret Mono",monospace;font-size:10px;color:var(--muted)}
+.summary-item span{color:var(--gold);font-weight:500}
+.chevron{transition:transform 0.2s;font-size:10px;color:var(--muted)}
+.chevron.open{transform:rotate(180deg)}
+.pipeline-note{font-size:10px;color:#60a5fa;font-family:"Azeret Mono",monospace;margin-left:auto}
+</style>
+</head>
+<body>
+<div class="header">
+ <div class="header-row">
+  <div>
+   <div class="logo">ARCG Scenario Engine <span style="font-size:10px;font-weight:400;color:var(--muted)">v2 · Make.com + GPT-4o</span></div>
+   <div class="subtitle">Generate scenarios → AI analysis → results emailed to arcgsystems@gmail.com</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+   <span class="badge">LIVE · arcgsystems.com</span>
+   <span class="badge-blue">GPT-4o · Make.com Relay</span>
+  </div>
+ </div>
+</div>
+
+<div class="controls">
+ <button class="btn btn-gold" id="generateBtn" onclick="generateScenarios()">Generate 10 Scenarios</button>
+ <button class="btn btn-outline" id="analyzeAllBtn" onclick="analyzeAll()" disabled>Analyze All + Email</button>
+ <button class="btn btn-outline" id="submitAllBtn" onclick="submitAll()" disabled>Fire Webhooks</button>
+ <button class="btn btn-outline" onclick="clearAll()">Clear</button>
+ <div class="status-bar" id="statusBar">Ready</div>
+</div>
+
+<div class="summary-bar" id="summaryBar" style="display:none">
+ <div class="summary-item">Generated: <span id="countTotal">0</span></div>
+ <div class="summary-item">Analyzed: <span id="countAnalyzed">0</span></div>
+ <div class="summary-item">Webhooks fired: <span id="countSubmitted">0</span></div>
+ <div class="summary-item">Avg price: <span id="avgPrice">—</span></div>
+ <div class="summary-item">Urgent: <span id="countUrgent">0</span></div>
+ <div class="pipeline-note">Analysis emails → arcgsystems@gmail.com via Make.com</div>
+</div>
+
+<div class="scenarios" id="scenarioContainer">
+ <div class="empty-state">
+  <div style="font-size:28px;margin-bottom:12px">⚡</div>
+  <div class="empty-title">No scenarios yet</div>
+  <div>Click "Generate 10 Scenarios" to create diverse test cases across all 9 business types.<br>
+  Analyze All sends each through GPT-4o via Make.com and emails results to arcgsystems@gmail.com.</div>
+ </div>
+</div>
+
+<script>
+const MAKE_WEBHOOK = "https://hook.us2.make.com/vuhclwigraxdmh76powapk1mg9avmfhp";
+const PROD01_WEBHOOK = "https://hook.us2.make.com/6t1q8pgdy4s4zp7haj57ba45is8xhfwj";
+
+const BRANCHES = [
+  "Government Contractor / GovCon","AI / Automation Agency","Staffing / Workforce",
+  "Property / Facilities Management","Service Business (HVAC, Cleaning, Field Services, etc.)",
+  "Professional Services (Legal, Medical, Consulting)","Healthcare / Medical Billing",
+  "E-commerce / Online Business","Other"
+];
+
+const BRANCH_FIELDS = {
+  "Government Contractor / GovCon":{govconCurrentManagement:["Email / phone","Spreadsheets","Mixed tools","Structured system"],govconBreakdownArea:["Missed deliverables","Lack of visibility","Communication delays","Compliance / reporting issues"],govconPrimaryNeed:["Centralized subcontractor tracking","Automated reporting","Performance monitoring","Compliance tracking"]},
+  "AI / Automation Agency":{agencyBreakdownArea:["Client onboarding","Project execution","Internal coordination","Delivery timelines"],agencyCurrentOnboarding:["Manual setup every time","Some templates, still manual","Fully structured process"],agencyPrimaryAutomation:["Client onboarding → project setup","Task generation + assignment","Internal workflow automation"]},
+  "Staffing / Workforce":{staffingPrimaryIssue:["Shift confirmation","No-shows","Last-minute coverage gaps","Communication with workers"],staffingCurrentConfirmation:["Text","Phone","Email","No system"],staffingIdealState:["Auto scheduling + confirmation","Auto replacement if no response","Real-time workforce visibility"]},
+  "Property / Facilities Management":{propertyLocationsCount:["1–5","6–15","16–30","30+"],propertyVendorDispatch:["Phone / text individually","Shared group chat","Spreadsheet + phone","Dispatch app or software"],propertyProblemDiscovery:["Tenant or client calls me directly","My team tells me after the fact","I check manually / site visits","I usually find out too late"]},
+  "Service Business (HVAC, Cleaning, Field Services, etc.)":{servicePrimaryLossPoint:["Slow response time","Scheduling issues","Poor lead tracking","Follow-ups not happening"],serviceCurrentLeadHandling:["Phone only","Email","Manual tracking (notebook/whiteboard)","CRM (limited use)"]},
+  "Professional Services (Legal, Medical, Consulting)":{professionalPipelineIssue:["Slow response to leads","No follow-up system","Poor intake / intake is unclear","No system — it all lives in my head"],professionalMonthlyLeads:["Under 10","10–30","30–100","100+"],professionalCurrentIntake:["Phone consultation only","Email back-and-forth to schedule","Online booking tool (Calendly, etc.)","Walk-in / no structured process"]},
+  "Healthcare / Medical Billing":{healthcarePrimaryIssue:["Claim denials & resubmissions","Prior authorization delays","Patient intake & scheduling","Billing & coding errors","Compliance / HIPAA reporting"],healthcareCurrentSystem:["Manual / spreadsheets","Practice management software","Outsourced billing company","Mixed systems"],healthcareIdealState:["Automated claim submission & tracking","Real-time denial detection & resubmission","Integrated patient intake + billing workflow","Full HIPAA compliance automation"]},
+  "E-commerce / Online Business":{ecommerceBottleneck:["Customer support volume","Order processing delays","Returns / refund handling","Post-purchase follow-up"],ecommercePlatform:["Shopify","WooCommerce","Amazon / FBA","BigCommerce","Custom / Headless","Other"],ecommerceTicketVolume:["Under 50","50–200","200–500","500+"]},
+  "Other":{otherBreakdownArea:null}
+};
+
+const PROBLEMS = {
+  "Government Contractor / GovCon":["We have 4 active IDIQ contracts and no centralized way to track deliverable milestones. PMs use separate spreadsheets and we've had 2 missed report deadlines this quarter. Our CO is asking for better compliance documentation.","Managing 8 subcontractors across 3 agencies with zero visibility into their performance. One sub missed a critical deliverable last month and we found out from the CO, not them."],
+  "AI / Automation Agency":["Every new client takes 6–8 hours of manual setup across Notion, Slack, ClickUp, and invoicing. We've onboarded 12 clients this year and it's unsustainable. Need to cut that to under 1 hour.","We deliver automation systems but our own internal operations are fully manual. Client handoffs live in Slack DMs. Task generation is ad hoc. We look exactly like the clients we're supposed to be fixing."],
+  "Staffing / Workforce":["We staff 40+ security sites and no-show rate is running at 18%. Every morning someone scrambles for replacements. By the time we confirm a fill, the shift has already started late. Clients are threatening to leave.","Managing 200+ part-time workers across 6 clients. Shift confirmations go out by text blast with no way to know who confirmed. We've paid for empty shifts twice this month."],
+  "Property / Facilities Management":["Managing 22 properties across 3 counties. Work orders come in by text, email, and phone. Coordinator tracks them in a Google Sheet that's always 2 days behind. We don't know what's open vs closed until someone manually checks.","16 commercial properties, 40+ vendors. When something breaks it takes 3 people and 4 phone calls to assign a vendor. By the time work is confirmed, the tenant has already called the owner."],
+  "Service Business (HVAC, Cleaning, Field Services, etc.)":["We get 60–80 leads a month and lose 30% because we can't respond within the hour. After-hours leads disappear. I've been tracking them in a notebook but even that falls behind by Wednesday.","5-truck HVAC operation. Scheduling is done by whoever picks up the phone. We've had 3 double-bookings this month and one tech drove 45 minutes to a job that was already cancelled."],
+  "Professional Services (Legal, Medical, Consulting)":["I'm a solo immigration attorney. Every week I get 15–20 consultation requests. Half never hear back because they land in email and I lose track. I've probably turned away $80K in fees this year.","5-attorney firm. New client intake is still done over the phone with whoever answers. No CRM, no intake form, no follow-up sequence. Leads that don't close on the first call almost never convert."],
+  "Healthcare / Medical Billing":["We process 340 claims per month. 22% are denied. Staff manually reviews and resubmits each one with no pattern tracking. We're losing an estimated $15–20K monthly from claims we simply abandon.","3-provider family medicine practice. Prior auth delays hold up 30–40 appointments per week. One staff member's entire job is calling insurance companies. $4K/month in labor just to manage the queue."],
+  "E-commerce / Online Business":["500 Shopify orders a day. Customer support drowning — 300+ tickets daily across email, chat, and Instagram DMs. 3 agents. Response time is 48 hours. We're getting 1-star reviews specifically about response time.","WooCommerce store, 150–200 orders daily. Returns and refund requests take 3 back-and-forth emails to resolve. Processing 40 returns a week manually. One agent spends her entire day on returns."],
+  "Other":["We operate a 12-unit franchise. Compliance reporting and performance tracking across locations is completely manual — two days every month. Each manager does things differently creating audit risk.","Regional food distributor. Route optimization is done by gut. Drivers call in status updates. No real-time view of delivery progress. Customers call us before drivers do when something goes wrong."]
+};
+
+const TOOLS=["Spreadsheets","Email","Phone / Text","CRM","QuickBooks / Accounting Software","Dispatch App","None"];
+const USERS=["Just me","2–5 people","6–15 people","16+ people"];
+const SCALE=["1–3","4–10","11–25","25+"];
+const URGENCY=["Immediately","Immediately","Within 30 days","Within 30 days","1–3 months","Just exploring"];
+const BUDGET=["$1K–$5K","$5K–$10K","$5K–$10K","$10K+","$10K+"];
+const VOLUME=["Under 20","20–100","100–300","300+"];
+const LTV=["Under $1K","$1K–$10K","$10K–$50K","$50K+"];
+const RESULTS=["Reduce manual work","Increase revenue","Improve execution / control","Scale operations"];
+const NAMES=["Marcus Webb","Sandra Okafor","Patricia Nguyen","Carlos Rivera","James Okonkwo","Sarah Chen","Mike Torres","Rachel Kim","David Patel","Lisa Washington","Tony Morales","Angela Brooks","Kevin Zhang","Denise Harmon","Robert Achebe"];
+const COMPANIES={"Government Contractor / GovCon":["Apex Federal Services LLC","Meridian Defense Group","Ironbridge Contracting","Capitol Systems Group"],"AI / Automation Agency":["Synapse Digital","FlowStack Agency","Nexus Automation Co","Orbital Systems LLC"],"Staffing / Workforce":["Centrix Workforce","Summit Staffing Solutions","Pinnacle Personnel","Rapid Deploy LLC"],"Property / Facilities Management":["Crestline Property Management LLC","Greenwood Facilities Group","Metro Property Partners","Lakeside PM Group"],"Service Business (HVAC, Cleaning, Field Services, etc.)":["Riverside HVAC Co","BlueStar Cleaning Services","ProField Services Inc","Summit Field Ops"],"Professional Services (Legal, Medical, Consulting)":["Harmon & Associates Law","MidCity Consulting Group","Prescott Legal PLLC","Beacon Advisory LLC"],"Healthcare / Medical Billing":["MedFirst Billing Solutions","ClearClaim Medical","Summit Health Billing","Precision RCM Partners"],"E-commerce / Online Business":["Velox Commerce Inc","NovaTrade Co","PulseShop LLC","GridMarket Solutions"],"Other":["Franchise Alliance Corp","Metro Distribution LLC","United Compliance Partners","Pacific Ops Group"]};
+
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function pickN(a,n){const s=new Set();while(s.size<Math.min(n,a.length))s.add(pick(a));return[...s]}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b}
+
+function buildScenario(branch){
+  const bf={};
+  const bfd=BRANCH_FIELDS[branch];
+  if(branch==="Other"){
+    const probs=PROBLEMS[branch];bf.otherBreakdownArea=probs?pick(probs):"Operations are largely manual.";
+  }else{
+    for(const[k,opts]of Object.entries(bfd)){bf[k]=pick(opts);}
+  }
+  const urgency=pick(URGENCY),budget=pick(BUDGET),volume=pick(VOLUME);
+  const isDQ=budget==="Under $1K"&&volume==="Under 20";
+  const name=pick(NAMES),company=pick(COMPANIES[branch]||["ARCG Test Co"]);
+  const domain=company.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,12);
+  const email=name.split(" ").map(p=>p[0]).join("").toLowerCase()+"."+name.split(" ")[1].toLowerCase()+"@"+domain+".com";
+  const problems=PROBLEMS[branch];
+  const biggestProblem=problems?pick(problems):"Manual processes creating bottlenecks.";
+  const tools=pickN(TOOLS,Math.floor(Math.random()*3)+1).join(", ");
+  return{businessType:branch,...bf,biggestProblem,currentTools:tools,systemUsers:pick(USERS),scaleScope:pick(SCALE),urgency,budgetRange:budget,volume,averageLifetimeValue:pick(LTV),desiredResult:pick(RESULTS),businessName:company,contactName:name,workEmail:email,phoneNumber:"",isDQ};
+}
+
+let scenarios=[],analyses=[],statusCount={analyzed:0,submitted:0};
+
+function generateScenarios(){
+  const btn=document.getElementById("generateBtn");btn.disabled=true;setStatus("Generating 10 scenarios...");
+  const used=new Set(),ordered=shuffle([...BRANCHES]),selected=[];
+  for(const b of ordered){if(selected.length>=10)break;if(!used.has(b)){selected.push(b);used.add(b);}}
+  while(selected.length<10)selected.push(pick(BRANCHES));
+  scenarios=selected.map(b=>buildScenario(b));
+  analyses=new Array(10).fill(null);statusCount={analyzed:0,submitted:0};
+  renderAll();btn.disabled=false;
+  document.getElementById("analyzeAllBtn").disabled=false;
+  document.getElementById("submitAllBtn").disabled=false;
+  setStatus(scenarios.length+" scenarios ready — click Analyze All + Email to run GPT-4o analysis");
+  updateSummary();
+}
+
+function renderAll(){
+  const c=document.getElementById("scenarioContainer");c.innerHTML="";
+  scenarios.forEach((s,i)=>c.appendChild(buildCard(s,i)));
+}
+
+function emoji(u){return u==="Immediately"?"🔴":u==="Within 30 days"?"🟡":"⚪"}
+
+function buildCard(s,i){
+  const div=document.createElement("div");div.className="card";div.id="card-"+i;
+  const subject=`${s.isDQ?"⛔ DQ — ":""}${emoji(s.urgency)} New ARCG Assessment — ${s.businessName} | ${s.businessType}`;
+  div.innerHTML=`
+<div class="card-header" onclick="toggleCard(${i})">
+  <div class="card-title">
+    <span style="font-family:'Azeret Mono',monospace;font-size:10px;color:var(--muted)">#${i+1}</span>
+    <span>${s.businessName}</span>
+    <span class="branch-tag">${s.businessType.split("(")[0].trim()}</span>
+    ${s.isDQ?"<span style="font-size:9px;color:#ef4444;border:1px solid rgba(239,68,68,0.25);padding:2px 6px;border-radius:4px;font-family:'Azeret Mono',monospace">DQ</span>":""}
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-family:'Azeret Mono',monospace;font-size:10px;font-weight:600">${emoji(s.urgency)} ${s.urgency}</span>
+    <span style="font-family:'Azeret Mono',monospace;font-size:10px;color:var(--gold)">${s.budgetRange}</span>
+    <span class="chevron" id="chev-${i}">▼</span>
+  </div>
+</div>
+<div class="card-body" id="body-${i}">
+  <div class="section-label">Subject line</div>
+  <div style="font-family:'Azeret Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px;line-height:1.6">${subject}</div>
+  <div class="section-label">Biggest problem</div>
+  <div class="problem-box">${s.biggestProblem}</div>
+  <div class="section-label">Branch fields</div>
+  <div class="fields-grid">
+    ${Object.entries(s).filter(([k])=>["govcon","agency","staffing","property","service","professional","healthcare","ecommerce","other"].some(p=>k.startsWith(p))).map(([k,v])=>`<div class="field-item"><div class="field-k">${k}</div><div class="field-v">${v}</div></div>`).join("")}
+  </div>
+  <div class="section-label">Qualification signals</div>
+  <div class="fields-grid">
+    ${["currentTools","systemUsers","scaleScope","volume","averageLifetimeValue","desiredResult"].map(k=>`<div class="field-item"><div class="field-k">${k}</div><div class="field-v">${s[k]}</div></div>`).join("")}
+  </div>
+  <div id="analysis-${i}"><div style="color:var(--muted);font-size:12px;padding:8px 0">Click Analyze or Analyze All to run GPT-4o via Make.com — results show here and email to arcgsystems@gmail.com</div></div>
+  <div class="submit-row">
+    <button class="btn btn-outline" style="font-size:11px;padding:6px 14px" onclick="analyzeOne(${i})">Analyze + Email</button>
+    <button class="btn btn-outline" style="font-size:11px;padding:6px 14px" onclick="fireWebhook(${i},this)">Fire PROD-01</button>
+    <span class="submit-status" id="submit-status-${i}"></span>
+  </div>
+</div>`;
+  return div;
+}
+
+function toggleCard(i){
+  const body=document.getElementById("body-"+i),chev=document.getElementById("chev-"+i);
+  const open=body.classList.toggle("open");if(chev)chev.classList.toggle("open",open);
+}
+
+async function analyzeOne(i){
+  const s=scenarios[i];const el=document.getElementById("analysis-"+i);
+  el.innerHTML=`<div class="analysis-box loading"><span class="spinner"></span><span style="font-size:12px;color:var(--muted)">Sending to Make.com → GPT-4o → email...</span></div>`;
+  try{
+    const r=await fetch(MAKE_WEBHOOK,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({index:i+1,scenario:s})
+    });
+    const text=await r.text();
+    let analysis;
+    try{analysis=JSON.parse(text.replace(/```json|```/g,"").trim());}
+    catch{analysis={realNeed:text.slice(0,300),rootCause:"See email for full analysis",solution:"Check arcgsystems@gmail.com",quickWin:"—",priceLow:2500,priceHigh:7500,confidence:"medium",optimizationGap:"—",tier:"Growth"};}
+    analyses[i]=analysis;statusCount.analyzed++;
+    renderAnalysis(i,analysis);updateSummary();
+  }catch(e){
+    el.innerHTML=`<div class="analysis-box" style="border-color:rgba(239,68,68,0.2)"><div class="section-label" style="color:#ef4444">Error</div><div style="font-size:12px;margin-top:6px;color:var(--text)">${e.message}</div><div style="font-size:11px;margin-top:8px;color:var(--muted)">Check arcgsystems@gmail.com — Make.com may have fired async</div></div>`;
+  }
+}
+
+function renderAnalysis(i,a){
+  const el=document.getElementById("analysis-"+i);
+  const conf={high:"var(--green)",medium:"var(--gold)",low:"var(--muted)"};
+  el.innerHTML=`
+<div class="analysis-box">
+  <div class="section-label" style="color:var(--green)">GPT-4o Analysis · Emailed to arcgsystems@gmail.com</div>
+  <div class="analysis-grid">
+    <div class="analysis-item"><div class="analysis-title">Real need (uncovered)</div><div class="analysis-content">${a.realNeed||"—"}</div></div>
+    <div class="analysis-item"><div class="analysis-title">Root cause</div><div class="analysis-content">${a.rootCause||"—"}</div></div>
+    <div class="analysis-item"><div class="analysis-title">Recommended solution</div><div class="analysis-content">${a.solution||"—"}</div></div>
+    <div class="analysis-item"><div class="analysis-title">Quick win (7 days)</div><div class="analysis-content">${a.quickWin||"—"}</div></div>
+  </div>
+  <div style="margin-top:12px">
+    <div class="analysis-title">Form optimization gap</div>
+    <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.18);border-radius:7px;padding:10px 12px;font-size:12px;color:var(--text);margin-top:6px;line-height:1.6">${a.optimizationGap||"—"}</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap">
+    <div><div class="analysis-title">Market price estimate</div>
+    <div class="price-badge">$${(a.priceLow||2500).toLocaleString()} – $${(a.priceHigh||7500).toLocaleString()}</div>
+    <div class="price-range">${a.tier||"Growth"} tier · Confidence: <span style="color:${conf[a.confidence]||"var(--muted)"}">${a.confidence||"medium"}</span></div></div>
+  </div>
+</div>`;
+}
+
+async function analyzeAll(){
+  const btn=document.getElementById("analyzeAllBtn");btn.disabled=true;
+  setStatus("Running GPT-4o analysis on all 10 scenarios via Make.com...");
+  for(let i=0;i<scenarios.length;i++){
+    setStatus("Analyzing scenario "+(i+1)+"/10 via Make.com → GPT-4o...");
+    await analyzeOne(i);
+    if(!document.getElementById("body-"+i).classList.contains("open"))toggleCard(i);
+    await new Promise(r=>setTimeout(r,600));
+  }
+  btn.disabled=false;
+  setStatus("All 10 analyzed — check arcgsystems@gmail.com for email reports");
+  updateSummary();
+}
+
+async function fireWebhook(i,btn){
+  const s=scenarios[i];const status=document.getElementById("submit-status-"+i);
+  btn.disabled=true;status.textContent="Firing...";status.style.color="var(--muted)";
+  const urgencyTag=s.urgency==="Immediately"?"🔴":s.urgency==="Within 30 days"?"🟡":"⚪";
+  const subject=`${s.isDQ?"⛔ DQ — ":""}${urgencyTag} New ARCG Assessment — ${s.businessName} | ${s.businessType}`;
+  try{
+    await fetch(PROD01_WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business_name:s.businessName,email:s.workEmail,phone:s.phoneNumber,businessType:s.businessType,biggestProblem:s.biggestProblem,urgency:s.urgency,budget_range:s.budgetRange,disqualified:s.isDQ?"true":"false",subject_line:subject,submitted_at:new Date().toISOString(),source:"ARCG Scenario Engine v2",...s})});
+    status.textContent="✓ PROD-01 fired";status.className="submit-status submitted";
+    statusCount.submitted++;updateSummary();
+  }catch(e){
+    status.textContent="✗ "+e.message;status.className="submit-status failed";btn.disabled=false;
+  }
+}
+
+async function submitAll(){
+  const btn=document.getElementById("submitAllBtn");btn.disabled=true;setStatus("Firing all PROD-01 webhooks...");
+  for(let i=0;i<scenarios.length;i++){
+    const b=document.querySelector("#card-"+i+" .submit-row button:nth-child(2)");
+    if(b&&!b.disabled)await fireWebhook(i,b);
+    await new Promise(r=>setTimeout(r,400));
+  }
+  btn.disabled=false;setStatus("All webhooks fired → Airtable");
+}
+
+function clearAll(){
+  scenarios=[];analyses=[];statusCount={analyzed:0,submitted:0};
+  document.getElementById("scenarioContainer").innerHTML=`<div class="empty-state"><div style="font-size:28px;margin-bottom:12px">⚡</div><div class="empty-title">No scenarios yet</div><div>Click "Generate 10 Scenarios" to start</div></div>`;
+  document.getElementById("analyzeAllBtn").disabled=true;document.getElementById("submitAllBtn").disabled=true;
+  document.getElementById("summaryBar").style.display="none";setStatus("Ready");
+}
+
+function setStatus(msg){document.getElementById("statusBar").textContent=msg;}
+
+function updateSummary(){
+  document.getElementById("summaryBar").style.display="flex";
+  document.getElementById("countTotal").textContent=scenarios.length;
+  document.getElementById("countAnalyzed").textContent=statusCount.analyzed;
+  document.getElementById("countSubmitted").textContent=statusCount.submitted;
+  const priced=analyses.filter(Boolean);
+  if(priced.length){const avg=Math.round(priced.reduce((s,a)=>(s+(a.priceLow+a.priceHigh)/2),0)/priced.length);document.getElementById("avgPrice").textContent="$"+avg.toLocaleString();}
+  else document.getElementById("avgPrice").textContent="—";
+  document.getElementById("countUrgent").textContent=scenarios.filter(s=>s.urgency==="Immediately").length;
+}
+</script>
+</body>
+</html>

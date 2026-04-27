@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCG Systems — Content Prompt Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#080A10;--panel:#0B1829;--panel2:#07111F;--gold:#C9941A;--gold2:#E8B84B;--text:#EAEEF5;--sub:#C4CFD9;--muted:#7A8FA6;--border:#152638;--green:#22C55E;--r:10px}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+nav{position:sticky;top:0;background:rgba(7,17,31,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);z-index:100}
+.nav-inner{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--gold2);white-space:nowrap}
+.nav-sub{font-size:10px;color:var(--muted);font-family:'Azeret Mono',monospace}
+.wrapper{max-width:1200px;margin:0 auto;padding:28px 24px}
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:36px}
+.topic-btn{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all 0.2s;text-align:left}
+.topic-btn:hover{border-color:rgba(201,148,26,0.3)}
+.topic-btn.active{border-color:var(--gold2);background:rgba(201,148,26,0.08)}
+.t-num{font-size:9px;font-family:'Azeret Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.t-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--gold2)}
+.topic-content{display:none}
+.topic-content.active{display:block}
+.section-block{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.block-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--gold2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.layer-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:6px;font-size:9px;font-weight:700;font-family:'Azeret Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.layer-a{background:rgba(26,111,168,0.15);color:#60a5fa;border:1px solid rgba(26,111,168,0.25)}
+.layer-b{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+.prompt-card{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.prompt-label{font-size:9px;font-family:'Azeret Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px}
+.prompt-text{font-size:12px;line-height:1.75;color:var(--sub);white-space:pre-wrap}
+.copy-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(201,148,26,0.1);border:1px solid rgba(201,148,26,0.2);border-radius:5px;font-size:9px;font-family:'Azeret Mono',monospace;color:var(--gold2);cursor:pointer;transition:all 0.15s;margin-top:8px;text-transform:uppercase;letter-spacing:0.06em}
+.copy-btn:hover{background:rgba(201,148,26,0.18)}
+.copy-btn.copied{background:rgba(34,197,94,0.12);color:var(--green);border-color:rgba(34,197,94,0.2)}
+.slide-list{list-style:none}
+.slide-item{padding:7px 0;border-bottom:1px solid rgba(21,38,56,0.5);font-size:12px;color:var(--sub)}
+.slide-item:last-child{border-bottom:none}
+.slide-num{font-family:'Azeret Mono',monospace;font-size:9px;color:var(--muted);margin-right:8px}
+.scene-item{padding:6px 0;border-bottom:1px solid rgba(21,38,56,0.4);font-size:12px;color:var(--sub)}
+.scene-item:last-child{border-bottom:none}
+.scene-label{font-size:9px;font-family:'Azeret Mono',monospace;color:var(--gold2);font-weight:700;margin-right:6px}
+.caption-text{font-size:12px;line-height:1.8;color:var(--sub);white-space:pre-line}
+.note-text{font-size:11px;line-height:1.75;color:var(--muted)}
+.note-item{padding:4px 0;font-size:11px;color:var(--muted)}
+.note-item::before{content:"→ ";color:var(--gold2)}
+.master-rules{background:rgba(201,148,26,0.04);border:1px solid rgba(201,148,26,0.15);border-radius:var(--r);padding:20px;margin-bottom:24px}
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.rule-block{background:var(--panel2);border-radius:8px;padding:12px}
+.rule-title{font-size:10px;font-family:'Azeret Mono',monospace;color:var(--gold2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+.rule-item{font-size:11px;color:var(--sub);padding:2px 0}
+.rule-item::before{content:"• ";color:var(--gold2)}
+h2{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--gold2);margin-bottom:6px}
+.page-sub{font-size:12px;color:var(--muted);font-family:'Azeret Mono',monospace;margin-bottom:28px}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <div class="nav-brand">ARCG CONTENT PROMPT LIBRARY</div>
+  <span class="nav-sub">12 Topics · Layer A (Brief) + Layer B (Ready-to-Use) · 2026-03-31</span>
+</div></nav>
+
+<div class="wrapper">
+  <h2>Content Prompt Library</h2>
+  <p class="page-sub">ARCG Systems · AI Automation + GovCon + Business Systems · Canva + Leonardo AI</p>
+
+  <div class="master-rules">
+    <div class="block-title">Master Execution Rules — All Topics</div>
+    <div class="rule-grid">
+      <div class="rule-block">
+        <div class="rule-title">Canva Setup</div>
+        <div class="rule-item">Canvas: 1080×1080 (carousel/image) · 1080×1920 (reel)</div>
+        <div class="rule-item">BG: #0A0C12 · Headline: Syne Bold 52–64pt #E8B84B</div>
+        <div class="rule-item">Body: Instrument Sans 24pt #E8E8E8</div>
+        <div class="rule-item">Logo: white transparent, lower-right, max 10% width</div>
+      </div>
+      <div class="rule-block">
+        <div class="rule-title">Leonardo AI Setup</div>
+        <div class="rule-item">Image: Photo Realistic, 1024×1024</div>
+        <div class="rule-item">Video: Motion 2.0-fast, 10s max</div>
+        <div class="rule-item">Append to all image prompts: "hyper-realistic, cinematic editorial quality, 8K"</div>
+        <div class="rule-item">"banana nano 2" in model tag field only — never in scene description</div>
+      </div>
+      <div class="rule-block">
+        <div class="rule-title">CTAs (Locked)</div>
+        <div class="rule-item">arcgsystems.com/assessment</div>
+        <div class="rule-item">info@arivergroup.com</div>
+        <div class="rule-item">DM "AUDIT" on Instagram</div>
+      </div>
+      <div class="rule-block">
+        <div class="rule-title">Prohibited in All Outputs</div>
+        <div class="rule-item">No phone numbers · No fake emails · No stock-feel visuals</div>
+        <div class="rule-item">No smiling teams · No neon · No abstract glowing nodes</div>
+        <div class="rule-item">No patriotic imagery · No SaaS UI mockups</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC SELECTOR -->
+  <div class="topic-grid" id="topicGrid">
+    <div class="topic-btn active" data-topic="1" onclick="showTopic(1)"><div class="t-num">01</div><div class="t-name">Broken Operations</div></div>
+    <div class="topic-btn" data-topic="2" onclick="showTopic(2)"><div class="t-num">02</div><div class="t-name">Cost of Manual Process</div></div>
+    <div class="topic-btn" data-topic="3" onclick="showTopic(3)"><div class="t-num">03</div><div class="t-name">What ARCG Builds</div></div>
+    <div class="topic-btn" data-topic="4" onclick="showTopic(4)"><div class="t-num">04</div><div class="t-name">GovCon Backend Failure</div></div>
+    <div class="topic-btn" data-topic="5" onclick="showTopic(5)"><div class="t-num">05</div><div class="t-name">Property Manager Compliance Gap</div></div>
+    <div class="topic-btn" data-topic="6" onclick="showTopic(6)"><div class="t-num">06</div><div class="t-name">11-Hour Weekly Waste</div></div>
+    <div class="topic-btn" data-topic="7" onclick="showTopic(7)"><div class="t-num">07</div><div class="t-name">Chaos vs Control</div></div>
+    <div class="topic-btn" data-topic="8" onclick="showTopic(8)"><div class="t-num">08</div><div class="t-name">Staffing Firm Intake Bottleneck</div></div>
+    <div class="topic-btn" data-topic="9" onclick="showTopic(9)"><div class="t-num">09</div><div class="t-name">Before/After Operational Transformation</div></div>
+    <div class="topic-btn" data-topic="10" onclick="showTopic(10)"><div class="t-num">10</div><div class="t-name">AI Automation for PM</div></div>
+    <div class="topic-btn" data-topic="11" onclick="showTopic(11)"><div class="t-num">11</div><div class="t-name">SDVOSB Federal Advantage</div></div>
+    <div class="topic-btn" data-topic="12" onclick="showTopic(12)"><div class="t-num">12</div><div class="t-name">Why Scaling Without Backend Breaks</div></div>
+  </div>
+
+  <!-- TOPIC CONTENT CONTAINER -->
+  <div id="topicContent"></div>
+</div>
+
+<script>
+const TOPICS = {
+1: {
+  name: "Broken Operations",
+  reel: {
+    hook: "Your business is running — just barely. Here is what broken looks like.",
+    scenes: [
+      "Close-up of a desk covered in pending requests, disorganized folders, sticky notes unanswered for days.",
+      "Calendar view showing missed follow-ups and uncompleted tasks stacking. No system. No owner. No visibility.",
+      "Contrast cut — clean operational dashboard on a laptop, organized task flow, no backlog. Same business, new infrastructure."
+    ],
+    cta: "arcgsystems.com/assessment — start with a free operational audit."
+  },
+  carousel: [
+    "Your Operations Are Broken. Most businesses don't know until it costs them.",
+    "Requests arrive with no home. No intake system = no accountability.",
+    "Tasks move through email. Nothing tracked. Everything manual.",
+    "Reporting is always late. Someone is always chasing it.",
+    "Your team is reactive. Not growing — surviving.",
+    "Broken operations are not a people problem. They are a systems problem.",
+    "ARCG builds the infrastructure that fixes this permanently. arcgsystems.com/assessment"
+  ],
+  caption: "Most operations that look fine from the outside are quietly leaking money from the inside.\n\nMissed handoffs. No intake system. Manual reporting. Everyone reacting.\n\nThis is not a staffing problem. It is a systems problem.\n\nARCG Systems builds the operational infrastructure that removes the chaos — for property managers, staffing firms, and government contractors.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Headline: Syne Bold 64pt amber-gold on #0A0C12", "Carousel ratio: 1080x1080", "Primary image: Variation 1 in Leonardo Photo Realistic", "Reel: Motion 2.0-fast, Video Variation 1", "Logo: white transparent, lower-right, max 10% width"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of a broken operations workspace: a dark executive desk covered with disorganized intake folders, sticky notes, unresolved vendor requests, overdue task printouts, and a laptop with multiple browser tabs open showing no unified workflow. Cold overhead lighting over a near-black desk environment, premium but chaotic composition, no visible faces, text-safe right third for copy overlay, square 1080x1080. Place the ARCG Systems logo subtly in the lower-right corner only, small and professional, white version on dark background. Exclude smiling office teams, generic dashboards, neon effects, and bright startup palette.",
+    "Hyper-realistic cinematic split-scene editorial image: left half shows a chaotic operations environment — disorganized request folders, manual task lists, scattered compliance documents; right half shows the same workspace after ARCG: clean centralized workflow, organized folder system, one clear laptop screen with structured task flow. Premium dark-luxury atmosphere, amber-gold accent lighting on the right side only, faceless, square 1080x1080. ARCG Systems logo small lower-right corner only.",
+    "Cinematic 4K editorial close-up of a premium operations command desk showing signs of a business without systems: laptop with fragmented tabs, handwritten process notes, unresolved vendor folders, scheduling whiteboard with crossed-out items. Near-black background, amber-gold edge lighting, faceless and professional, strong text-safe left zone, square 1080x1080. ARCG Systems logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic video. Opening 2 seconds: fast close-up of disorganized operations documents spreading across a dark desk. Mid-scene: camera pans through fragmented multi-tab laptop screen showing no unified workflow. Final 2 seconds: cut to clean operational dashboard — organized, trackable, automated. Near-black environment, amber-gold accent on final frame, no talking head. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial video. Slow reveal of broken operations workspace — scattered tasks, missed handoffs, no visible system. Midpoint: single clean laptop interface appears, pulling chaos into order. Final frame: ARCG branding lower-right, \"Start with a free audit — arcgsystems.com/assessment.\" Near-black palette, amber-gold single accent, no faces."
+  ],
+  imgB: [
+    "Dark executive desk, disorganized intake folders and sticky notes, multiple browser tabs open, no unified workflow. Near-black background, cold overhead lighting, faceless, premium editorial, text-safe right side. ARCG Systems logo lower-right corner only, small and white. Exclude smiling teams and neon. 1080x1080 square.",
+    "Near-black operations desk with scattered maintenance forms, unread emails on screen, overlapping spreadsheets, sticky notes stuck to monitor edges, fragmented intake chaos. Cold overhead light, faceless, premium editorial, text-safe right. Small white ARCG Systems logo lower-right. 1080x1080.",
+    "Dark back-office command desk, paper requests piled beside an open laptop with too many tabs, duplicated records, flagged inbox, no single intake system visible. Editorial, faceless, restrained contrast, text-safe right. ARCG Systems logo lower-right only. 1080x1080.",
+    "Dim executive workstation with disconnected folders, handwritten notes, conflicting task lists, unresolved service requests across multiple windows. Near-black, cold top light, faceless premium style, clean text-safe right side. Small white ARCG Systems logo lower-right. 1080x1080.",
+    "Dark operations table with intake paperwork, color-coded notes gone wrong, browser tabs stacked, no centralized workflow dashboard. Faceless, near-black, editorial realism, text-safe right, ARCG Systems logo lower-right corner only. 1080x1080."
+  ],
+  vidB: [
+    "Slow cinematic push over a dark executive desk with scattered intake folders, sticky notes, too many browser tabs, and unresolved operational clutter. Near-black, cold overhead lighting, faceless, premium editorial, text-safe right. ARCG Systems logo lower-right. 1080x1080.",
+    "Moody handheld-style glide across a broken operations workstation: fragmented service requests, overlapping spreadsheets, unread inbox, no unified workflow. Near-black, faceless, restrained motion, text-safe right, small ARCG Systems logo lower-right. 1080x1080.",
+    "Cinematic desk sequence showing operational breakdown: folders out of place, conflicting task notes, multiple systems open, executive chaos with no control layer. Dark editorial tone, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+2: {
+  name: "Cost of Manual Process",
+  reel: {
+    hook: "One manual process costs your business 572 hours a year. Do the math.",
+    scenes: [
+      "Close-up of hands scrolling through a long email thread to find a single approval. The time cost is invisible but real.",
+      "A spreadsheet being updated row by row — manual data entry, no automation, no system capturing it in real time.",
+      "Timer graphic on a clean automated workflow — the same task completed in seconds instead of hours."
+    ],
+    cta: "arcgsystems.com/assessment — find where your time is going."
+  },
+  carousel: [
+    "1 Manual Process. 572 Hours a Year. That's the math.",
+    "Every manual approval is billable time disappearing into email.",
+    "Every spreadsheet update is a decision made on delayed, inaccurate data.",
+    "Every manual report is 3–5 hours your team will never get back.",
+    "Manual processes create errors, gaps, and accountability blind spots.",
+    "Automation stops your team from doing work that should never be human.",
+    "ARCG eliminates the manual layer — permanently. arcgsystems.com/assessment"
+  ],
+  caption: "Add up every spreadsheet your team updates manually. Every email used as an approval system. Every report compiled by hand.\n\nNow multiply by 52 weeks.\n\nThat is what manual process actually costs — in hours, errors, and decisions made on stale information.\n\nARCG Systems builds automation infrastructure that removes the manual layer.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Split-frame carousel slide: left panel darker, right with amber-gold tint via Canva adjustment layer", "Primary image: Variation 1 in Leonardo Photo Realistic", "Reel: Motion 2.0-fast, Video Variation 1", "Keep type tight, left-aligned, no gradients except subtle amber edge on automated side"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of manual process cost: close-up of a dark desk with an open spreadsheet, printed approval forms, handwritten process checklist, and laptop showing a long email approval thread. Near-black desk, premium cold lighting, amber-gold highlight on laptop screen edge, faceless, text-safe upper-left, square 1080x1080. ARCG Systems logo subtle lower-right only. Exclude abstract dashboards and neon.",
+    "Hyper-realistic cinematic split-frame: left half shows hands scrolling printed approval forms and manual spreadsheet rows — time-consuming, error-prone; right half shows the same workflow automated — clean interface with completed tasks and timestamps, no human intervention. Near-black environment, amber-gold on right automated side, faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K close-up of manual process cost at a premium operations desk: stack of printed approval requests beside a laptop showing a 47-row spreadsheet update in progress, with a visible clock detail implying elapsed time. Near-black background, amber-gold accent on spreadsheet header row, faceless, strong text-safe left column, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic video. Opening 2 seconds: extreme close-up of hands manually entering data row by row into a spreadsheet on a dark desk. Mid-scene: camera pulls back to reveal full screen of manual entries, timestamps showing elapsed time, approval emails stacking. Final 2 seconds: automated task flow replaces it — same data, zero human input. Near-black environment, amber-gold on automated frame. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial video. Begin with slow reveal of manual approval chain — printed forms, email threads, handwritten notes. Camera lingers on volume of manual steps before transitioning into a single clean workflow completing the same process in seconds. Dark luxury palette, controlled amber-gold accent. Final frame: \"Stop doing it manually\" + ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark admin desk with repeated spreadsheet entry, handwritten notes, printed forms, calculator, and manual process friction everywhere. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black operations workstation showing duplicate data entry across two spreadsheets, paper checklist, email follow-up notes, and a visible time-cost burden. Cold overhead light, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark back-office desk with stacked paperwork, manually updated tracker, copy-paste workflow on laptop, and visible operational waste. Faceless, restrained amber detail, editorial realism, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium near-black scene of a manager manually reconciling spreadsheets, printed reports, and follow-up notes by hand. Cold light, faceless, realistic business ops environment, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark finance-operations desk with repetitive forms, spreadsheet tabs, handwritten task notes, and signs of avoidable labor drain. Faceless, editorial, text-safe right, ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic desk sequence of repetitive admin work: spreadsheet updates, paper forms, manual checklists, and time lost to duplicate effort. Dark editorial environment, faceless, text-safe right, ARCG logo lower-right. 1080x1080.",
+    "Slow pan across a manual operations workstation with repeated entry, printed paperwork, and a visible burden of wasted labor. Near-black, cold overhead, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody close-up sequence of manual process overload: paperwork stacks, duplicate spreadsheets, hand-written notes, and operational drag. Faceless, near-black, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+3: {
+  name: "What ARCG Builds",
+  reel: {
+    hook: "Not software. Not an app. The operating system your business never had.",
+    scenes: [
+      "Property management firm with paper intake forms and phone calls — no workflow, no tracking, no visibility.",
+      "ARCG system installed: automated intake, compliance tracking, centralized vendor management — all connected.",
+      "Operator view of a clean dashboard showing every active request, vendor status, compliance deadline — in real time."
+    ],
+    cta: "arcgsystems.com/assessment — see what we would build for your operation."
+  },
+  carousel: [
+    "ARCG Does Not Sell Software. We install operational infrastructure.",
+    "Every request gets a home, an owner, and a deadline.",
+    "Reports generate automatically. No more manual spreadsheets.",
+    "Vendor management centralized. You know exactly where every job stands.",
+    "Compliance tracking runs without your team manually checking it.",
+    "The result: full visibility, zero manual bottleneck, a business that runs when you're not watching.",
+    "See what ARCG builds for your operation. arcgsystems.com/assessment"
+  ],
+  caption: "A lot of businesses add tools. Subscribe to another dashboard. And the problems stay the same.\n\nARCG Systems does not sell software. We install the operational infrastructure your business actually needs — intake systems, compliance tracking, automated reporting, vendor management.\n\nProperty managers, staffing firms, and government contractors. Real systems.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["'What we build' slides: clean geometric icons for each system component in amber-gold on dark panels", "Primary image: Variation 1 in Leonardo AI", "Reel: Video Variation 1, transformation sequence feels architectural not software-demo", "Do not add software product logos"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of ARCG operational command infrastructure: a premium dark desk with centralized laptop interface showing organized operational workflow — vendor statuses, compliance deadlines, intake queue, reporting tabs all structured. Organized compliance binders, labeled vendor folders, whiteboard showing clean process flow. Near-black environment, amber-gold accent on laptop screen, faceless, text-safe left zone, square 1080x1080. ARCG logo subtle lower-right only.",
+    "Hyper-realistic cinematic split-scene: left side shows business without infrastructure — disorganized intake, paper forms, fragmented tools; right side shows ARCG-installed version — one centralized workflow interface, organized vendor management, automated compliance tracker. Near-black background, amber-gold on right side, editorial lighting, faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up: premium operations command desk with laptop showing structured workflow tabs (intake, compliance, reporting, vendor management), printed operational process map beside it, organized document structure. Near-black background, amber-gold accent on laptop screen edge, faceless, text-safe upper-right zone, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic video. Opening 2 seconds: close-up of disorganized business desk — fragmented tools, no system. Mid-scene: transformation — structured intake interface appears, vendor management loads, compliance tracker activates. Final 2 seconds: full clean command view, everything connected. Near-black environment, amber-gold on each activated element. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Begin with question 'What does ARCG actually build?' on near-black. Camera moves through property management office, staffing intake desk, government contractor workspace — each being transformed. Cinematic pacing, amber-gold on organized elements throughout. Final frame: ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark premium operations desk with centralized command dashboard, organized workflow panels, intake routing, and operational control systems. Near-black, amber-gold interface accents, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black command-center workstation showing unified operations dashboard, lead flow controls, task routing, and clear system structure. Faceless, premium editorial, controlled amber highlights, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark systems desk with polished control interface, structured backend workflow modules, organized folders, and operational command clarity. Faceless, editorial, near-black, text-safe right, ARCG logo lower-right. 1080x1080.",
+    "Premium faceless ARCG build scene: centralized ops dashboard, workflow tracking, alert panels, and clean execution architecture on a dark workstation. Amber accents, text-safe right, ARCG logo lower-right. 1080x1080.",
+    "Near-black back-office control environment with a laptop displaying unified intake, automation routing, reporting modules, and structured execution flow. Editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic reveal of a dark ARCG command desk with a centralized workflow dashboard, routing modules, and structured operational control. Near-black, amber accent lighting, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow push across a clean backend control system: intake, routing, reporting, and task orchestration on a premium near-black workstation. Faceless, text-safe right, ARCG logo lower-right. 1080x1080.",
+    "Moody operational build sequence showing organized backend systems replacing disorder: dashboard modules, alerts, and execution infrastructure. Dark editorial tone, faceless, text-safe right. ARCG logo lower-right. 1080x1080."
+  ]
+},
+4: {
+  name: "GovCon Backend Failure",
+  reel: {
+    hook: "Government contracts are not lost at the bid. They are lost at the backend.",
+    scenes: [
+      "Federal contractor's desk — disorganized proposal printouts, missed compliance deadlines, cluttered SAM.gov printout with expired certifications.",
+      "Backend failure in progress: no centralized tracking, no reporting cadence, no subcontractor oversight — contract active but unmanaged.",
+      "ARCG-built GovCon infrastructure: centralized proposal workflow, certification tracker, subcontractor status dashboard."
+    ],
+    cta: "arcgsystems.com/assessment — federal contractors only. Get the audit."
+  },
+  carousel: [
+    "GovCon Companies Don't Lose Contracts at the Bid. They lose them at the backend.",
+    "You won the award. Do you have subcontractor tracking? Compliance reporting? A proposal pipeline?",
+    "Most GovCon firms track active contracts in spreadsheets. That is a liability.",
+    "One missed deadline. One expired certification. One subcontractor gap. That is how contracts are lost mid-performance.",
+    "The backend is where GovCon businesses are won or lost after the award.",
+    "ARCG builds the infrastructure that keeps federal contracts running — reporting, compliance, subcontractor management.",
+    "If you hold federal contracts, this is the audit you need. arcgsystems.com/assessment"
+  ],
+  caption: "Winning the bid is only the beginning.\n\nContractors lose awards mid-performance not because of bad execution — but because they have no backend infrastructure.\n\nARCG Systems builds the operational infrastructure that keeps federal contracts running: compliance tracking, reporting automation, subcontractor management.\n\nSDVOSB · HUBZone · DBE · MBE · SBE\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Certification slide: amber-gold binder-tab style — SDVOSB · HUBZone · DBE · MBE · SBE on near-black", "Primary image: Variation 3 in Leonardo Photo Realistic", "No flags, no star/eagle imagery — executive tone only", "Reel: Video Variation 1, scattered-document opening 2-second impact"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of a federal contractor's backend failure: dark matte desk with disorganized proposal sections, SAM.gov opportunity sheets with highlighted gaps, expired certification printouts, scattered subcontractor tracking spreadsheet, laptop showing multiple unlinked tabs. Near-black environment, amber-gold on certification documents, faceless, text-safe right third, square 1080x1080. ARCG logo subtle lower-right only. Exclude military imagery, patriotic visuals, and generic dashboards.",
+    "Hyper-realistic cinematic split-scene: left — chaotic federal contractor workspace with scattered proposals, missed compliance notes, disconnected subcontractor folders; right — ARCG-built GovCon infrastructure — organized proposal pipeline, certification binders, clean subcontractor management on laptop, reporting cadence on whiteboard. Near-black background, amber-gold right side only, faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up: premium federal contracting desk — black leather portfolio open to structured capability statement, SAM.gov opportunity sheets organized beside it, laptop showing clean contract tracking workflow, certification binder tabs labeled SDVOSB, HUBZone, DBE. Near-black background, controlled amber-gold edge lighting, faceless, text-safe left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic video. Opening 2 seconds: fast close-up of scattered federal contract documents piling on a dark contractor desk. Mid-scene: missing infrastructure revealed — no tracking, no reporting, subcontractor status unknown. Final 2 seconds: structured GovCon command setup — proposal workflow, certification tracker, compliance cadence. No flags, no patriotic visuals. Near-black, amber-gold on final organized frame. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Tight shot of contract award document, then pan across unmanaged backend — disorganized subcontractor notes, compliance gap visible. Transition to clean GovCon execution environment: centralized pipeline, automated reporting, certification tracking active. Dark luxury, amber-gold accents. Final frame: ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark govcon backend desk with proposal folders, compliance documents, contract admin trackers, and a failing execution workflow. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black contract operations workstation showing missed compliance steps, proposal documents, deadline notes, and broken backend coordination. Cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium dark govcon admin desk with stacked contract files, fragmented reporting workflow, spreadsheet trackers, and backend bottlenecks. Faceless, editorial realism, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark federal support workstation with compliance folders, proposal timelines, document control issues, and backend failure indicators. Faceless, near-black, premium editorial, text-safe right, ARCG logo lower-right. 1080x1080.",
+    "Near-black government contracting operations desk, proposal paperwork, deadline alerts, and disconnected systems causing backend execution failure. Cold lighting, faceless, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic govcon admin sequence with proposal folders, compliance trackers, deadline pressure, and backend execution breakdown. Dark editorial look, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow pan across a near-black contracting workstation showing fragmented document control, compliance stress, and proposal workflow failure. Faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody operations clip of federal backend failure: contract files, admin trackers, compliance notes, and missed workflow handoffs. Near-black, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+5: {
+  name: "Property Manager Compliance Gap",
+  reel: {
+    hook: "NYC Local Law violations: $250 to $1,000 per day. Most PMs track compliance in a spreadsheet.",
+    scenes: [
+      "Property management desk covered in Local Law inspection notices, overdue certifications, binder of unresolved compliance items — no centralized system.",
+      "Property manager scanning multiple handwritten logs to determine which building is next for inspection — no automation, no alert system.",
+      "ARCG compliance system in place — centralized tracker, automated inspection alerts, building-by-building deadline visibility."
+    ],
+    cta: "arcgsystems.com/assessment — the audit that protects your portfolio."
+  },
+  carousel: [
+    "Property Managers Are One Inspection Away from a Fine They Didn't See Coming.",
+    "Local Law 11. Local Law 152. Local Law 97. Automated tracking across every building?",
+    "Manual compliance tracking = gaps. Gaps = violations. Violations = fines.",
+    "Your maintenance team cannot report on what has no system to capture it.",
+    "One centralized system removes the manual tracking, missed deadlines, and liability.",
+    "ARCG builds compliance infrastructure — automated tracking, inspection alerts, portfolio-wide deadline visibility.",
+    "Protect your portfolio. arcgsystems.com/assessment"
+  ],
+  caption: "Every building in your portfolio has a compliance clock running.\n\nLocal Law deadlines. Inspection certifications. Maintenance compliance windows. If you're tracking any of it in a spreadsheet — you have a liability waiting to surface.\n\nARCG Systems builds centralized compliance infrastructure for property managers: automated deadline tracking, building-by-building visibility, inspection alerts.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Local Law reference slide: amber-gold text — 'Local Law 11 · Local Law 97 · Local Law 152' stacked on near-black, no image", "Primary image: Variation 1 in Leonardo Photo Realistic", "Opening inspection notice must be property-specific, not generic business paperwork"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of a property management compliance gap: dark operations desk with printed Local Law inspection notices, overdue maintenance certification forms, scattered violation letters, handwritten building compliance logs, and a laptop showing fragmented spreadsheet with multiple compliance deadline tabs — none connected. Near-black office environment, cold amber-gold overhead lighting, faceless, text-safe right third, square 1080x1080. ARCG logo subtle lower-right only. Exclude generic dashboards and abstract tech.",
+    "Hyper-realistic cinematic split-scene: left — scattered inspection notices, overdue compliance binders, disconnected maintenance reports, handwritten deadline lists; right — centralized compliance command view with organized building-by-building tracker, automated alerts, inspection calendar, unified reporting interface. Property management context throughout. Near-black background, amber-gold right controlled side, faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up: property manager's compliance desk — printed city inspection notices, handwritten correction notes, maintenance backlog sheets, laptop with incomplete Local Law tracking tabs open across multiple spreadsheets — each a different building, none connected. Near-black background, amber-gold accent on desk surface, faceless, text-safe left zone, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second faceless hyper-realistic cinematic video. Opening 2 seconds: close-up of violation notices, maintenance reports, inspection documents piling on a dark property management desk. Mid-scene: camera tracks fragmented spreadsheets, sticky notes, disconnected tracking tools — each building managed separately. Final transition: centralized property compliance interface — all buildings, all deadlines, all statuses in one view. Dark luxury, amber-gold on centralized interface. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Tense close-up of overdue Local Law inspection notice — unaddressed, untracked. Camera pulls back to reveal full manual compliance scope. Transition to clean systemized workspace with centralized deadlines. Near-black, amber-gold accents. Final frame: ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark property management desk with vendor files, inspection records, missing compliance tracker, and alert markers showing exposure. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black PM workstation with property folders, unresolved compliance checklist, vendor documentation gaps, and deadline alerts. Cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium operations desk for property management showing inspection paperwork, compliance omissions, vendor records, and a fragmented control process. Faceless, editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark PM back-office scene with maintenance logs, building folders, audit notes, and a visible compliance gap across multiple records. Near-black, faceless, restrained amber interface highlights, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black property operations laptop with incomplete compliance dashboard, overdue documentation, vendor contact directory, and file gaps. Faceless, editorial, text-safe right, ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic sweep across a dark property management desk with vendor files, missing compliance items, and unresolved documentation alerts. Near-black, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow push over a PM workstation showing inspection records, incomplete compliance tracking, and operational exposure. Dark editorial style, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody back-office clip of a property manager compliance gap: folders, logs, alerts, and missing documentation in a near-black environment. Faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+6: {
+  name: "11-Hour Weekly Waste",
+  reel: {
+    hook: "Your team loses 11 hours a week to work that should not be human.",
+    scenes: [
+      "Operations desk at 7PM — someone still manually compiling a weekly report that should be automated.",
+      "Breakdown of where hours go: manual data entry, status updates, approval chasing, reporting compilation, redundant follow-up.",
+      "Same outputs produced automatically — report generated, approvals tracked, status updated — no human time required."
+    ],
+    cta: "arcgsystems.com/assessment — find where your 11 hours are going."
+  },
+  carousel: [
+    "11 Hours Per Week. That Is What Manual Operations Cost Your Team.",
+    "3 hours compiling reports that should be automated.",
+    "2 hours chasing approvals that should have a system.",
+    "2 hours following up on tasks with no tracking.",
+    "2 hours entering data that should never touch a human hand.",
+    "2 hours correcting errors from the processes above.",
+    "572 hours a year. Fix it. arcgsystems.com/assessment"
+  ],
+  caption: "You cannot see the 11 hours. That is the problem.\n\nNot one meeting. Not one task. The compounding cost of every manual report, every approval chased over email, every status update that required someone to stop and check.\n\n11 hours per team member. Multiply by headcount. Multiply by 52 weeks.\n\nARCG Systems eliminates the manual layer.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slides 2–6: large amber-gold numeral ('3 HRS') as dominant visual element, supporting text beneath in Instrument Sans, near-black BG", "Caption math (572 hours) is the conversion hook — keep it in every version", "Reel: each task-cut under 2 seconds for pace"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of weekly operational time waste: premium dark desk at end-of-day — laptop showing manually compiled report in progress, stack of approval request printouts, handwritten task follow-up list, inbox with 40+ unread messages requiring human action. Cold overhead ambient lighting, near-black desk, faceless, text-safe upper-right, square 1080x1080. ARCG logo subtle lower-right only. Exclude clock imagery and generic productivity visuals.",
+    "Hyper-realistic cinematic split-scene: left — 11-hour waste: manual report being typed, approval emails stacking, data entry scrolling; right — same weekly output produced automatically — report generated, approvals tracked, data captured — no human intervention. Near-black environment, amber-gold on right efficient side only. Faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up: weekly status report being manually formatted in spreadsheet, sticky note with approval chase items, printed email thread showing back-and-forth required to close one decision — communicating compounding wasted time without a single clock. Near-black background, amber-gold accent on spreadsheet grid lines, faceless, text-safe left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic. Opening 2 seconds: close-up of manual report typed line by line — slow, deliberate, avoidable. Mid-scene: camera cuts through four manual tasks: approval email, data entry, status update, follow-up chase. Final 2 seconds: automated system completes same outputs. Near-black, amber-gold on automation frame. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Wide shot of dark office — hands and workspaces only — each performing a different manual task at end of day. Camera collapses into single clean automation interface replacing all of it. Near-black, amber-gold activation on automation view. Final frame: '11 hours. Automated.' ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark operations desk showing repetitive admin tasks, manual follow-ups, duplicate spreadsheets, and visible weekly time waste. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black office workstation with stacked task notes, repeated entries, call-back reminders, and operational friction that signals 11 hours lost weekly. Cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium dark back-office scene with calendar notes, manual logs, duplicate trackers, and avoidable weekly workload drain. Faceless, editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black admin desk, repeated checklist handling, spreadsheet copy work, and time-consuming coordination clutter. Faceless, premium editorial realism, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark operations workstation with follow-up notes, recurring manual tasks, and visible process drag causing weekly labor waste. Faceless, controlled lighting, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic sequence of repetitive weekly admin waste: repeated spreadsheets, follow-up notes, task reminders, and lost time. Dark editorial environment, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow pan across a near-black back-office desk with repeated manual coordination and operational drag representing weekly hours lost. Faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody time-waste operations clip showing duplicate work, admin overload, and avoidable weekly friction. Near-black, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+7: {
+  name: "Chaos vs Control",
+  reel: {
+    hook: "Every business operates in one of two modes. Chaos or control. Most do not choose.",
+    scenes: [
+      "Chaos mode — reactive business: requests come in with no system, status requires phone calls, decisions made without real data.",
+      "Chaos from outside: consistent delays, compliance gaps, vendor confusion, no visibility into what is moving.",
+      "Control mode — same business with ARCG infrastructure. Every request has a home. Every deadline is tracked. Every report is automated."
+    ],
+    cta: "arcgsystems.com/assessment — choose control."
+  },
+  carousel: [
+    "Two Operating Modes. Chaos. Or Control. Most businesses never choose.",
+    "Chaos: Your team reacts. Decisions lag. Deadlines slip.",
+    "Chaos: Every status requires a call. Every report requires manual assembly.",
+    "Chaos is not a team problem. It is a systems problem.",
+    "Control: Every request captured, tracked, visible — without anyone chasing it.",
+    "Control: Reports automatic. Deadlines flagged early. Vendors accountable.",
+    "The shift doesn't require a bigger team. It requires a better system. arcgsystems.com/assessment"
+  ],
+  caption: "Most businesses do not choose chaos. It chooses them — when they grow without building systems to support that growth.\n\nEvery reactive decision. Every manual follow-up. Every status that required a phone call instead of a dashboard view.\n\nThat is chaos mode. And it compounds.\n\nARCG Systems installs the infrastructure that moves businesses from chaos to control.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slide 1: largest possible type — 'CHAOS.' and 'CONTROL.' on opposite halves", "Slides 2–4 (chaos): left column cold/darker; Slides 5–6 (control): amber-gold tint right side", "Reel: chaos-to-control cut at 7-second mark for maximum impact", "Primary image: Variation 2 full split-scene"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of chaos mode in business operations: premium dark operations desk in visible disorder — multiple open task folders with no clear system, three tracking spreadsheets on laptop, sticky notes covering left monitor, unresolved vendor email thread visible, no centralized workflow. Near-black environment, cold overhead lighting, faceless, text-safe right third, square 1080x1080. ARCG logo subtle lower-right only.",
+    "Hyper-realistic cinematic split-scene: left — chaos state: fragmented task management, manual tracking, no centralized visibility; right — control state: one clean operational interface, all requests tracked, reports automated, vendor statuses visible. Same business context throughout. Near-black background, cold light left, amber-gold right. Faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K split-panel: left — tight close-up of disorganized operations, scattered folders, multi-tab confusion; right — precisely composed premium command desk, clean laptop workflow, organized process structure, one centralized view. Control is an architectural choice, not a personality trait. Near-black throughout, amber-gold right side only, faceless, text-safe upper-left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic. Opening 2 seconds: urgent close-up of chaos-mode desk — multiple folders, manual tracking, reactive environment. Mid-scene: camera holds on chaos long enough to feel it. Single transition wipes to control-mode view: one clean interface, all tasks visible. Final 2 seconds: control environment — calm, precise, complete. Near-black throughout, amber-gold activating on control. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Begin in chaos mode — slow pan: phone chasing status, manual reports, nothing centralized. Hard editorial cut to control mode: one interface, all requests tracked. Cinematic and deliberate. Near-black, amber-gold on control only. Final frame: 'Chaos. Or control.' ARCG logo lower-right."
+  ],
+  imgB: [
+    "Chaos-mode operations desk: multiple task folders, three spreadsheets on laptop, sticky notes on monitor, unresolved vendor thread. Near-black, cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark operations workstation split between disorder and structure: cluttered task notes, unresolved requests, and one clean control dashboard emerging. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black admin desk with chaotic paperwork, open spreadsheets, scattered coordination notes, contrasted by a single organized control panel on screen. Cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium faceless operations scene showing service chaos on one side and structured workflow control on the other: task folders, unresolved threads, and a clean routing dashboard. Near-black, text-safe right, ARCG logo lower-right. 1080x1080.",
+    "Dark control-vs-chaos desk scene with messy notes, fragmented vendor communication, and a visible organized backend workflow cutting through the disorder. Editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic contrast clip: chaotic operations desk transitions into structured control dashboard, with task folders, spreadsheets, and unresolved threads giving way to order. Near-black, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow push across a dark workstation showing operational chaos versus backend control: sticky notes, vendor thread clutter, and a clean routing system. Faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody operations sequence with disorder first, then visible control: spreadsheets, scattered notes, unresolved requests, and a structured interface layer. Near-black, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+8: {
+  name: "Staffing Firm Intake Bottleneck",
+  reel: {
+    hook: "Your staffing firm's intake process is why placements are delayed. Here is what it looks like from inside.",
+    scenes: [
+      "Staffing firm intake desk — candidate info arriving by email, phone, text with no centralized intake. Recruiter manually compiling spreadsheet.",
+      "Bottleneck: promising candidate not contacted for 72 hours because intake was never routed to the right recruiter. Placement goes elsewhere.",
+      "ARCG-built intake infrastructure: automated candidate routing, centralized placement tracking, recruiter assignment alerts."
+    ],
+    cta: "arcgsystems.com/assessment — the system your intake needs."
+  },
+  carousel: [
+    "Your Staffing Firm Is Losing Placements at Intake. Not at the search stage.",
+    "Candidate comes in. Falls into an email thread. No owner. No routing. No tracking.",
+    "72 hours later, the recruiter follows up. The candidate accepted elsewhere.",
+    "Manual intake = manual delays = lost placements = lost revenue.",
+    "Your intake should route automatically, assign to the right recruiter, and flag priority placements — without human coordination.",
+    "ARCG builds staffing intake infrastructure: centralized candidate flow, automated routing, placement tracking.",
+    "Stop losing placements at intake. arcgsystems.com/assessment"
+  ],
+  caption: "Staffing firms do not lose placements because of bad recruiters. They lose placements because of bad intake systems.\n\nCandidate enters through email. No routing. No owner. 72 hours later, a recruiter follows up — candidate has already accepted elsewhere.\n\nARCG Systems builds the intake infrastructure that eliminates that gap.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slide 3 (72-hour scenario): timeline graphic in Canva — '0 hrs / 24 hrs / 48 hrs / 72 hrs' amber-gold on black, 'Placement lost' as final marker — no image needed", "Primary image: Variation 1 in Leonardo Photo Realistic", "Every caption line must be recognizable to a staffing firm operator"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of staffing firm intake bottleneck: dark recruiter operations desk — candidate application printouts without routing stamps, email inbox with multiple unread candidate inquiries, handwritten placement status notes, spreadsheet tracking candidates manually. Near-black desk, cold overhead, amber-gold accent on unread inbox, faceless, text-safe right third, square 1080x1080. ARCG logo subtle lower-right only. Exclude generic stock HR imagery and smiling recruiters.",
+    "Hyper-realistic cinematic split-scene: left — staffing intake bottleneck: unrouted applications, manual spreadsheet tracking, no assignment system; right — ARCG-built intake infrastructure: centralized candidate intake interface, automated routing indicators, recruiter assignment view, placement status dashboard. Staffing context throughout. Near-black, amber-gold right side only. Faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up: premium staffing firm desk — candidate profiles without routing tags, inbox with 20+ unread inquiries, whiteboard with manual placement tracking notation, laptop showing basic spreadsheet as the only tracking tool. Near-black background, amber-gold on whiteboard detail, faceless, text-safe left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic showing staffing intake bottleneck. Opening 2 seconds: tight shot of candidate printouts arriving at recruiter desk with no routing — into a pile, not a system. Mid-scene: inbox stacking, manual spreadsheet, no assignment alert. Final 2 seconds: automated intake activates — candidate routed, recruiter assigned, placement tracked in real time. Near-black, amber-gold on automated system. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Close-up of candidate email sitting unread for 48 hours. Camera reveals fragmented intake environment — no routing, no alert system. Transition to centralized staffing intake dashboard: candidate arrives, routes automatically, recruiter alerted immediately. Near-black, amber-gold on automated routing. Final frame: ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark staffing operations desk with candidate intake backlog, client request notes, spreadsheet bottlenecks, and delayed workflow routing. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black staffing admin workstation with intake forms, open requisitions, overloaded tracker, and a visible process choke point. Cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium staffing-firm backend scene with candidate paperwork, job-order notes, fragmented intake pipeline, and coordination bottleneck indicators. Faceless, editorial realism, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark recruiter operations desk with stacked candidate records, delayed handoff notes, spreadsheet overload, and intake bottleneck pressure. Near-black, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black staffing workflow scene with requisition folders, intake delays, manual processing burden, and blocked candidate flow. Faceless, premium editorial, text-safe right, ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic staffing bottleneck sequence: candidate intake forms, requisition notes, overloaded trackers, and delayed routing on a dark operations desk. Near-black, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow pan over a staffing backend workstation with intake backlog, manual coordination, and a visible choke point in candidate flow. Premium editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody operations clip showing staffing intake friction: paperwork, spreadsheets, requisition overload, and process delay. Near-black, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+9: {
+  name: "Before/After Operational Transformation",
+  reel: {
+    hook: "Same business. Twelve weeks apart. Here is the difference a system makes.",
+    scenes: [
+      "Before — manual tracking, reactive team, fragmented tools, no visibility into active work.",
+      "ARCG implementation: systems being mapped, workflows being built, reporting being automated.",
+      "After — centralized intake, automated reporting, compliance tracking, real-time operational visibility."
+    ],
+    cta: "arcgsystems.com/assessment — see what 12 weeks of ARCG looks like."
+  },
+  carousel: [
+    "Before ARCG. After ARCG. The gap is not small.",
+    "Before: Requests arrived with no system. After: Every request has an intake, owner, and deadline.",
+    "Before: Reports compiled manually. After: Reports generate automatically on schedule.",
+    "Before: Compliance tracked in a spreadsheet. After: Automated deadlines, real-time alerts.",
+    "Before: Vendors required constant follow-up. After: Vendor statuses tracked and flagged automatically.",
+    "The team did not change. The infrastructure did.",
+    "This is what ARCG builds. 12 weeks. arcgsystems.com/assessment"
+  ],
+  caption: "The operations did not change overnight. But within 12 weeks, the business ran differently.\n\nBefore: manual intake, reactive reporting, compliance gaps, constant follow-up.\n\nAfter: centralized workflow, automated reporting, compliance visibility, vendor accountability — all running without additional headcount.\n\nARCG Systems does not add software. It installs operational infrastructure.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slides 2–5: consistent two-column — 'BEFORE' in cool gray-white left, 'AFTER' in amber-gold right", "Slide 6: pure type on black — 'The team did not change. The infrastructure did.' No image. Maximum impact.", "Primary image: Variation 1 full diptych in Leonardo"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial before/after image diptych of operational transformation: left panel — 'before' operations desk: scattered intake folders, manual tracking spreadsheets, sticky notes, fragmented tools; right panel — exact same desk 'after' ARCG: organized intake structure, centralized laptop workflow, no loose papers, clean operational command. Near-black throughout, amber-gold in right panel only, same lighting angle both sides. Faceless, square 1080x1080. ARCG logo lower-right only.",
+    "Hyper-realistic cinematic editorial image: single desk reading as two time periods — left half carries residue of old way (disorganized forms, manual processes, no tracking); right half architecturally reorganized: centralized workflow, automated reporting view, clean operational structure. Subtle amber-gold vertical dividing line. Near-black, faceless, editorial lighting, text-safe zones both sides, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up of post-transformation operational command: premium dark desk — centralized dashboard on laptop with all active operations visible, organized compliance folders, clean vendor management binder, no scattered paper, structured process board in background. Quiet operational authority. Near-black, amber-gold on laptop screen edge, faceless, text-safe left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic showing operational transformation. Opening 2 seconds: close-up of 'before' — cluttered desk, manual processes, fragmented tracking. Mid-scene: camera tracks transformation — systems being organized, workflow being structured. Final 2 seconds: clean operational command — centralized, automated, precise. Same physical desk, completely different infrastructure. Near-black, amber-gold appearing gradually. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Slow reveal of 'before' environment — reactive, fragmented, untracked. Lighting shift or focus pull to 'after' state: same environment, now organized, tracked, automated. '12 weeks. Same business. Different infrastructure.' Near-black, amber-gold on controlled elements. Final frame: ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark before/after operations desk showing disorder on one side and structured workflow control on the other. Same environment, transformed backend, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black split-scene of an operations workstation before and after ARCG systems: cluttered intake, then organized control dashboard and clean process flow. Faceless, editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium faceless before/after transformation scene: chaotic paperwork and disconnected systems converted into centralized workflow and reporting controls. Near-black, restrained amber interface accents, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark operations environment showing service-request chaos in the before state and clean routing, reporting, and task control in the after state. Editorial realism, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black backend transformation image with the same desk transitioning from fragmented notes and spreadsheets to a disciplined command-center workflow. Faceless, premium, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic before/after sequence on the same dark operations desk: disorder, fragmented tasks, and manual clutter transition into centralized control and clean workflow. Faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow transformation clip showing an operational workstation evolve from chaos to backend control. Near-black, editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody transformation reel: messy intake, scattered notes, and spreadsheets shift into organized workflow routing and reporting. Dark premium tone, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+10: {
+  name: "AI Automation for PM",
+  reel: {
+    hook: "Property management does not need more staff. It needs better systems. AI changes what is possible.",
+    scenes: [
+      "Property management office where tenant communication, maintenance dispatch, and compliance reporting are all handled manually.",
+      "AI-powered intake routing: maintenance request submitted, categorized, dispatched to correct vendor automatically.",
+      "Full automated PM workflow: tenant communication handled, vendor assigned, compliance tracked, report generated — no manual intervention."
+    ],
+    cta: "arcgsystems.com/assessment — see what AI automation looks like for your portfolio."
+  },
+  carousel: [
+    "AI Automation for Property Management Is Not a Trend. It Is a Competitive Advantage.",
+    "Right now, a coordinator is manually routing that maintenance request. AI does this in seconds.",
+    "Right now, someone is composing a tenant communication AI can handle automatically.",
+    "Right now, a compliance deadline is tracked in a spreadsheet. AI flags it before it becomes a violation.",
+    "This is not about replacing your team. It is about stopping work that should not be human.",
+    "ARCG builds AI automation for property managers — intake routing, tenant comms, compliance tracking, vendor dispatch.",
+    "The competitive advantage is available now. arcgsystems.com/assessment"
+  ],
+  caption: "The property management firms that will separate from the competition are not the ones with more staff.\n\nThey are the ones with better systems.\n\nAI automation handles maintenance intake routing, tenant communication workflows, compliance deadline tracking, and vendor dispatch — all tasks currently requiring manual coordination.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slide 2 (maintenance routing): step graphic — 'Request → Categorized → Vendor assigned → Logged' with amber-gold arrows on near-black", "No AI brain or neural network imagery — practical operational only", "Primary image: Variation 1 in Leonardo Photo Realistic", "Automated sequence in reel: 2 seconds per step"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of AI automation in property management: premium dark PM command desk with centralized AI workflow interface on laptop showing automated maintenance request that has been categorized, routed to correct vendor, and logged — no manual input. Organized property folders, clean vendor directory, compliance tracker with automated alerts. Near-black environment, amber-gold on automated routing interface, faceless, text-safe right third, square 1080x1080. ARCG logo subtle lower-right only. Exclude neural network graphics and floating data.",
+    "Hyper-realistic cinematic split-scene: left — property management coordinator manually routing maintenance request (reviewing email, finding vendor, drafting dispatch); right — AI-automated version: request categorized, vendor auto-assigned, dispatch sent, compliance logged — seconds, zero human coordination. Real PM context throughout. Near-black, amber-gold right only. Faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial close-up of AI-powered PM infrastructure: premium operations desk showing centralized dashboard with automated maintenance routing, tenant communication status, compliance deadline tracking — all active without visible human input. Purpose-built PM system, not generic SaaS. Near-black, amber-gold on automation elements, faceless, text-safe left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic. Opening 2 seconds: close-up of maintenance request submitted — automated system takes it: categorizes, routes, logs compliance, sends confirmation — all in sequence. Mid-scene: full automated PM workflow visible on laptop. Final 2 seconds: PM desk quiet and organized — system running without them. Near-black, amber-gold on each automated action. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Manual process first — coordinator routes, emails vendor, logs spreadsheet. Cut to AI-automated version: same request completing in under 3 seconds on screen. Camera stays on interface as additional requests process automatically. Near-black luxury, amber-gold on automation. Final frame: 'AI automation for property management — arcgsystems.com/assessment.' ARCG logo lower-right."
+  ],
+  imgB: [
+    "Dark PM desk: AI workflow laptop showing categorized/routed maintenance request, organized property folders, vendor directory, compliance tracker with alerts. Near-black, amber-gold on automation interface, faceless, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks.",
+    "Near-black property management workstation with automation dashboard routing maintenance requests, vendor assignments, inspection reminders, and compliance alerts. Faceless, premium editorial, amber-gold interface accents, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks.",
+    "Dark PM operations desk with laptop showing automated maintenance triage, organized building folders, vendor contact system, and overdue compliance flags. Faceless, restrained amber interface glow, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks.",
+    "Premium near-black property management backend scene: workflow screen with categorized service tickets, vendor routing, portfolio folders, and alert-driven compliance tracking. Faceless, editorial, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks.",
+    "Dark operations desk for PM automation with laptop displaying routed maintenance requests, building records, vendor workflow, and structured compliance control. Amber-gold interface details, faceless, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks."
+  ],
+  vidB: [
+    "Cinematic PM automation sequence: dark desk, laptop routing maintenance requests, vendor assignments, compliance alerts, and organized property folders. Near-black, amber interface accents, faceless, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks.",
+    "Slow push across a property management automation workstation with categorized service tickets, vendor directory, and compliance dashboard alerts. Premium editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080. No neural networks.",
+    "Moody operations clip showing PM backend automation: maintenance routing, property folders, vendor control, and compliance alerting on a dark laptop screen. Faceless, text-safe right, ARCG logo lower-right. 1080x1080. No neural networks."
+  ]
+},
+11: {
+  name: "SDVOSB Federal Advantage",
+  reel: {
+    hook: "The SDVOSB certification is not a badge. It is a procurement advantage — if you have the backend to use it.",
+    scenes: [
+      "Veteran-owned federal contractor desk — certification documents, SAM.gov opportunity sheets, capability statement — but no organized proposal pipeline.",
+      "The gap: certifications secured, relationships built, but no systematic way to track, pursue, and manage federal opportunities.",
+      "ARCG-built GovCon infrastructure: organized proposal pipeline, certification tracker, capability statement workflow, contract pursuit system."
+    ],
+    cta: "arcgsystems.com/assessment — if you hold SDVOSB certification, this is the backend you need."
+  },
+  carousel: [
+    "Your SDVOSB Certification Opens Doors. Your backend has to be ready when they open.",
+    "Set-aside contracts exist. Do you have a system to find, track, and pursue them?",
+    "Most SDVOSB firms have the certification. Few have an organized proposal pipeline behind it.",
+    "No opportunity tracking = missed bids. No reporting cadence = performance risk.",
+    "The certification gives you access. The backend determines whether you win and perform.",
+    "ARCG builds the infrastructure that turns your SDVOSB certification into systematic competitive advantage.",
+    "SDVOSB · HUBZone · DBE · MBE · SBE. Now build the backend. arcgsystems.com/assessment"
+  ],
+  caption: "The SDVOSB certification is a procurement advantage that most veteran-owned firms underuse.\n\nNot because the opportunity is not there. But because the backend infrastructure to systematically identify, pursue, and perform on those contracts is missing.\n\nARCG Systems builds that backend: proposal pipeline management, certification compliance tracking, subcontractor coordination, reporting automation.\n\nSDVOSB · HUBZone · DBE · MBE · SBE\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slide 7: 'SDVOSB · HUBZone · DBE · MBE · SBE' in amber-gold Syne Bold centered on near-black — pure type, no icons, no badges", "No flags, no star/eagle/patriotic imagery — executive authority only", "Primary image: Variation 1 in Leonardo Photo Realistic", "'Snapping into order' opening must feel architectural precision, not graphic transition"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of SDVOSB federal contractor command infrastructure: dark matte desk with organized federal solicitation printouts, capability statement prominently positioned, SAM.gov opportunity sheets, certification documents labeled SDVOSB, HUBZone, DBE, MBE, SBE, and laptop showing clean proposal workflow dashboard. Warm amber-gold practical lighting over near-black surroundings, premium government contracting atmosphere, faceless, text-safe left third, square 1080x1080. ARCG logo subtle lower-right only. Exclude smiling teams, abstract dashboards, neon effects.",
+    "Hyper-realistic cinematic split-scene: left — chaotic contractor desk with disorganized proposals, missed deadlines, scattered compliance notes; right — disciplined premium SDVOSB command setup with organized bid folders, certification binder tabs, clean laptop workflow, precise execution board. Near-black background, amber-gold right side only, faceless, strong visual metaphor for certified operational discipline, text-safe upper-left, square 1080x1080. ARCG logo small lower-right only.",
+    "Ultra-detailed luxury editorial: close-up of premium black leather portfolio open to federal certification documents, proposal sections, and clean opportunity pipeline on laptop screen — U.S. government procurement context implied through forms and contract folders, not flags. Deep black palette, controlled amber-gold edge lighting, faceless, text-safe negative space left, square 1080x1080. ARCG logo subtly lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic. Opening 2 seconds: fast close-up of scattered federal bid paperwork and certification folders snapping into organized order. Mid-scene: clean laptop pipeline, proposal sections, certification tabs align into premium federal execution workspace. Final 2 seconds: sharp text-safe frame. Near-black environment, amber-gold accent lighting, no patriotic montage. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless premium editorial. Start with disorganized contractor desk. Transition into sleek federally ready setup: certification binder tabs, proposal workflow board, polished laptop with organized contract pursuit steps. Cinematic movement, dark luxury, amber-gold highlights. Final frame: ARCG logo lower-right, arcgsystems.com/assessment."
+  ],
+  imgB: [
+    "Dark federal-ready operations desk with proposal folders, compliance structure, credentialed contractor tone, and disciplined backend control. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black govcon workstation expressing SDVOSB advantage through structured proposal admin, organized compliance materials, and clean backend readiness. Faceless, restrained, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium dark command desk with federal support documents, capability materials, and disciplined operational systems reflecting certified-contractor advantage. Faceless, editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark backend scene for a federal-ready certified contractor: proposal control, document discipline, and execution structure. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black operations environment showing organized federal support workflow, capability packaging, and serious backend readiness without cliche patriotic imagery. Faceless, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic federal-readiness sequence with proposal folders, compliance materials, and disciplined backend operations reflecting SDVOSB advantage. Dark editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow pan across a near-black govcon desk with structured proposal admin and execution control showing certified-contractor strength. Faceless, premium tone, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody operational clip of federal backend readiness: capability materials, proposal control, and disciplined systems. Near-black, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+},
+12: {
+  name: "Why Scaling Without Backend Breaks",
+  reel: {
+    hook: "Growth without infrastructure does not scale. It breaks.",
+    scenes: [
+      "Business in early growth — more clients, more complexity — but same manual systems from a fraction of the size. Pressure building.",
+      "Breaking point: client request falls through gap, compliance deadline missed, vendor unmanaged, report late.",
+      "ARCG builds backend infrastructure before the breaking point — so growth is supported, not sabotaged."
+    ],
+    cta: "arcgsystems.com/assessment — build the backend before it breaks."
+  },
+  carousel: [
+    "You Are Growing. Your Backend Is Not. This Is How That Ends.",
+    "At 5 clients, manual works. At 15 clients, it strains. At 30 clients, it collapses.",
+    "Growth creates volume. Volume breaks manual processes. Manual processes break trust.",
+    "The same intake system from last year cannot handle 3x the requests without 3x the staff — unless you automate it.",
+    "Most businesses discover the backend problem after a major client issue. Not before.",
+    "ARCG builds infrastructure that supports growth: automated intake, scalable reporting, compliance without additional staff.",
+    "Build the backend now. arcgsystems.com/assessment"
+  ],
+  caption: "The manual system that runs a 5-client operation does not run a 30-client operation.\n\nNot without breaking.\n\nMost businesses find out their backend cannot scale the hard way — after a missed deliverable, a compliance gap, a client loss.\n\nARCG Systems builds operational infrastructure that scales with your growth.\n\narcgsystems.com/assessment or DM \"AUDIT\"",
+  canva_notes: ["Slides 2–4: numerical progression — '5 clients / 15 clients / 30 clients' as visual structure, amber-gold on infrastructure side only", "Slide 1: pure type only — 'You Are Growing. Your Backend Is Not.' Syne Bold amber-gold on near-black. No image.", "Primary image: Variation 3 (overloaded desk at breaking point) in Leonardo", "Reel: Video Variation 2 — rapid-cut acceleration from 5 to 3x volume feels architectural, not abstract animation"],
+  imgA: [
+    "Ultra-high-resolution hyper-realistic editorial image of scaling business with manual backend under strain: dark operations desk — stacked intake folders for triple the clients it was designed to handle, multiple tracking spreadsheets, whiteboard workflow revised and crossed out repeatedly, laptop with 20+ browser tabs as the only management system. Near-black premium environment, cold overhead showing organizational strain, faceless, text-safe right third, square 1080x1080. ARCG logo subtle lower-right only. Exclude upward-arrow graphics and growth celebration imagery.",
+    "Hyper-realistic cinematic split-scene: left — scaling without infrastructure: same manual desk handling triple volume, visible strain, spreadsheet tabs multiplying; right — same business with ARCG backend: centralized intake handling all volume, automated reporting, no visible strain. Near-black, amber-gold right organized side only. Faceless, square 1080x1080. ARCG logo small lower-right only.",
+    "Cinematic 4K editorial: premium dark desk with three times the usual intake volume — stacked folders, multiple simultaneous spreadsheets, whiteboard workflow at capacity — communicating manual system at breaking point. Tense without being dramatic. Near-black background, amber-gold reflecting off overloaded desk surface, faceless, text-safe left, square 1080x1080. ARCG logo subtle lower-right only."
+  ],
+  vidA: [
+    "10–12 second hyper-realistic faceless cinematic showing backend failure under growth pressure. Opening 2 seconds: intake folders stacking faster than they can be processed on a dark desk. Mid-scene: manual tracking breakdown — spreadsheet errors, missed deadlines, no centralized view. Final 2 seconds: ARCG backend appears — centralized intake processing same volume automatically. Near-black, amber-gold on infrastructure. End frame: ARCG logo lower-right, arcgsystems.com/assessment.",
+    "10–12 second faceless editorial. Begin with business at 5 clients — manageable, manual, fine. Rapid-cut visual acceleration showing same business at 3x volume — folders multiplying, whiteboard overwhelmed. Final: architectural shift to ARCG backend — volume handled, nothing breaking. '12 weeks. Build the backend.' ARCG logo lower-right."
+  ],
+  imgB: [
+    "Dark operations desk under scaling pressure: too many tasks, overloaded spreadsheets, backend strain, and workflow fragility becoming visible. Near-black, faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black growth-strain workstation with expanding requests, overloaded admin systems, task backlog, and weak backend control starting to break. Cold overhead, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Premium faceless backend failure-under-growth scene: rising workload, crowded dashboard, duplicate tracking, and scaling pressure exposing weak systems. Near-black, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Dark executive operations desk with too much incoming volume, fragmented controls, and visible signs that scaling is breaking the backend. Editorial realism, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Near-black business ops environment showing growth pressure overwhelming spreadsheets, task notes, and workflows without proper backend structure. Faceless, premium editorial, text-safe right. ARCG logo lower-right. 1080x1080."
+  ],
+  vidB: [
+    "Cinematic scaling-pressure sequence: rising workflow load, crowded backend screens, task backlog, and visible control strain on a dark operations desk. Faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Slow pan across a near-black workstation where business growth is outpacing backend control: overloaded trackers, task pileup, and strain. Premium editorial, faceless, text-safe right. ARCG logo lower-right. 1080x1080.",
+    "Moody operations clip showing scaling without backend support: too many requests, weak process control, and visible breakdown pressure. Near-black, faceless, text-safe right, ARCG logo lower-right. 1080x1080."
+  ]
+}
+};
+
+let currentTopic = 1;
+
+function showTopic(n) {
+  currentTopic = n;
+  document.querySelectorAll('.topic-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.topic) === n));
+  renderTopic(n);
+}
+
+function renderTopic(n) {
+  const t = TOPICS[n];
+  if (!t) return;
+  const html = `
+  <div class="section-block">
+    <div class="block-title">A. Reel — ${t.name}</div>
+    <div style="background:var(--panel2);border-radius:8px;padding:12px;margin-bottom:10px">
+      <div class="prompt-label">Hook</div>
+      <div style="font-size:13px;font-weight:600;color:var(--gold2);margin-bottom:10px">${t.reel.hook}</div>
+      ${t.reel.scenes.map((s,i) => `<div class="scene-item"><span class="scene-label">Scene ${i+1}</span>${s}</div>`).join('')}
+      <div class="scene-item"><span class="scene-label">CTA</span>${t.reel.cta}</div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <div class="block-title">B. Carousel — ${t.name}</div>
+    <ul class="slide-list">
+      ${t.carousel.map((s,i) => `<li class="slide-item"><span class="slide-num">Slide ${i+1}</span>${s}</li>`).join('')}
+    </ul>
+  </div>
+
+  <div class="section-block">
+    <div class="block-title">C. Caption</div>
+    <div class="caption-text">${t.caption}</div>
+    <button class="copy-btn" onclick="copyText(this, \`${t.caption.replace(/`/g, '\\`')}\`)">📋 Copy Caption</button>
+  </div>
+
+  <div class="section-block">
+    <div class="block-title">E + Layer System — Image Prompts</div>
+    ${['Variation 1 — Literal / Concrete', 'Variation 2 — Metaphor / Contrast', 'Variation 3 — Editorial / Authority'].map((label, i) => `
+      <div style="margin-bottom:14px">
+        <div class="prompt-label">${label}</div>
+        <div class="layer-badge layer-a">Layer A — Creative Brief</div>
+        <div class="prompt-card">
+          <div class="prompt-text">${t.imgA[i]}</div>
+          <button class="copy-btn" onclick="copyText(this, \`${(t.imgA[i]||'').replace(/`/g,'\\`')}\`)">📋 Copy Full Prompt</button>
+        </div>
+        <div class="layer-badge layer-b" style="margin-top:8px">Layer B — Direct Generation (Short)</div>
+        <div class="prompt-card" style="border-color:rgba(34,197,94,0.15)">
+          <div class="prompt-text">${t.imgB[i]}</div>
+          <button class="copy-btn" onclick="copyText(this, \`${(t.imgB[i]||'').replace(/`/g,'\\`')}\`)">📋 Copy Short Prompt</button>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="section-block">
+    <div class="block-title">F + Layer System — Video Prompts</div>
+    ${['Variation 1', 'Variation 2'].map((label, i) => `
+      <div style="margin-bottom:14px">
+        <div class="prompt-label">${label}</div>
+        <div class="layer-badge layer-a">Layer A — Creative Brief</div>
+        <div class="prompt-card">
+          <div class="prompt-text">${t.vidA[i]}</div>
+          <button class="copy-btn" onclick="copyText(this, \`${(t.vidA[i]||'').replace(/`/g,'\\`')}\`)">📋 Copy Full Prompt</button>
+        </div>
+        <div class="layer-badge layer-b" style="margin-top:8px">Layer B — Direct Generation (Short)</div>
+        <div class="prompt-card" style="border-color:rgba(34,197,94,0.15)">
+          <div class="prompt-text">${t.vidB[i]}</div>
+          <button class="copy-btn" onclick="copyText(this, \`${(t.vidB[i]||'').replace(/`/g,'\\`')}\`)">📋 Copy Short Prompt</button>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="section-block">
+    <div class="block-title">G. Canva + Leonardo Execution Notes</div>
+    <div>${t.canva_notes.map(n => `<div class="note-item">${n}</div>`).join('')}</div>
+  </div>`;
+  document.getElementById('topicContent').innerHTML = html;
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2200);
+  }).catch(() => {
+    btn.textContent = '✗ Failed';
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 1500);
+  });
+}
+
+// Init
+renderTopic(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+{
+  "hero": {
+    "eyebrow": "WHY CHARTNAV",
+    "headline": "Ophthalmology workflow, not a generic EHR with an eye-care skin.",
+    "subhead": "ChartNav is built for the way an ophthalmology day actually runs — patient intake, technician workup, imaging context, physician note, sign-off, and operational visibility — with AI-assisted documentation supporting the physician at every step.",
+    "ctaPrimary": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "ctaSecondary": { "label": "See the Platform", "href": "/chartnav/platform" }
+  },
+
+  "encounterWorkspace": {
+    "eyebrow": "OPHTHALMOLOGY ENCOUNTER WORKSPACE",
+    "headline": "One screen for the whole visit. Not five.",
+    "lead": "ChartNav keeps the visit context — intake, technician workup, imaging, physician note, sign-off, and the billing signal — on one workspace instead of spread across modules. The physician opens a chart that is already prepared.",
+    "cards": [
+      { "title": "Intake before check-in.",            "body": "Without ChartNav, the front desk re-types every patient. With it, the intake the patient completed at home becomes the chart your staff queue is already showing." },
+      { "title": "The chart is ready before the physician opens it.", "body": "Without ChartNav, physicians rebuild the visit. With it, the technician's workup is in the chart before the exam-lane door opens." },
+      { "title": "Imaging in context, not in another app.","body": "OCT, fundus, visual-field, and topography route into the same encounter the physician is reading from. No second viewer to alt-tab to." },
+      { "title": "Sign once. Done means done.",         "body": "Structured SOAP draft, attestation, immutability after sign, audit trail on every write. The note is the source of truth for everything that follows." },
+      { "title": "Billing isn't a black box.",          "body": "Once a note is signed, the operations dashboard surfaces it — sign-to-export lag, missing-flag rate, reminder load. Leadership sees what's stuck, what's denied, and what needs action." }
+    ]
+  },
+
+  "aiDocumentation": {
+    "eyebrow": "AI DOCUMENTATION SUPPORT",
+    "headline": "AI that supports the physician — it does not replace clinical judgment.",
+    "lead": "ChartNav's documentation layer is AI-assisted. The product captures dictation, drafts a structured SOAP note, surfaces missing-data flags, and offers coding-prompt suggestions. Every suggestion is reviewable, every action is logged, and every claim of authorship is honest.",
+    "items": [
+      { "title": "Hands-free scribing during the exam",    "body": "Dictate while you examine; ChartNav captures the transcript and structures it into a SOAP draft for review." },
+      { "title": "Specialty-aware drafting prompts",        "body": "Drafting prompts respect the specialty template chosen for the visit (retina, glaucoma, cataract, comprehensive)." },
+      { "title": "Missing-flag review",                     "body": "The note is annotated with flags for fields the provider should verify before sign — not auto-filled past unverifiable findings." },
+      { "title": "Coding-prompt suggestions",               "body": "Coding suggestions surface as workflow assistance for E/M, eye-codes, and common CPT ranges. They never overwrite the coder or biller's decision." },
+      { "title": "Consult-letter generation",               "body": "Once a note is signed, a referring-provider letter can be rendered from the encounter record without re-typing into a separate letter tool." }
+    ],
+    "disclaimer": "ChartNav's AI features support clinicians and staff — they do not make final clinical, coding, or billing decisions. All output is reviewable by qualified personnel before any downstream action."
+  },
+
+  "specialtyTemplates": {
+    "eyebrow": "SPECIALTY VISIT TEMPLATES",
+    "headline": "Templates that respect how the subspecialty actually runs.",
+    "lead": "Encounter templates are picked at the start of the visit so the workspace shows the right fields, the right imaging slots, and the right drafting prompts. The list grows with the practices we run assessments with.",
+    "templates": [
+      { "key": "comprehensive",   "label": "Comprehensive eye exam",         "body": "General ophthalmology adult and pediatric visits, with refraction context and dilation-aware scheduling." },
+      { "key": "retina",          "label": "Retina",                          "body": "Medical and surgical retina with OCT macula, fundus, and FA workflow context. Injection workflow supported as a separate template." },
+      { "key": "glaucoma",        "label": "Glaucoma",                        "body": "IOP trending, visual-field monitoring, OCT RNFL, and disc photo context for longitudinal disease management." },
+      { "key": "cataract",        "label": "Cataract — pre-op and post-op",   "body": "Pre-operative biometry context and post-op day 1 / week 1 / month 1 visit cadence." },
+      { "key": "post_op",         "label": "Post-operative follow-up",        "body": "Generic post-op template for surgical workflows when a sub-specialty template is not the right fit." },
+      { "key": "injection",       "label": "Intravitreal injection",          "body": "Procedure-focused template with timing, eye-of-injection, and drug-of-record fields." },
+      { "key": "vf_monitor",      "label": "Visual-field monitoring",         "body": "Field-test visit template designed to surface change vs. baseline without forcing the physician to leave the workspace." },
+      { "key": "diabetic",        "label": "Diabetic eye exam",                "body": "Annual diabetic eye exam template with retinopathy grading prompts and PCP-facing letter context." }
+    ],
+    "note": "Templates are operator-controlled. ChartNav does not silently auto-promote unverified data into the final note."
+  },
+
+  "codingBilling": {
+    "eyebrow": "CODING AND BILLING VISIBILITY",
+    "headline": "Workflow assistance for coding — final authority stays with your staff.",
+    "lead": "ChartNav surfaces structured fields that support common coding decisions and produces a clean handoff bundle for downstream PM/RCM systems. Final coding and billing decisions remain with qualified coders and billers in the practice.",
+    "items": [
+      { "title": "E/M and eye-code prompt support",  "body": "Visit context surfaces relevant E/M and eye-code ranges as prompts. The coder confirms; ChartNav records what was selected." },
+      { "title": "CPT and ICD-10 hand-off",           "body": "Structured fields export into a documented JSON / CSV / PDF bundle (the v1.0 canonical handoff payload) for the PM / RCM system the practice already uses." },
+      { "title": "Sign-to-export lag tracking",      "body": "The operations dashboard reports the median time from sign to export so leadership can see where the bundle is stalling." },
+      { "title": "No silent claim submission",       "body": "ChartNav does not transmit claims, does not submit to payers, and is not a clearinghouse. Every export is a deliberate operator action." }
+    ],
+    "disclaimer": "Coding suggestions are workflow assistance, not coding authority. Practices remain responsible for the accuracy of submitted claims."
+  },
+
+  "imaging": {
+    "eyebrow": "IMAGING WORKFLOW",
+    "headline": "Imaging routed to the chart, not a parallel app.",
+    "lead": "ChartNav is designed to support ophthalmic imaging workflow and future device integrations. Today the product routes uploaded studies into the right encounter context and surfaces them in the physician's workspace.",
+    "items": [
+      { "title": "OCT, fundus, visual field, topography", "body": "The four imaging surfaces ophthalmology actually uses, treated as first-class encounter artifacts." },
+      { "title": "Encounter context preserved",           "body": "Studies stay attached to the visit they were captured for, surfaced with the note, and visible to the physician on the same workspace." },
+      { "title": "Imaging review queue",                  "body": "An operational queue for unread studies so the practice can see where reads are pending without opening a separate viewer." }
+    ],
+    "futurePathways": "Direct device integration (DICOM, vendor SDKs, modality-worklist routing) is assessment-dependent and lands per pilot scope. ChartNav does not claim certified DICOM connectivity unless and until a specific integration ships."
+  },
+
+  "qualityReadiness": {
+    "eyebrow": "QUALITY AND MEASURE READINESS",
+    "headline": "Designed to capture structured data that can support quality reporting workflows.",
+    "lead": "ChartNav captures the structured fields that quality programs typically need: visit type, diagnosis codes, intervention timing, follow-up cadence, and physician sign attribution. As the product matures, these structured signals become the substrate for value-based-care reporting workflows the practice runs.",
+    "items": [
+      { "title": "Structured visit and diagnosis capture", "body": "Encounter templates produce structured outputs the practice can map to its own quality reporting workflows." },
+      { "title": "Audit trail on every write",             "body": "An append-oriented audit log captures every meaningful write so post-hoc review is possible without reverse-engineering free text." },
+      { "title": "Sign + attestation discipline",          "body": "Notes carry an explicit attestation and an immutability gate after sign, which programs that require attribution typically rely on." }
+    ],
+    "disclaimer": "ChartNav is not a certified MIPS or quality-program reporting tool today. Quality / value-based-care reporting is workflow support that the practice extends with its own reporting stack and qualified personnel."
+  },
+
+  "tabletFlow": {
+    "eyebrow": "TABLET-FRIENDLY CLINIC FLOW",
+    "headline": "Built for the lane, not just the desk.",
+    "lead": "Ophthalmology runs on lanes, not desktops. ChartNav's surfaces are designed for iPad Safari with safe-area awareness, larger touch targets, numeric-keypad inputs for IOP and VA, and sticky action rails that clear the home indicator. The technician, the physician, and the front desk each get a workspace tuned to what they're actually doing in that moment.",
+    "items": [
+      { "title": "Lane-mobile physician review",  "body": "The encounter workspace is usable on iPad Pro 12.9 in both orientations, designed against the documented Phase A tablet hardening spec." },
+      { "title": "Front desk on tablet or desktop","body": "Intake queue and reminder CRUD work the same on a counter desktop and on the front-desk tablet." },
+      { "title": "Technician quick-entry inputs", "body": "Specialized inputs for IOP (decimal keypad), VA (slash form), and MRN (no auto-capitalize) so workup data lands clean." }
+    ],
+    "limitation": "ChartNav today is a web application served to iPad Safari. There is no native iOS app, no Apple Watch surface, and no offline-first documentation layer."
+  },
+
+  "interoperability": {
+    "eyebrow": "INTEROPERABILITY AND INTEGRATIONS",
+    "headline": "Integration pathways, scoped honestly per pilot.",
+    "lead": "ChartNav is designed to coexist with the EHR, PM, billing, and imaging systems an ophthalmology practice already runs. Integration depth is decided during the workflow assessment — not promised on a marketing page.",
+    "rows": [
+      { "kind": "EHR / PM systems",                  "status": "assessment-dependent", "body": "Standalone, integrated read-through (FHIR R4 read), and integrated write-through modes. Vendor adapters are scoped per pilot." },
+      { "kind": "FHIR / API",                        "status": "available",           "body": "FHIR R4 read for Patient and Encounter resources. A canonical v1.0 JSON handoff payload is the documented integration shape." },
+      { "kind": "Imaging devices",                   "status": "roadmap",             "body": "Imaging is routed via upload + encounter context today. Direct device integration (DICOM, modality worklist) is assessment-dependent." },
+      { "kind": "Clearinghouse / billing",           "status": "documentation only",  "body": "X12 837P and FHIR Claim shapes are documented as Phase B sketches. ChartNav does not transmit claims today." },
+      { "kind": "Patient communication (SMS / email)","status": "stub",               "body": "A messaging seam is wired with a stub provider so opt-in / opt-out / state-machine logic is end-to-end testable. Real carrier wiring is Phase C and requires operator BAA + credentials." },
+      { "kind": "Referral and consult letters",      "status": "available",           "body": "Referring-provider directory + consult-letter PDF generated from the signed note. Delivery is download today; email + fax-stub are recorded as intent only." }
+    ],
+    "disclaimer": "ChartNav is not ONC-certified, is not a HIPAA Business Associate of a messaging vendor by default, and does not represent itself as a clearinghouse. Integration claims are scoped to what is actually wired in the pilot."
+  },
+
+  "proof": {
+    "eyebrow": "PROOF, NOT FAKE TRACTION",
+    "headline": "What's actually shipping.",
+    "lead": "We do not publish customer logos or testimonials we have not earned. Here is what is actually true about the product right now.",
+    "facts": [
+      { "label": "Phase 2 Pilot Threshold complete",        "body": "Referring-provider letters, admin dashboard, digital intake, messaging hardening, post-visit summary, demo environment, and onboarding/training docs — all shipped on the feature/phase-2-pilot-threshold branch." },
+      { "label": "Five product walkthrough clips",          "body": "Recorded against the live local stack: intake-to-queue, technician workup, imaging-in-chart, consult letter, hands-free scribing, and admin operations." },
+      { "label": "Deterministic demo environment",          "body": "A docker-compose / Makefile path that produces a stable demo database with John Doe + Dr. Sarah Patel + 20 encounters, so every demo runs the same screens." },
+      { "label": "Workflow assessment as the entry point",  "body": "Pilot scope, exit criteria, support tier, and 30/60/90 runbook are documented in-repo and signed before any production-credentialed account is provisioned." }
+    ]
+  },
+
+  "summary": {
+    "eyebrow": "WHY CHARTNAV — THE SHORT VERSION",
+    "headline": "Focused ophthalmology workflow with honest scope.",
+    "points": [
+      { "title": "Ophthalmology-first, not ophthalmology-skinned", "body": "The encounter workspace, templates, imaging routing, and tablet flow are built around eye-care lane work — not a general-purpose EHR with an eye module." },
+      { "title": "AI documentation support, not authority",       "body": "Hands-free scribing, drafting, missing-flag review, and coding prompts are workflow assistance. Final clinical, coding, and billing decisions stay with qualified personnel." },
+      { "title": "Staged rollout, scoped by assessment",           "body": "Standalone, integrated read-through, and integrated write-through modes are decided per practice during the workflow assessment. Nothing is promised on the marketing page." },
+      { "title": "Operational visibility built in",                "body": "Six KPI cards plus a 14-day trend mean leadership can review usage on real numbers — sign-to-export lag, missing-flag resolution rate, reminder overdue count — instead of anecdotes." },
+      { "title": "Modern surface, premium-medical-software tone",  "body": "iPad-friendly UI, deliberate vertical rhythm, and explicit truth-statements on every advisory surface." },
+      { "title": "Transparent scope",                              "body": "What ships is what ships. What's in roadmap is labeled roadmap. What is documentation-only is labeled documentation-only." }
+    ]
+  },
+
+  "finalCta": {
+    "eyebrow": "NEXT STEP",
+    "headline": "Run a workflow assessment for your practice.",
+    "body": "We start every relationship with a scoped assessment — providers, templates, deployment mode, exit criteria, and support tier — before any production-credentialed account is provisioned.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "ctaSecondary": { "label": "See the Platform overview",     "href":   "/chartnav/platform" }
+  }
+}

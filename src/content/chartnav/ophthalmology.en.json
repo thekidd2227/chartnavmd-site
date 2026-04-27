@@ -1,0 +1,271 @@
+{
+  "hero": {
+    "eyebrow": "FOR OPHTHALMOLOGY PRACTICES",
+    "headline": "Built around the realities of eye care.",
+    "subhead": "Ophthalmology is imaging-heavy, timing-sensitive, and role-dependent. ChartNav is built around the way the clinic actually flows — intake, workup, dilation, imaging, exam, sign-off, claim — so the work, the chart, and the schedule stay tied to the same patient event.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "ctaSecondary": { "label": "See the Platform",              "href":   "/chartnav/platform" }
+  },
+
+  "whyFirst": {
+    "eyebrow": "WHY OPHTHALMOLOGY FIRST",
+    "headline": "It's the specialty where generic software breaks hardest.",
+    "body": "Leading with ophthalmology isn't a marketing choice. It's a design discipline. If a workflow platform can hold up in eye care — with imaging as a core step, workup before exam, dilation driving the day, and surgical cadence layered on top — the same discipline transfers cleanly to other specialties later.",
+    "reasons": [
+      { "title": "Imaging is part of the visit, not a parallel track.",
+        "body": "OCT, fundus, visual field, topography, and scans are routinely captured in the same visit and read by the physician in context. A chart that doesn't carry the image is a chart that can't support the decision." },
+      { "title": "Multiple handoffs happen in a single encounter.",
+        "body": "A standard visit moves from check-in → technician workup → dilation → imaging → physician exam → sign-off → billing. Five or six handoffs per patient is the norm, not the exception." },
+      { "title": "Timing drives the clinic day.",
+        "body": "Dilation windows, imaging dependencies, and procedural cadence change what's possible in a slot. A schedule that ignores them is a schedule that runs on improvisation." },
+      { "title": "Documentation and coding pressure are real.",
+        "body": "Multi-part exams, imaging modifiers, and procedural codes mean the chart has to be both clinically sharp and operationally precise. The visit and the claim have to stay tied together." },
+      { "title": "Generic EHRs weren't built for this.",
+        "body": "When a general-purpose system is bent to fit ophthalmology, the seams show up everywhere — in the lane, in the imaging room, at check-in, and at month-end when billing finds out last." }
+    ]
+  },
+
+  "realities": {
+    "eyebrow": "WHAT MAKES OPHTHALMOLOGY DIFFERENT",
+    "headline": "Operational realities generic systems miss.",
+    "items": [
+      { "title": "Technicians work up the patient before the physician.",
+        "body": "The chart shouldn't restart when the physician walks in. History, meds, vitals, IOP, refraction, and prior imaging belong in one continuous encounter — not retyped across tabs." },
+      { "title": "Imaging happens before, during, or after the exam, depending on visit type.",
+        "body": "A new-patient glaucoma visit, a retina follow-up, and a cataract pre-op each sequence imaging differently. One-size-fits-all slotting breaks all three." },
+      { "title": "Dilation is a scheduling constraint, not a footnote.",
+        "body": "Dilation extends the visit and constrains what can be done next. A schedule that doesn't encode it creates bottlenecks the front desk has to solve in real time." },
+      { "title": "Follow-up cadence varies by diagnosis and procedure.",
+        "body": "Post-injection intervals, post-op day-1 / week-1 / month-1 checks, and VF monitoring windows aren't interchangeable appointments. They should be easy to create, track, and re-sequence." },
+      { "title": "Surgical and post-op visits don't behave like routine clinic visits.",
+        "body": "Pre-op biometry, day-of-surgery coordination, and post-op follow-up each have their own prep, staff mix, and documentation — and they affect the rest of the day." },
+      { "title": "Front desk, lane, imaging, physician, and billing need the same picture.",
+        "body": "When those five surfaces read from different systems, the visit runs on messages and memory. A shared operational view is not a feature — it's the floor." }
+    ]
+  },
+
+  "subspecialties": {
+    "eyebrow": "SUBSPECIALTY WORKFLOWS",
+    "headline": "Ophthalmology isn't one workflow. It's several, running in parallel.",
+    "lead": "ChartNav is shaped around the way each subspecialty actually runs — not a universal template that ignores the differences.",
+    "blocks": [
+      {
+        "id": "comprehensive",
+        "name": "Comprehensive Ophthalmology",
+        "tagline": "Mixed visit types, broad lane variation, imaging and documentation handoffs back-to-back.",
+        "different": [
+          "A single day spans routine exams, red-eye visits, new-patient workups, diabetic monitoring, and referrals.",
+          "Imaging demand varies by visit — some patients need none, others need OCT + VF the same day.",
+          "Tech-to-physician handoffs happen rapidly across mixed complexity."
+        ],
+        "breaks": [
+          "Generic calendars treat every 15-minute slot the same.",
+          "Workup templates drift when visit types don't have a clear shape.",
+          "Charts reconstruct history from scratch when the prior visit lived somewhere else."
+        ],
+        "coordinates": [
+          "Encounter templates that shift with the visit type.",
+          "A schedule that respects imaging and dilation dependencies.",
+          "A chart that carries workup, exam, imaging, and sign-off as one thread."
+        ],
+        "roles": ["Technicians", "Comprehensive physicians", "Front desk", "Administrators"]
+      },
+      {
+        "id": "retina",
+        "name": "Retina",
+        "tagline": "Imaging-dense visits, frequent follow-up, and a physician read queue that sets the pace.",
+        "different": [
+          "OCT and fundus imaging are captured on the vast majority of visits.",
+          "Intravitreal injection follow-up cadence (4–8 weeks) drives a repeating patient rhythm.",
+          "Physician review of imaging is the bottleneck — not exam time itself."
+        ],
+        "breaks": [
+          "Imaging tools that live outside the clinical workflow.",
+          "Injection recalls that depend on spreadsheets or memory.",
+          "Read queues that require opening multiple viewers to see the full picture."
+        ],
+        "coordinates": [
+          "Imaging routed to the right chart in the right order, ready for the physician.",
+          "Injection cadence captured as recurring structured events, not free-text.",
+          "A read queue the physician can work through without tab-switching."
+        ],
+        "roles": ["Imaging staff", "Retina specialists", "Technicians", "Injection coordinators"]
+      },
+      {
+        "id": "glaucoma",
+        "name": "Glaucoma",
+        "tagline": "Long patient journeys, test-interpretation continuity, and monitoring cadence that can't drift.",
+        "different": [
+          "Visual field progression analysis depends on comparing today's test to a long baseline.",
+          "OCT RNFL, macula, and disc scans need to be matched to prior studies for meaningful interpretation.",
+          "Medication adjustments, laser procedures, and surgical candidacy unfold across months and years."
+        ],
+        "breaks": [
+          "VF and OCT systems that don't hand the physician a continuous view of progression.",
+          "Monitoring intervals that slip because the recall lives in a separate system.",
+          "Charting that loses the interpretive thread between visits."
+        ],
+        "coordinates": [
+          "A chart that carries the longitudinal test picture, not just the latest study.",
+          "Monitoring intervals as first-class scheduled events.",
+          "A shared operational view for staff managing a long clinical journey."
+        ],
+        "roles": ["Glaucoma specialists", "Technicians", "Imaging staff", "Schedulers"]
+      },
+      {
+        "id": "cataract",
+        "name": "Cataract & Surgical Flow",
+        "tagline": "Pre-op readiness, surgical scheduling, and post-op cadence — all tied to one patient thread.",
+        "different": [
+          "Biometry, IOL calculations, consents, and clearance need to be complete before the day of surgery.",
+          "Surgical scheduling is coordinated across the practice, the surgical center, and the physician.",
+          "Post-op day-1, week-1, and month-1 visits have distinct workup and documentation needs."
+        ],
+        "breaks": [
+          "Pre-op checklists that live on paper or in a separate queue from the chart.",
+          "Day-of-surgery coordination that depends on phone calls between front desk, clinic, and center.",
+          "Post-op follow-up that falls out of cadence when someone misses a message."
+        ],
+        "coordinates": [
+          "Pre-op readiness as a structured state the practice can see at a glance.",
+          "Surgical-cadence follow-up events attached to the same encounter.",
+          "Front-desk, clinic, and billing reading from the same patient thread."
+        ],
+        "roles": ["Cataract surgeons", "Surgical coordinators", "Technicians", "Front desk", "Billing"]
+      }
+    ],
+    "footnote": "Cornea, oculoplastics, and pediatric ophthalmology workflows are supported inside the same operational model; subspecialty-specific detail grows with each practice deployment."
+  },
+
+  "imaging": {
+    "eyebrow": "IMAGING-CENTERED CLINIC FLOW",
+    "headline": "Imaging isn't a side module. It's part of the visit.",
+    "body": "Eye care is one of the few specialties where the physician routinely reads imaging as part of the exam itself. When studies live outside the clinical workflow, the clinic day bends around them — staff lose time looking up studies, images show up under the wrong patient, and physicians open viewers one-by-one to reconstruct a picture that should already be there.",
+    "modalities": [
+      { "label": "OCT",           "body": "Macula, RNFL, disc, and anterior segment scans — routed to the chart, aligned with prior studies for progression." },
+      { "label": "Fundus photography", "body": "Color and red-free imaging tied to the visit, annotated, and read in context — not in a separate viewer." },
+      { "label": "Visual field",   "body": "SITA, 24-2, 10-2, and progression analysis — sequenced with a baseline the physician can actually see." },
+      { "label": "Topography",     "body": "Keratometry, topographic, and corneal mapping — present during the exam, not retrieved afterward." },
+      { "label": "A-scan / B-scan", "body": "Biometry and ultrasound studies — linked to pre-op readiness and surgical planning." },
+      { "label": "External and slit-lamp photos", "body": "Captured, tagged, and held inside the encounter so they don't get orphaned." }
+    ],
+    "points": [
+      { "title": "Studies land in the right chart, in the right order.",
+        "body": "Image-to-chart routing is a first-class part of the workflow, not a retrieval task the physician solves during the exam." },
+      { "title": "Imaging completion is visible across the lane.",
+        "body": "Staff can see what's captured, what's pending, and what the physician is waiting on — without leaving their screen." },
+      { "title": "Physician review happens in context.",
+        "body": "The study is read alongside workup, history, and prior images — not in a separate viewer on a separate monitor." }
+    ]
+  },
+
+  "visitFlow": {
+    "eyebrow": "LANE FLOW",
+    "headline": "A real ophthalmology visit, stage by stage.",
+    "body": "Every ophthalmology visit moves through the same operational arc. The specifics shift by subspecialty and visit type, but the shape of the day is consistent enough that the platform should respect it.",
+    "steps": [
+      { "num": "01", "title": "Intake & Check-In",      "body": "Forms, history, medications, consents, and insurance verified before the patient reaches the lane." },
+      { "num": "02", "title": "Technician Workup",      "body": "Vitals, IOP, refraction, and focused workup captured inside the encounter — not retyped later." },
+      { "num": "03", "title": "Dilation (when needed)", "body": "Dilation timing tracked as part of the visit so the lane knows when the patient is ready for imaging or the physician." },
+      { "num": "04", "title": "Imaging",                "body": "OCT, fundus, VF, or topography routed to the right chart, in the right order, with completion visible to staff." },
+      { "num": "05", "title": "Physician Exam & Review","body": "The physician opens the chart with workup complete and imaging ready — not half the visit still to be reconstructed." },
+      { "num": "06", "title": "Encounter Sign-Off",     "body": "Exam note, problem list, and orders finalized inside the same thread the workup lives in." },
+      { "num": "07", "title": "Billing & Follow-Up",    "body": "Charges tied to the encounter, follow-up cadence scheduled as a structured event, billing sees the visit while it's still fresh." }
+    ],
+    "note": "Each subspecialty reorders, compresses, or extends this arc — retina imaging-first, cataract pre-op-heavy, glaucoma monitoring-driven. The platform respects those variations."
+  },
+
+  "scheduling": {
+    "eyebrow": "SCHEDULING REALITIES",
+    "headline": "Ophthalmology scheduling is not generic calendar management.",
+    "body": "Appointment slots in eye care aren't equal. A new-patient glaucoma workup, a retina follow-up injection, and a cataract post-op visit require different prep, different staff, and different timing — and each affects the rest of the day.",
+    "points": [
+      { "title": "Dilation-aware scheduling.",
+        "body": "Dilation is encoded as a constraint on the slot, not a note the technician has to hold in their head." },
+      { "title": "Imaging dependencies respected.",
+        "body": "Visits that need imaging before the physician are sequenced to protect that order; visits that can run imaging-last don't block the lane." },
+      { "title": "Lane readiness signals.",
+        "body": "The front desk can see which patients are ready for the lane and which are still waiting on intake, verification, or imaging." },
+      { "title": "Procedural and post-op cadence as first-class events.",
+        "body": "Post-injection, post-op day-1, week-1, and month-1 follow-ups are structured recurring events, not free-text notes." },
+      { "title": "Multi-provider coordination.",
+        "body": "Comprehensive, retina, and cataract providers can share a schedule view that reflects each provider's distinct lane rhythm." },
+      { "title": "Front-desk visibility into what the patient actually needs that day.",
+        "body": "Check-in starts on the full picture — visit type, prior imaging, language needs, insurance state — not on a generic 15-minute slot." }
+    ]
+  },
+
+  "billing": {
+    "eyebrow": "DOCUMENTATION & BILLING PRESSURE",
+    "headline": "The visit and the claim have to stay tied together.",
+    "body": "Ophthalmology charts carry more structured work than a typical encounter — exam levels, modifiers, imaging codes, and procedural codes that have to match what happened in the lane. When documentation and billing live in separate systems, issues show up at month-end instead of the same week.",
+    "points": [
+      { "title": "Technician workup stays inside the encounter.",
+        "body": "The workup the physician reads is the same workup the claim is built on — no retyping, no drift." },
+      { "title": "Encounter continuity across workup → exam → sign-off.",
+        "body": "One thread, one record, one audit trail — not three separate notes stitched together after the fact." },
+      { "title": "Charge capture tied to the visit.",
+        "body": "Charges follow the encounter that produced them, so billing isn't reconstructing what happened a week later." },
+      { "title": "Current-week visibility instead of month-end surprises.",
+        "body": "Leadership and billing see claim flow while the visit is still fresh — not three weeks after it closed." },
+      { "title": "Operational + revenue signal in one view.",
+        "body": "Administrators and medical directors can tell whether the day actually produced clean documentation and clean claims, not just volume." }
+    ],
+    "disclaimer": "ChartNav is designed with healthcare privacy and coding-workflow realities in mind. It is not a substitute for a licensed coder, and regulatory classification is governed by the customer agreement."
+  },
+
+  "fit": {
+    "eyebrow": "WHO THIS FITS BEST",
+    "headline": "The practices ChartNav was built for.",
+    "items": [
+      "Multi-provider ophthalmology groups with more than one subspecialty.",
+      "Retina-heavy clinics with high imaging volume and frequent injection cadence.",
+      "Glaucoma-focused practices with long patient journeys and monitoring discipline.",
+      "Cataract and surgical groups coordinating pre-op readiness and post-op cadence.",
+      "Practices serving multilingual populations where intake and communication are a daily friction.",
+      "Practices that have outgrown a patchwork of a general EHR plus stand-alone scheduling, imaging, and billing tools."
+    ]
+  },
+
+  "bridge": {
+    "eyebrow": "HOW IT CONNECTS",
+    "headline": "Ophthalmology-specific, platform-consistent.",
+    "body": "Every subspecialty pattern above maps back to the same five operating layers in the platform — intake, scheduling, charting, imaging, and billing visibility. Ophthalmology is where we lead; the platform is where the work runs.",
+    "links": [
+      { "label": "See the full platform",         "href": "/chartnav/platform" },
+      { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
+    ],
+    "note": "ChartNav is deployed through a structured workflow review and staged rollout — never a self-serve sign-up. Support for additional specialties is a later-stage decision, not a present-day claim."
+  },
+
+  "faq": {
+    "eyebrow": "QUESTIONS",
+    "headline": "What ophthalmology practices usually ask.",
+    "items": [
+      { "q": "Why is ChartNav focused on ophthalmology first?",
+        "a": "Ophthalmology is imaging-heavy, timing-sensitive, and lane-based — the hardest test a workflow platform can take. Leading here means the discipline is real before it transfers to other specialties. Marketing a broader specialty list would be easier; we don't think it would be honest yet." },
+      { "q": "Does ChartNav support imaging-heavy clinic flow?",
+        "a": "Yes. OCT, fundus, visual field, topography, and scans are first-class parts of the visit. Studies route to the right chart, completion status is visible across the lane, and physicians read imaging alongside workup and history — not in a separate viewer." },
+      { "q": "Is ChartNav built for retina or glaucoma practices?",
+        "a": "The platform is shaped for ophthalmology generally, with subspecialty-specific patterns for retina (injection cadence, read queue), glaucoma (longitudinal test interpretation, monitoring cadence), cataract (pre-op readiness, surgical flow), and comprehensive practices. Specifics are tuned during the workflow assessment." },
+      { "q": "How does ChartNav help with technician-to-physician handoffs?",
+        "a": "Workup, vitals, IOP, refraction, and prior imaging live inside the same encounter. When the physician walks into the lane, the chart is already built from the tech's work — no retyping, no reconstruction." },
+      { "q": "Does ChartNav help with surgical and post-op workflow?",
+        "a": "Pre-op readiness is a structured state, not a checklist on paper. Surgical scheduling, day-of-surgery coordination, and post-op day-1 / week-1 / month-1 follow-ups are events attached to the same patient thread. It is not a surgical center management system; it is the clinic-side coordination layer around one." },
+      { "q": "How does ChartNav handle dilation and scheduling realities?",
+        "a": "Dilation is encoded as a scheduling constraint, imaging dependencies are respected, and lane-readiness signals are visible to the front desk. Visits that need imaging-first are sequenced differently from visits that can run imaging-last." },
+      { "q": "Is ChartNav only for ophthalmology?",
+        "a": "Today, ophthalmology is the operating focus. Support for additional specialties is a later-stage decision. If you're in another specialty, the short demand-capture version of the workflow review is the right place to start." },
+      { "q": "How does implementation start?",
+        "a": "Every engagement starts with a workflow assessment and a written plan before any configuration begins. Rollout is staged — by role, location, or module — so the clinic day is never put at risk. There is no self-serve sign-up." }
+    ]
+  },
+
+  "finalCta": {
+    "eyebrow": "NEXT STEP",
+    "headline": "See ChartNav in the context of your practice.",
+    "body": "We review your current workflow — intake, dilation, imaging, exam, sign-off, and billing — to determine implementation fit, rollout scope, and the clearest next step for your ophthalmology practice.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "note": "Private conversations. No mass outreach."
+  }
+}

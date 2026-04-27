@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <!--
+      Title is intentionally absent from the static shell so
+      react-helmet-async's per-page <title> is the only one in the
+      head. Per-page meta is set via react-helmet-async on every
+      route. The static fallback below is intentionally minimal.
+    -->
+    <title>ChartNav</title>
+    <meta name="description" content="ChartNav — clinical workflow intelligence for ophthalmology and specialty medicine. Capture, normalize, and reason over the chart so clinicians get hours back, not minutes." />
+    <meta name="keywords" content="clinical workflow automation, ophthalmology charting, specialty medical charting, clinical documentation AI, EHR workflow, chart navigation, clinical intelligence, physician productivity" />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <meta name="author" content="ChartNav (an ARCG Systems product)" />
+    <meta name="theme-color" content="#0F172A" />
+
+    <!-- Canonical (per-page Helmet will override; this is the apex fallback). -->
+    <link rel="canonical" href="https://chartnavmd.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ChartNav" />
+    <meta property="og:description" content="Clinical workflow intelligence for ophthalmology and specialty medicine." />
+    <meta property="og:url" content="https://chartnavmd.com/" />
+    <meta property="og:image" content="https://chartnavmd.com/opengraph.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ChartNav" />
+    <meta property="og:site_name" content="ChartNav" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ChartNav" />
+    <meta name="twitter:description" content="Clinical workflow intelligence for ophthalmology and specialty medicine." />
+    <meta name="twitter:image" content="https://chartnavmd.com/opengraph.jpg" />
+    <meta name="twitter:image:alt" content="ChartNav" />
+
+    <!-- JSON-LD Organization schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "@id": "https://chartnavmd.com/#chartnav",
+      "name": "ChartNav",
+      "applicationCategory": "MedicalApplication",
+      "operatingSystem": "Web",
+      "url": "https://chartnavmd.com/",
+      "description": "ChartNav is a clinical workflow intelligence platform for ophthalmology and specialty medicine. ChartNav captures, normalizes, and reasons over the chart so clinicians spend less time charting and more time with patients.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "ARCG Systems",
+        "url": "https://arcgsystems.com/"
+      }
+    }
+    </script>
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- GitHub Pages SPA redirect handler (preserved from arcg-live; required for deep-links on Pages). -->
+    <script>
+    (function(l){if(l.search[1]==='/'){{var decoded=l.search.slice(1).split('&').map(function(s){return s.replace(/~and~/g,'&')}).join('?');window.history.replaceState(null,null,l.pathname.slice(0,-1)+decoded+l.hash)}}}(window.location))
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

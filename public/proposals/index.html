@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCG Systems — Proposal Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Azeret+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0e0f11; --surface:#14161a; --border:#2a2d35; --text:#e8e6e0; --text-muted:#7a7d87; --text-dim:#4a4d57; --amber:#e8a820; --amber-dim:rgba(232,168,32,0.10); --amber-border:rgba(232,168,32,0.28); --green:#2eb87a; --red:#e05a38; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased;}
+.header{padding:40px 60px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;}
+.brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);}
+.header-meta{font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);}
+.wrap{max-width:960px;margin:0 auto;padding:60px 60px 80px;}
+.page-eyebrow{font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.page-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--amber);}
+.page-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,4vw,42px);line-height:1.05;letter-spacing:-0.02em;color:#fff;margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--text-muted);margin-bottom:48px;}
+.table-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:0;background:var(--surface);border:1px solid var(--border);border-bottom:none;padding:12px 20px;}
+.th{font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
+.row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:0;border:1px solid var(--border);border-bottom:none;padding:18px 20px;transition:background 0.15s;align-items:center;}
+.row:last-child{border-bottom:1px solid var(--border);}
+.row:hover{background:var(--surface);}
+.client-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#fff;}
+.client-type{font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--text-dim);text-transform:uppercase;margin-top:2px;}
+.badge{display:inline-block;font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:2px;}
+.badge-sent{background:var(--amber-dim);border:1px solid var(--amber-border);color:var(--amber);}
+.badge-draft{background:rgba(61,142,240,0.1);border:1px solid rgba(61,142,240,0.28);color:#3d8ef0;}
+.badge-closed{background:rgba(46,184,122,0.1);border:1px solid rgba(46,184,122,0.28);color:var(--green);}
+.col-date{font-family:'Azeret Mono',monospace;font-size:11px;color:var(--text-muted);}
+.col-value{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--amber);}
+.view-btn{font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber-border);padding:7px 14px;text-decoration:none;transition:background 0.2s;white-space:nowrap;}
+.view-btn:hover{background:rgba(232,168,32,0.2);}
+.empty-row{padding:40px 20px;text-align:center;border:1px solid var(--border);color:var(--text-dim);font-family:'Azeret Mono',monospace;font-size:11px;letter-spacing:0.1em;}
+.footer{padding:24px 60px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-top:auto;}
+.footer-brand{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);}
+.footer-copy{font-family:'Azeret Mono',monospace;font-size:9.5px;letter-spacing:0.1em;color:var(--text-dim);}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="brand">ARCG Systems</div>
+  <div class="header-meta">Proposal Portal · Internal Use Only</div>
+</div>
+<div class="wrap">
+  <div class="page-eyebrow">Operational Intelligence Reports</div>
+  <div class="page-title">Client Proposals</div>
+  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(61,142,240,0.1);border:1px solid rgba(61,142,240,0.3);padding:8px 16px;margin-bottom:16px;font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:#3d8ef0;">⚠ The entries below are test examples — not real client proposals. Replace with live submissions.</div>
+  <div class="page-sub">All active and delivered proposals. Add new client HTML files to <code style="color:var(--amber);font-family:'Azeret Mono',monospace;">/public/proposals/</code> in the repo.</div>
+
+  <div class="table-header">
+    <div class="th">Client</div>
+    <div class="th">Status</div>
+    <div class="th">Date</div>
+    <div class="th">Option B Value</div>
+    <div class="th"></div>
+  </div>
+
+  <div class="row">
+    <div>
+      <div class="client-name">Axiom Automation Co. <span style="font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#3d8ef0;background:rgba(61,142,240,0.1);border:1px solid rgba(61,142,240,0.25);padding:2px 8px;margin-left:6px;">EXAMPLE</span></div>
+      <div class="client-type">AI / Automation Agency</div>
+    </div>
+    <div><span class="badge badge-sent">Sent</span></div>
+    <div class="col-date">Mar 23, 2026</div>
+    <div class="col-value">$6,500</div>
+    <a class="view-btn" href="/proposals/axiom-automation.html" target="_blank">View →</a>
+  </div>
+
+  <div class="row">
+    <div>
+      <div class="client-name">Crestline Property Services <span style="font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#3d8ef0;background:rgba(61,142,240,0.1);border:1px solid rgba(61,142,240,0.25);padding:2px 8px;margin-left:6px;">EXAMPLE</span></div>
+      <div class="client-type">Property / Facilities Management</div>
+    </div>
+    <div><span class="badge badge-sent">Sent</span></div>
+    <div class="col-date">Mar 20, 2026</div>
+    <div class="col-value">$4,500</div>
+    <span class="view-btn" style="opacity:0.4;cursor:default;">Pending upload</span>
+  </div>
+
+  <div class="row">
+    <div>
+      <div class="client-name">Crestline Property Services</div>
+      <div class="client-type">Operational Intelligence Report</div>
+    </div>
+    <div><span class="badge badge-sent">Sent</span></div>
+    <div class="col-date">Mar 23, 2026</div>
+    <div class="col-value">—</div>
+    <a class="view-btn" href="/proposals/crestline-property.html" target="_blank">View →</a>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">ARCG Systems</div>
+  <div class="footer-copy">arcgsystems.com · info@arivergroup.com · Confidential</div>
+</div>
+</body>
+</html>

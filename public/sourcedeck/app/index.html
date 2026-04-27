@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  ============================================================================
+  LEGACY REDIRECT SHIM — DO NOT RE-HOST THE LIVE APP HERE.
+
+  This file used to be the deployed SourceDeck Lead Command Center app
+  surface at arcgsystems.com/sourcedeck/app/. The live product now lives
+  exclusively at https://sourcedeck.app/app/. This shim exists ONLY so
+  legacy bookmarks, share links, and crawler URLs forward correctly.
+
+  The byte-identical pre-shim engine source is preserved at:
+    ~/Desktop/ARCG/ARCG Systems/LCC Documents/master/lcc-master-c392c6a7.html
+    (md5 c392c6a743cf79e216fa0c6dff3cc225)
+  That desktop snapshot is the engine source-of-truth. If you ever need
+  to update the SourceDeck app, do it in the live sourcedeck.app codebase
+  and the desktop master, never in this file.
+
+  Required invariants for this file:
+    1. Never put live app HTML/JS/CSS here.
+    2. Always: meta robots noindex, canonical to sourcedeck.app/app/,
+       meta refresh to sourcedeck.app/app/, JS location.replace fallback.
+    3. Never link back to itself.
+  ============================================================================
+-->
+<meta charset="UTF-8">
+<title>SourceDeck App — Redirecting…</title>
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="refresh" content="0;url=https://sourcedeck.app/app/">
+<link rel="canonical" href="https://sourcedeck.app/app/">
+<meta property="og:url" content="https://sourcedeck.app/app/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  html,body{margin:0;padding:0;background:#000;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Inter',system-ui,sans-serif;height:100%}
+  .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+  h1{font-size:22px;font-weight:700;margin:0 0 10px;letter-spacing:-0.02em}
+  p{font-size:14px;color:rgba(245,245,247,0.6);margin:0 0 18px;line-height:1.5}
+  a{color:#2997ff;text-decoration:none;font-weight:600}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <h1>Opening SourceDeck…</h1>
+      <p>The SourceDeck app lives at <a href="https://sourcedeck.app/app/">sourcedeck.app/app/</a>.<br>Redirecting you now.</p>
+      <p style="font-size:12px;color:rgba(245,245,247,0.4)">If you're not redirected automatically, <a href="https://sourcedeck.app/app/">tap here</a>.</p>
+    </div>
+  </div>
+  <script>
+    // Preserve any sub-path, query, or hash. Examples:
+    //   /sourcedeck/app/             → https://sourcedeck.app/app/
+    //   /sourcedeck/app/foo?x=1#y    → https://sourcedeck.app/app/foo?x=1#y
+    (function(){
+      var p = location.pathname.replace(/^\/sourcedeck\/app\/?/, '/app/');
+      var dest = 'https://sourcedeck.app' + p + location.search + location.hash;
+      location.replace(dest);
+    })();
+  </script>
+</body>
+</html>

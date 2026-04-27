@@ -1,0 +1,293 @@
+{
+  "hero": {
+    "eyebrow": "THE PLATFORM",
+    "headline": "Charting-first today. Workflow-wide over time.",
+    "subhead": "ChartNav is an ophthalmology-first workflow platform. Its current pilot shape is the clinical documentation layer — transcript, findings, draft, provider signoff — deployed alongside the intake, imaging, and billing systems you already run. The rest of the platform is on a roadmap, scoped at the workflow assessment rather than claimed by default.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "ctaSecondary": { "label": "See the Modules",                "href":   "#modules" }
+  },
+
+  "summary": {
+    "eyebrow": "AT A GLANCE",
+    "headline": "One documentation workflow today. Five operating layers over time.",
+    "lead": "ChartNav is organized around the real handoffs inside a practice. Today, the pilot covers the charting layer end-to-end. The remaining layers are in scope at assessment time, not advertised as shipped.",
+    "layers": [
+      { "num": "01", "icon": "intake",    "title": "Patient Intake & Messaging",
+        "body": "ROADMAP. Multilingual intake, consent capture, and patient messaging are scoped at the workflow assessment. Today, pilots run alongside your existing intake tools." },
+      { "num": "02", "icon": "schedule",  "title": "Scheduling & Front Desk",
+        "body": "PARTIAL. Role-based day view, check-in / scheduled-to-in-progress transitions, and encounter board are live. Dilation-aware slot logic and insurance verification are roadmap items." },
+      { "num": "03", "icon": "chart",     "title": "Charting & Clinical Workflow",
+        "body": "AVAILABLE. Technician workup and physician chart flow inside one ophthalmology-shaped encounter — transcript → findings → draft → signed note, with audit on every transition." },
+      { "num": "04", "icon": "imaging",   "title": "Imaging Workflow",
+        "body": "ROADMAP + BRING-YOUR-OWN. OCT, fundus, visual field, and topography routing is a roadmap module. Today, practices keep their existing imaging viewers and routing; ChartNav attaches the encounter." },
+      { "num": "05", "icon": "billing",   "title": "Billing Visibility & Reporting",
+        "body": "ROADMAP + BRING-YOUR-OWN. Charge capture and claim status are roadmap items. Today, billing stays on your current system; ChartNav surfaces documentation-quality KPIs that feed it." }
+    ]
+  },
+
+  "rationale": {
+    "eyebrow": "PLATFORM LOGIC",
+    "headline": "Built around handoffs, not software buckets.",
+    "body": "A clinic day is a chain of handoffs — front desk to lane, workup to physician, imaging to chart, encounter to claim. When those handoffs live in separate tools, the work runs on memory and sticky notes. ChartNav starts by fixing the documentation handoff — the one where most of the pain compounds — and expands from there at assessment time.",
+    "points": [
+      { "title": "Work, not categories.",
+        "body": "Every module is shaped by a real step in the clinic day — not by a general-purpose software taxonomy." },
+      { "title": "Sequencing matters in eye care.",
+        "body": "Dilation windows, imaging dependencies, and post-op cadence drive the day. The platform respects that ordering by design." },
+      { "title": "Roles stay distinct.",
+        "body": "Clinicians, reviewers, front-desk staff, and admins each get a screen scoped to their work — not a shared catch-all view." }
+    ]
+  },
+
+  "modules": [
+    {
+      "id": "intake",
+      "num": "01",
+      "icon": "intake",
+      "name": "Patient Intake & Messaging",
+      "status": "roadmap",
+      "statusLabel": "Roadmap — bring-your-own today",
+      "tagline": "Scoped at assessment. Practices keep their current intake during pilot.",
+      "covers": [
+        "Roadmap: digital intake forms",
+        "Roadmap: multilingual forms and patient communication",
+        "Roadmap: medication and history capture",
+        "Roadmap: consent collection",
+        "Roadmap: appointment reminders",
+        "Roadmap: pre-visit and post-visit messaging"
+      ],
+      "users": ["Patients", "Front desk", "Coordinators"],
+      "problems": [
+        "Incomplete intake at the time of the visit",
+        "Repeated patient questions across the chain",
+        "Language friction with multilingual populations",
+        "Missing consents or history discovered at the chair"
+      ],
+      "objects": ["Intake form", "Consent record", "Reminder thread", "Language profile"],
+      "outcomes": "During pilot, the practice keeps its current intake tools. Intake integration scope is decided at the workflow assessment, module by module — not assumed shipped."
+    },
+    {
+      "id": "scheduling",
+      "num": "02",
+      "icon": "schedule",
+      "name": "Scheduling & Front Desk",
+      "status": "partial",
+      "statusLabel": "Partial — day board + check-in today; scheduling logic on roadmap",
+      "tagline": "Role-based day view and check-in transitions ship today. Deeper scheduling logic is on the roadmap.",
+      "covers": [
+        "Available today: role-based day board across locations",
+        "Available today: check-in / scheduled → in_progress transition",
+        "Available today: bulk status actions on the encounter list",
+        "Available today: patient typeahead in encounter create",
+        "Roadmap: appointment types with clinical logic",
+        "Roadmap: dilation-aware slot logic",
+        "Roadmap: imaging dependencies in the schedule",
+        "Roadmap: insurance verification + eligibility"
+      ],
+      "users": ["Front desk", "Schedulers", "Administrators"],
+      "problems": [
+        "Generic slots that ignore the real steps of an eye exam",
+        "Timing collisions between workup, imaging, and physician time",
+        "Poor handoff from front desk into clinic lanes",
+        "Missing insurance or readiness context at the start of the visit"
+      ],
+      "objects": ["Appointment slot", "Check-in state", "Day board lane", "Role-scoped view"],
+      "outcomes": "The front desk gets a real-time day board + check-in transitions today. Full scheduling logic (dilation, imaging dependencies, eligibility) is scoped at the assessment, not promised by default."
+    },
+    {
+      "id": "charting",
+      "num": "03",
+      "icon": "chart",
+      "name": "Charting & Clinical Workflow",
+      "status": "available",
+      "statusLabel": "Available today — pilot scope",
+      "tagline": "Documentation shaped around ophthalmology. The current pilot scope.",
+      "covers": [
+        "Transcript → findings → draft → signed note workflow",
+        "Three-tier trust model with visible provenance at every tier",
+        "Pre-sign safety checkpoint for low-confidence drafts",
+        "Role-based chart views (clinician, reviewer, admin)",
+        "Immutable signed notes with full audit trail",
+        "Subspecialty shortcut pack (retina, glaucoma, cataract, cornea)",
+        "Ophthalmology structured exam blocks (VA, IOP, anterior/posterior segment, etc.)",
+        "External encounter bridge (FHIR R4 read-through) during pilot"
+      ],
+      "users": ["Clinicians", "Reviewers", "Scribes and support staff"],
+      "problems": [
+        "Fragmented documentation across tabs and tools",
+        "Chart retrieval becomes a search task",
+        "Poor handoffs between workup and physician exam",
+        "Notes finished after hours, drifting into the next day",
+        "Missing-data issues caught only after the visit"
+      ],
+      "objects": ["Encounter", "Transcript input", "Extracted findings", "Note version", "Sign-off event"],
+      "outcomes": "The chart is faster to complete, the draft carries explicit provenance, signed notes are immutable, and per-provider time-to-signed-note is measurable from day one."
+    },
+    {
+      "id": "imaging",
+      "num": "04",
+      "icon": "imaging",
+      "name": "Imaging Workflow",
+      "status": "roadmap",
+      "statusLabel": "Roadmap — bring-your-own today",
+      "tagline": "Imaging routing is a roadmap module. Pilots run on your existing imaging tools.",
+      "covers": [
+        "Roadmap: OCT, fundus, visual field, and topography workflow",
+        "Roadmap: image-to-chart routing",
+        "Roadmap: read queue for physicians",
+        "Roadmap: imaging status visibility across the lane",
+        "Roadmap: handoff signals from imaging back to exam"
+      ],
+      "users": ["Imaging staff", "Technicians", "Physicians"],
+      "problems": [
+        "Imaging tools that live outside the clinical workflow",
+        "Image-to-chart mismatches discovered during exam",
+        "Manual lookup across separate viewers",
+        "Unclear whether imaging is complete or pending"
+      ],
+      "objects": ["Study (external)", "Modality (external)", "Read queue entry (roadmap)"],
+      "outcomes": "During pilot, imaging stays on your current viewers and routing. ChartNav attaches the clinical encounter and surfaces documentation KPIs that reflect imaging turnaround. Native imaging routing is a post-pilot decision."
+    },
+    {
+      "id": "billing",
+      "num": "05",
+      "icon": "billing",
+      "name": "Billing Visibility & Reporting",
+      "status": "roadmap",
+      "statusLabel": "Roadmap — bring-your-own today",
+      "tagline": "Billing stays on your current system during pilot. ChartNav surfaces the documentation signal that feeds it.",
+      "covers": [
+        "Available today: per-provider time-to-signed-note, missing-data rate, revision rate (KPI scorecard)",
+        "Available today: documentation completeness signals that drive charge capture downstream",
+        "Roadmap: charge capture tied to the encounter",
+        "Roadmap: claim status awareness",
+        "Roadmap: role-based reporting views",
+        "Roadmap: operational dashboards"
+      ],
+      "users": ["Billing staff", "Administrators", "Medical directors", "Operations leaders"],
+      "problems": [
+        "Billing finds out about issues after the patient has left",
+        "Claim flow is opaque to the people responsible for it",
+        "Reporting requires exporting and cleaning spreadsheets",
+        "End-of-month surprises absorb leadership attention"
+      ],
+      "objects": ["KPI scorecard (today)", "Charge (roadmap)", "Claim (roadmap)", "Dashboard view (roadmap)"],
+      "outcomes": "Today, leadership can act on documentation signal this week — time-to-signed-note, missing-data rate, revision rate — even while billing itself remains on the existing system. Native billing visibility is a later-stage decision."
+    }
+  ],
+
+  "roles": {
+    "eyebrow": "ROLE-BASED VIEWS",
+    "headline": "Each role sees the screen built for its work.",
+    "lead": "A clinician's day is not a reviewer's day is not a front-desk day. ChartNav gives each role a scoped view of the same encounter, with a clear handoff to whoever owns the next step.",
+    "items": [
+      { "role": "Front Desk",     "needs": "Arrivals, check-in status, and the shape of the rest of the day.",
+        "sees":  "A real-time board of who's here, who's ready for the lane, and what's at risk — scoped to scheduling-side data only.",
+        "owns":  "Handoff into the clinic lane once intake and check-in are complete." },
+      { "role": "Clinician",      "needs": "A fast, familiar chart with transcript, findings, and draft all visible at once.",
+        "sees":  "The encounter workspace with ExamSummary, next-best-action rail, and the three-tier trust model.",
+        "owns":  "Draft review, revisions, and provider signoff with pre-sign safety checkpoint." },
+      { "role": "Reviewer",       "needs": "Visibility into drafts waiting for review, without the ability to sign.",
+        "sees":  "Review-needed queue, read-only note workspace, and the same audit trail the signer sees.",
+        "owns":  "Kick-back to draft or promotion to completed after provider signs." },
+      { "role": "Admin",          "needs": "User + location management, audit, and operational KPIs.",
+        "sees":  "Users, locations, invitations, audit log, deployment telemetry, and the charting KPI scorecard.",
+        "owns":  "Org configuration, role assignments, and pilot KPI reporting." },
+      { "role": "Imaging / Billing (bring-your-own)",
+        "needs": "Their own current tools, unchanged during pilot.",
+        "sees":  "Nothing new in ChartNav during pilot — these layers stay on the existing stack.",
+        "owns":  "Imaging capture and claim submission as they do today." }
+    ]
+  },
+
+  "flow": {
+    "eyebrow": "CURRENT PILOT FLOW",
+    "headline": "How the charting layer moves through ChartNav today.",
+    "lead": "During pilot, the documentation layer runs end-to-end inside ChartNav. Intake, imaging, and billing remain on your current systems; ChartNav picks up the encounter and drives it to a signed note.",
+    "steps": [
+      { "num": "01", "title": "Encounter ingest",      "body": "Encounter created natively or bridged from the external EHR via FHIR R4 read-through." },
+      { "num": "02", "title": "Transcript input",      "body": "Audio upload, text paste, or manual entry lands in the transcript tier with an explicit processing state." },
+      { "num": "03", "title": "Findings extraction",   "body": "Structured ophthalmology facts are extracted and rendered with confidence + missing-data flags." },
+      { "num": "04", "title": "Draft + provider review","body": "Provider-editable draft with pre-sign safety checkpoint when confidence is low or fields are missing." },
+      { "num": "05", "title": "Signed note + export",  "body": "Immutable signed note, text export, and optional transmit-artifact seam for future EHR writethrough." }
+    ],
+    "connectors": [
+      "The transcript tier is the source of record. Provenance is explicit at every step.",
+      "Findings are extracted once and rendered, not re-derived every read.",
+      "Drafts are provider-editable but immutable after sign — no silent edits.",
+      "Signed notes feed the KPI scorecard (time-to-signed-note, missing-data rate, revision rate)."
+    ],
+    "cta": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
+  },
+
+  "continuity": {
+    "eyebrow": "ONE RECORD, ONE WORKFLOW",
+    "headline": "Data and handoffs stay connected across the visit.",
+    "body": "The encounter record moves with the visit, not ahead of it or behind it. Each handoff is captured as an audit event in the workflow, not a message that lives outside the chart.",
+    "points": [
+      { "title": "One patient, one encounter.",
+        "body": "Transcript inputs, extracted findings, and note versions are all attached to the same encounter with an append-only audit trail." },
+      { "title": "Handoffs are events.",
+        "body": "Every transition — ingest, generate, submit, sign, export — is recorded as a structured event, not a side message." },
+      { "title": "Admins see the operational picture.",
+        "body": "Deployment telemetry and the KPI scorecard surface the documentation layer's behavior without exporting spreadsheets." },
+      { "title": "Reporting reflects actual work.",
+        "body": "Per-provider time-to-signed-note and missing-data rate are computed from the same events the clinician already drives." }
+    ]
+  },
+
+  "ophthalmology": {
+    "eyebrow": "OPHTHALMOLOGY-FIRST",
+    "headline": "Built for eye care, starting day one.",
+    "body": "Ophthalmology is imaging-heavy, timing-sensitive, and lane-based. That makes it a demanding starting point and a clarifying one. ChartNav leads with ophthalmology so the product shape is honest about the specialty it was built for.",
+    "subspecialties": [
+      { "label": "Retina",   "body": "Imaging-heavy, close post-op cadence, and frequent follow-up. Subspecialty shortcut pack covers PVD, RD, and AMD phrasing." },
+      { "label": "Glaucoma", "body": "Visual-field sequencing, long patient journeys, and monitoring windows." },
+      { "label": "Cataract", "body": "Surgical scheduling, pre-op workup, and post-op follow-up cadence." },
+      { "label": "Cornea",   "body": "Anterior-segment emphasis with shortcut phrasing for corneal exams." }
+    ],
+    "cta": { "label": "Ophthalmology detail page", "href": "/chartnav/ophthalmology" }
+  },
+
+  "implementation": {
+    "eyebrow": "IMPLEMENTATION",
+    "headline": "ChartNav is deployed, not downloaded.",
+    "body": "The product is only as good as the rollout. Every engagement begins with a workflow assessment, a written plan, and a charting-first pilot so the clinic day is never at risk.",
+    "steps": [
+      { "num": "01", "title": "Workflow assessment", "body": "Map the current documentation day — transcript capture, review, signoff — and identify what the pilot should measure." },
+      { "num": "02", "title": "Configuration",       "body": "Templates, role structure, providers, and locations tuned to the practice; FHIR R4 read-through configured where an external EHR is in play." },
+      { "num": "03", "title": "Charting-first pilot","body": "By role, location, or provider group — never a flip-the-switch go-live. Intake, imaging, and billing remain on the existing stack." },
+      { "num": "04", "title": "Measured review",     "body": "Time-to-signed-note, missing-data rate, and revision rate reviewed on the cadence agreed up front. Numbers drive what expands next." }
+    ],
+    "cta": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
+  },
+
+  "faq": {
+    "eyebrow": "QUESTIONS",
+    "headline": "What practices usually ask first.",
+    "items": [
+      { "q": "Is ChartNav an EHR?",
+        "a": "No. ChartNav is an ophthalmology-first charting workflow platform. During pilot, the practice keeps its existing EHR for non-documentation functions; ChartNav replaces the documentation layer and can ingest encounters from the EHR via FHIR R4 read-through." },
+      { "q": "Does ChartNav replace intake, imaging, and billing?",
+        "a": "Not today. Intake, imaging, and billing are roadmap modules, scoped at the workflow assessment. Today's pilot is charting-first; those layers stay on the practice's current tools." },
+      { "q": "How does ChartNav handle imaging workflow?",
+        "a": "Native imaging routing is on the roadmap. During pilot, practices keep their existing imaging viewers and routing; ChartNav attaches the encounter and surfaces documentation KPIs that reflect imaging turnaround." },
+      { "q": "Is ChartNav only for ophthalmology?",
+        "a": "Today, yes. Ophthalmology is the starting specialty because its documentation workflow — subspecialty findings, imaging dependencies, timing-sensitive post-op — is a demanding and clarifying test for the product." },
+      { "q": "How is ChartNav rolled out in a practice?",
+        "a": "Every engagement starts with a workflow assessment and a written plan. Deployment is staged — by role, location, or provider group — and the pilot is scoped to the charting layer so the clinic day is never at risk." },
+      { "q": "What does ChartNav do about security and patient data?",
+        "a": "In place today: four-role RBAC with a configurable security-admin allowlist, per-organization data scoping on every write, an append-oriented audit log, org-configurable MFA-required-claim enforcement (bearer mode), idle and absolute session timeouts with admin-initiated revocation, outbound audit-sink forwarding to a JSONL file or HTTPS webhook, and SBOM + image-digest tracking on every release. Enterprise SSO (SAML / OIDC) and SCIM provisioning remain on the roadmap. Current pilots run against a customer-managed identity provider via bearer JWT." },
+      { "q": "What does a first conversation look like?",
+        "a": "A 20-minute demo of the charting workflow, followed by a workflow assessment if there's fit. No self-serve sign-up; no mass outreach after the call." }
+    ]
+  },
+
+  "finalCta": {
+    "eyebrow": "NEXT STEP",
+    "headline": "See the charting workflow in your practice.",
+    "body": "We review your current documentation layer — transcript capture, draft review, provider signoff, reviewer loop — to determine pilot fit, rollout scope, and the clearest next step.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "note": "Private conversations. No mass outreach."
+  }
+}

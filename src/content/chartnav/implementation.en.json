@@ -1,0 +1,390 @@
+{
+  "hero": {
+    "eyebrow": "IMPLEMENTATION",
+    "headline": "A charting-first rollout, not a sign-up link.",
+    "subhead": "ChartNav is introduced the way careful software should be — starting with a workflow assessment, configured by role, rolled out charting-first alongside the intake, imaging, and billing tools the practice already runs, and reviewed on numbers in the weeks after go-live. The goal is safer adoption, not disruption.",
+    "ctaPrimary":   { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "ctaSecondary": { "label": "See the Platform",              "href":   "/chartnav/platform" }
+  },
+
+  "pilotScope": {
+    "eyebrow": "PILOT SCOPE TODAY",
+    "headline": "Charting-first. Bring-your-own everything else.",
+    "body": "The current ChartNav pilot scope is the clinical documentation layer — transcript → findings → draft → signed note. Intake, imaging, and billing remain on your current systems during pilot. Expansion into those layers is on the roadmap and is scoped at the workflow assessment, not assumed by default.",
+    "bullets": [
+      "Available today: charting workflow, role-based views, audit trail with outbound JSONL / HTTPS webhook forwarding, MFA-required-claim enforcement, idle + absolute session timeouts with admin-initiated revocation, KPI scorecard (time-to-signed-note, missing-data rate, revision rate), FHIR R4 read-through, audit retention, SBOM per release.",
+      "Bring-your-own during pilot: patient intake, patient messaging, imaging capture and routing, charge capture, claim-status.",
+      "Roadmap (scoped at assessment): enterprise SSO (SAML / OIDC), SCIM provisioning, native imaging routing, native billing visibility, vendor adapters for named EHRs."
+    ]
+  },
+
+  "howIntroduced": {
+    "eyebrow": "HOW CHARTNAV IS INTRODUCED",
+    "headline": "In plain English: what actually gets put into the practice.",
+    "body": "ChartNav is introduced as a workflow platform, shaped around how your clinic day actually runs. It is not a USB install dropped on a workstation, and it is not a self-serve app anyone on the team can flip on overnight. Implementation begins with a workflow review, then configuration, then a controlled pilot — and only then does anything go live in a real clinic day.",
+    "points": [
+      { "title": "Delivered as a configured workflow platform.",
+        "body": "The software is set up for your practice — your visit types, your roles, your imaging flow, your subspecialty mix — before anyone uses it in the lane." },
+      { "title": "Introduced through a staged rollout.",
+        "body": "Workflow review → configuration → pilot with a limited surface → wider rollout → post go-live review. Each stage is scoped and reversible." },
+      { "title": "Never dropped into a live clinic day.",
+        "body": "A pilot runs alongside your current systems so the rest of the practice keeps running normally while the rollout is observed." },
+      { "title": "Guided by the practice, not by a feature list.",
+        "body": "The workflow assessment drives the configuration, the pilot scope, and the training plan — not the other way around." }
+    ],
+    "note": "Specific technical-deployment details (hosting, integration depth, data exchange with existing systems) are determined during the workflow assessment based on what the practice already runs today. The page does not commit to a universal technical model because rollouts are not universal."
+  },
+
+  "sitsAcross": {
+    "eyebrow": "WHERE CHARTNAV SITS",
+    "headline": "A workflow layer — not a blanket replacement today.",
+    "body": "ChartNav is positioned as a workflow platform that coordinates across intake, scheduling, charting, imaging, and billing visibility. What it replaces, integrates with, or sits alongside in a given practice is determined during the workflow assessment — not decided on this page.",
+    "pairs": [
+      { "title": "What ChartNav is designed to coordinate",
+        "body": "Intake and patient communication, dilation- and imaging-aware scheduling, technician workup and physician charting continuity, imaging routing into the right chart, and current-week billing and operational visibility." },
+      { "title": "What stays dependent on the practice environment",
+        "body": "Existing EHR and practice-management systems, specific imaging devices, clearinghouse and payer connections, and any third-party tools the practice already relies on. Whether ChartNav replaces, layers over, or integrates alongside those is a per-practice decision made in the assessment." },
+      { "title": "What is not being claimed on this page",
+        "body": "Drop-in integration with every EHR, every imaging device, or every billing stack. No universal plug-and-play promises are made here because rollouts in ophthalmology are rarely universal." }
+    ]
+  },
+
+  "whatChanges": {
+    "eyebrow": "WHAT CHANGES IN THE PRACTICE",
+    "headline": "What staff actually experience after rollout.",
+    "body": "Implementation is judged by the people who use it every day. Here's the practical difference each role tends to see once a pilot is running.",
+    "items": [
+      { "title": "Front desk.",
+        "body": "Check-in reads against lane readiness — who's verified, who's waiting on intake, who's ready for the tech. Less phone-tag, fewer surprises at the chair." },
+      { "title": "Technicians.",
+        "body": "Workup lives inside the encounter. Imaging dependencies are visible. The handoff into the physician exam carries the chart forward instead of restarting it." },
+      { "title": "Physicians.",
+        "body": "Open a prepared chart. Read imaging in context. Close the encounter without reconstructing half the visit." },
+      { "title": "Imaging staff.",
+        "body": "A clear read queue, modality assignment, and routing-status signals back to the lane. Less \"which chart does this go in?\" time." },
+      { "title": "Billing and admin.",
+        "body": "Charges tied to the encounter that produced them. Claim status visible during the current week instead of at month-end." },
+      { "title": "Practice leadership.",
+        "body": "Operational signals — lane delays, documentation drift, billing friction — visible in the same view staff are already working in." }
+    ]
+  },
+
+  "practiceProvides": {
+    "eyebrow": "WHAT THE PRACTICE PROVIDES",
+    "headline": "What implementation needs from your side.",
+    "body": "Implementation is a two-sided motion. Here's what the practice is asked to contribute so the rollout is shaped around real operational ground — not assumptions.",
+    "items": [
+      { "title": "Access to review the current workflow.",
+        "body": "One or two representative clinic days observed end-to-end, with the people who run them." },
+      { "title": "A short list of key staff.",
+        "body": "Practice leadership, a clinical lead (physician or lead tech), a front-desk or scheduling lead, and an operations or billing lead. Other roles join at the configuration and training stages." },
+      { "title": "Operational priorities leadership wants addressed.",
+        "body": "Where the clinic day leaks time, where billing finds out late, where handoffs drop information — the things leadership already hears complaints about." },
+      { "title": "Context on current systems.",
+        "body": "Which EHR, PM, scheduling, imaging, intake, and billing tools are in use today, and which ones the practice is committed to keeping vs open to replacing." },
+      { "title": "A rollout scope decision.",
+        "body": "One workflow, one subspecialty, one location, or a broader rollout — the shape comes out of the assessment, but the decision is the practice's to make." },
+      { "title": "Ophthalmology-specific realities.",
+        "body": "Imaging volume, dilation and lane rhythm, post-op cadence, subspecialty mix, and multilingual intake needs — anything that makes your clinic day its own." }
+    ]
+  },
+
+  "notClaiming": {
+    "eyebrow": "WHAT THIS PAGE IS NOT CLAIMING",
+    "headline": "Trust comes from being honest about the scope of what's promised.",
+    "body": "This page describes how ChartNav is designed to be introduced into an ophthalmology practice. It does not commit the product to specific deployment details that depend on your environment, and it does not overclaim current technical maturity.",
+    "items": [
+      "ChartNav is not presented as a universal plug-in for every EHR, imaging device, or billing stack.",
+      "Technical deployment specifics — hosting model, integration depth, and data handling — are reviewed per-practice during the workflow assessment.",
+      "Statements on this page describe intended behavior and rollout discipline, not certified regulatory status or guaranteed outcomes.",
+      "Specific integrations, migrations, or automations are confirmed in writing through the customer agreement, never through the marketing site.",
+      "Support for specialties outside ophthalmology is a later-stage decision, not a present-day claim."
+    ]
+  },
+
+  "whyImpl": {
+    "eyebrow": "WHY IT MATTERS IN EYE CARE",
+    "headline": "An eye clinic can't afford a bad rollout.",
+    "body": "Ophthalmology practices run on sequencing — dilation, imaging, workup, exam, sign-off, billing. When any of those steps stalls, the clinic day stalls. That's why implementation in eye care has to respect the way the day actually moves, and why a generic software rollout can produce real operational damage.",
+    "reasons": [
+      { "title": "Imaging-heavy flow.",
+        "body": "If image routing, completion status, or physician review gets disrupted during a transition, the lane slows down the same day." },
+      { "title": "Technician-to-physician handoffs.",
+        "body": "The chart the tech builds is the chart the physician reads. A rollout that breaks that thread forces the exam to restart at the chair." },
+      { "title": "Dilation and lane timing.",
+        "body": "Dilation windows and visit sequencing shape the clinic day. A rollout that ignores timing creates real bottlenecks at check-in and the lane." },
+      { "title": "Post-op and follow-up cadence.",
+        "body": "Injection recalls, post-op day-1 / week-1 / month-1 visits, and VF monitoring windows can't drift. A rollout has to preserve those cadences, not lose them." },
+      { "title": "Documentation and billing effects.",
+        "body": "Encounter continuity is how the claim gets built. If workflow disruption breaks documentation, it shows up as denials and month-end surprises." }
+    ]
+  },
+
+  "assessment": {
+    "eyebrow": "STEP ONE",
+    "headline": "Start with a workflow assessment.",
+    "body": "ChartNav does not start with \"buy now.\" It starts with understanding how the practice currently operates — what the lane looks like on a Tuesday, where the friction is, and whether the product is actually a good fit. The workflow assessment produces a written view the practice can use whether or not they move forward with ChartNav.",
+    "reviews": [
+      { "title": "Current clinic-day flow.",
+        "body": "Intake, check-in, workup, dilation, imaging, exam, sign-off, and billing — mapped end-to-end for one or two representative days." },
+      { "title": "Systems in use today.",
+        "body": "EHR, PM, scheduling, imaging, intake, and billing tools — how they connect, where they don't, and what staff work around." },
+      { "title": "Roles and handoffs.",
+        "body": "Who does what, where the handoffs live, and which ones drop information or time." },
+      { "title": "Subspecialty mix.",
+        "body": "Comprehensive, retina, glaucoma, cataract, and procedural workflows — because each one shapes the rollout differently." },
+      { "title": "Operational pain signals.",
+        "body": "What leadership hears complaints about — lane delays, repeated patient questions, billing surprises, reporting friction." }
+    ],
+    "deliverable": "The output is a plain-English workflow view, a fit read, and a staged rollout scope if there's a real match. No pressure, no self-serve sign-up."
+  },
+
+  "mapping": {
+    "eyebrow": "CURRENT-STATE MAPPING",
+    "headline": "Map the practice before you change anything.",
+    "body": "Implementation begins with a shared, visible picture of how the clinic actually runs today. That map is the reference for every configuration, rollout, and training decision that follows.",
+    "steps": [
+      { "num": "01", "title": "Intake & Front Desk",   "body": "Forms, check-in, insurance verification, language needs, and lane-readiness signals." },
+      { "num": "02", "title": "Technician Workup",     "body": "Vitals, IOP, refraction, and focused workup — templates, tools, and timing." },
+      { "num": "03", "title": "Imaging",               "body": "OCT, fundus, VF, topography, and scans — capture, routing, and completion visibility." },
+      { "num": "04", "title": "Physician Review",      "body": "How the physician opens the chart, reads imaging, and closes the encounter." },
+      { "num": "05", "title": "Documentation & Handoffs", "body": "Where encounter continuity lives, where it breaks, and which handoffs are fragile." },
+      { "num": "06", "title": "Billing & Admin Visibility", "body": "Charge capture, claim flow, reporting, and the current-week operational view." }
+    ],
+    "friction": [
+      "Handoffs that depend on memory, sticky notes, or messages outside the chart.",
+      "Imaging tools the lane can't see from the workup surface.",
+      "Scheduling slots that don't reflect dilation or imaging timing.",
+      "Missing intake, insurance, or consents discovered at the chair.",
+      "Documentation drift between technicians, physicians, and billing.",
+      "Month-end billing signal instead of current-week visibility."
+    ]
+  },
+
+  "configuration": {
+    "eyebrow": "CONFIGURATION",
+    "headline": "Configured to the practice, not just turned on.",
+    "body": "The same product is shaped differently for every practice. Templates, imaging flow, schedule rules, documentation structure, and role-based views are set up to match how the clinic day actually runs — not a generic factory default.",
+    "items": [
+      { "title": "Role-based views.",
+        "body": "Front desk, technicians, physicians, imaging staff, and billing each see the screen built for their work — not a shared catch-all view." },
+      { "title": "Visit and lane workflow setup.",
+        "body": "Encounter templates, workup fields, and sign-off structure tuned to the mix of visit types the practice actually runs." },
+      { "title": "Imaging flow.",
+        "body": "Study routing, read queue, modality assignment, and completion status wired into the lane, not parked in a separate viewer." },
+      { "title": "Scheduling logic.",
+        "body": "Dilation-aware slots, imaging dependencies, lane readiness, and post-op cadence encoded into the schedule rather than held in the scheduler's head." },
+      { "title": "Documentation structure.",
+        "body": "Encounter notes, problem lists, and sign-off events shaped for how the practice and its physicians actually chart." },
+      { "title": "Communication and intake setup.",
+        "body": "Digital intake, multilingual forms, reminders, and pre-op / post-op messaging tuned to the patient population served." }
+    ]
+  },
+
+  "phases": {
+    "eyebrow": "PHASED ROLLOUT",
+    "headline": "Introduced in stages so the clinic day is never put at risk.",
+    "lead": "Every ChartNav rollout follows the same shape. Timelines and scope vary; the stages don't.",
+    "blocks": [
+      {
+        "id": "assessment",
+        "num": "PHASE 01",
+        "name": "Workflow Assessment",
+        "tagline": "Understand how the practice runs today before touching anything.",
+        "roles": ["Practice leadership", "Operations", "ChartNav team"],
+        "happens": [
+          "One or two representative clinic days are mapped end-to-end.",
+          "Systems, roles, and handoffs are reviewed with the people who run them.",
+          "A plain-English workflow view and fit read is produced."
+        ],
+        "reduces": [
+          "Buying software before anyone understands the current workflow.",
+          "Starting rollout with assumptions that don't match the clinic day."
+        ]
+      },
+      {
+        "id": "configuration",
+        "num": "PHASE 02",
+        "name": "Configuration",
+        "tagline": "Shape the product around the way the clinic actually runs.",
+        "roles": ["Clinical lead", "Ops / admin", "ChartNav team"],
+        "happens": [
+          "Role-based views, encounter templates, imaging flow, and schedule rules are configured.",
+          "Subspecialty workflow patterns (retina, glaucoma, cataract, comprehensive) are tuned.",
+          "Documentation structure and intake flow are set up to match existing practice language."
+        ],
+        "reduces": [
+          "Out-of-the-box defaults that drift from how this practice actually charts and schedules.",
+          "Rework caused by discovering basic fit problems mid-go-live."
+        ]
+      },
+      {
+        "id": "pilot",
+        "num": "PHASE 03",
+        "name": "Pilot Rollout",
+        "tagline": "A limited, supervised introduction — one workflow, provider, or location at a time.",
+        "roles": ["Pilot provider(s)", "Technicians", "Front desk", "ChartNav team"],
+        "happens": [
+          "One workflow, one subspecialty, or one location runs on ChartNav under active observation.",
+          "Daily check-ins catch friction early and adjust configuration before wider rollout.",
+          "The rest of the practice continues on existing systems so the clinic day is never at risk."
+        ],
+        "reduces": [
+          "Practice-wide disruption if something doesn't behave the way it should.",
+          "Blind-spot failure modes that only show up inside a real clinic day."
+        ]
+      },
+      {
+        "id": "wider",
+        "num": "PHASE 04",
+        "name": "Wider Rollout",
+        "tagline": "Extend to more providers, subspecialties, or locations once the pilot is stable.",
+        "roles": ["Provider groups", "Location leads", "Billing / admin", "ChartNav team"],
+        "happens": [
+          "Configuration refined during the pilot is carried forward, not rebuilt.",
+          "Role-specific training extends to additional staff.",
+          "Scheduling, imaging, and billing flows are brought into the new pattern gradually."
+        ],
+        "reduces": [
+          "A flip-the-switch go-live across the whole practice.",
+          "Training gaps that surface as silent workarounds three months later."
+        ]
+      },
+      {
+        "id": "review",
+        "num": "PHASE 05",
+        "name": "Post Go-Live Review",
+        "tagline": "Check what's actually running the way it should.",
+        "roles": ["Practice leadership", "Operations", "ChartNav team"],
+        "happens": [
+          "The first few weeks after wider rollout are reviewed against the original workflow map.",
+          "Friction points that emerged in real use are surfaced and addressed.",
+          "Reporting, handoffs, and documentation continuity are verified in real clinic conditions."
+        ],
+        "reduces": [
+          "A quiet drift back into workarounds once the rollout team steps away.",
+          "The common pattern of \"go-live, then nothing\" that leaves practices on their own."
+        ]
+      }
+    ]
+  },
+
+  "training": {
+    "eyebrow": "TRAINING & ADOPTION",
+    "headline": "People adoption matters as much as software setup.",
+    "body": "Configuration is half the work. The other half is whether the people who use the system every day can move through it without losing time. Training is role-specific, short, and built around the actual workflow — not a generic video library.",
+    "items": [
+      { "title": "Front desk.",
+        "body": "Check-in, verification, language and intake handling, and the lane-readiness view — so the front desk can run the morning without guesswork." },
+      { "title": "Technicians.",
+        "body": "Workup surface, imaging dependencies, dilation tracking, and the handoff into the physician exam." },
+      { "title": "Physicians.",
+        "body": "Opening a prepared chart, reading imaging in context, and closing the encounter without extra clicks." },
+      { "title": "Imaging staff.",
+        "body": "Study capture, routing into the correct chart, and completion signals back to the lane." },
+      { "title": "Billing and admin.",
+        "body": "Charge capture visibility, claim flow, and the current-week operational view leadership uses to triage." },
+      { "title": "Practice leadership.",
+        "body": "Operational dashboards, reporting, and the handful of signals worth watching during and after rollout." }
+    ],
+    "note": "Training happens in short, practical sessions tied to the work — not in a separate weeklong off-site."
+  },
+
+  "goLive": {
+    "eyebrow": "GO-LIVE AND EARLY DAYS",
+    "headline": "The first weeks are watched carefully.",
+    "body": "Go-live is not the finish line. It's the point at which real clinic conditions start testing the configuration. Early-stage support focuses on catching friction before it becomes a habit.",
+    "items": [
+      { "title": "Daily check-ins during the first week.",
+        "body": "Short, focused standups with the clinical and front-desk leads — not an email thread." },
+      { "title": "Workflow health, not just uptime.",
+        "body": "We look for lane delays, documentation drift, imaging delays, and scheduling friction — the operational signals that tell us how the day is actually running." },
+      { "title": "Configuration adjusted in real time.",
+        "body": "If a template, slot rule, or handoff isn't behaving the way it should, it's adjusted in days — not scheduled for a quarterly review." },
+      { "title": "Two-week and six-week reviews.",
+        "body": "Structured reviews comparing the rollout to the original workflow map. Anything that's drifted is named and addressed." }
+    ]
+  },
+
+  "scope": {
+    "eyebrow": "FIRST DEPLOYMENT SHAPE",
+    "headline": "What a first deployment usually looks like.",
+    "body": "A first rollout is almost always a focused pilot — one workflow, one subspecialty, one location, or one provider group — run alongside existing systems while the rest of the practice keeps moving. Here's the shape a first deployment typically takes, and when each fits.",
+    "rows": [
+      { "left": "Start with one workflow.",
+        "right": "A single-location practice validating fit before broader investment." },
+      { "left": "Start with one subspecialty.",
+        "right": "A multi-specialty group piloting with retina, glaucoma, or cataract first." },
+      { "left": "Start with one location.",
+        "right": "A multi-location group validating before expanding to additional sites." },
+      { "left": "Start with one provider group.",
+        "right": "Practices where a specific provider cohort is the right initial surface." },
+      { "left": "Full structured rollout.",
+        "right": "Practices with clear leadership support and strong operational discipline already in place." }
+    ]
+  },
+
+  "prevents": {
+    "eyebrow": "WHAT THIS PREVENTS",
+    "headline": "Implementation is designed to avoid the usual failure modes.",
+    "items": [
+      { "title": "Workflow disruption during clinic hours.",
+        "body": "Staged rollout and pilot phases keep the live clinic day out of the rollout risk." },
+      { "title": "Imaging bottlenecks.",
+        "body": "Routing, read queue, and completion status are configured before they touch a busy imaging suite." },
+      { "title": "Documentation confusion.",
+        "body": "Encounter templates and sign-off structure match the practice's existing chart language before go-live, not after." },
+      { "title": "Poor handoffs between staff roles.",
+        "body": "Role-based views and lane-readiness signals are in place so check-in, tech, imaging, physician, and billing read the same picture." },
+      { "title": "Scheduling logic that doesn't reflect visit reality.",
+        "body": "Dilation, imaging, and post-op cadence are encoded into the schedule — not discovered during the first live clinic day." },
+      { "title": "Billing surprises from a broken encounter flow.",
+        "body": "Charge capture is tied to the same encounter the workup and exam live in, so the claim is built on what actually happened." },
+      { "title": "Low adoption from generic training.",
+        "body": "Short, role-specific sessions tied to the real work — not a video library no one finishes." }
+    ]
+  },
+
+  "bridge": {
+    "eyebrow": "HOW IT CONNECTS",
+    "headline": "Rollout logic lives on top of the platform.",
+    "body": "Implementation decisions map directly to the five operating layers in the platform — intake, scheduling, charting, imaging, and billing visibility — and to the ophthalmology workflow realities that shape the rollout.",
+    "links": [
+      { "label": "See the full platform",         "href":   "/chartnav/platform" },
+      { "label": "See ophthalmology workflow",    "href":   "/chartnav/ophthalmology" },
+      { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
+    ],
+    "note": "ChartNav is deployed through a structured workflow review and staged rollout — never a self-serve sign-up."
+  },
+
+  "faq": {
+    "eyebrow": "QUESTIONS",
+    "headline": "What practices usually ask about rollout.",
+    "items": [
+      { "q": "What happens during a Workflow Assessment?",
+        "a": "We map one or two representative clinic days end-to-end — intake, workup, imaging, exam, sign-off, and billing — and review the systems and roles supporting them. The output is a plain-English workflow view, a fit read, and a staged rollout scope if there's a real match. It's useful even if you don't move forward with ChartNav." },
+      { "q": "Do we have to roll everything out at once?",
+        "a": "No. Most practices start with one workflow, one subspecialty, or one location. The pilot phase is designed to keep the live clinic day out of the rollout risk. Wider rollout follows once the pilot is stable." },
+      { "q": "Can ChartNav start with one workflow first?",
+        "a": "Yes. A common starting shape is one workflow — imaging, scheduling, charting, or intake — run in a pilot while the rest of the practice continues on its existing systems. The scope decision comes out of the assessment." },
+      { "q": "How is implementation handled without disrupting clinic flow?",
+        "a": "Pilot rollout uses a limited surface (one provider group, one location, or one subspecialty) under active observation. Daily check-ins during the first week catch friction before it becomes a habit. Configuration is adjusted in days, not quarters." },
+      { "q": "Who on our team should be involved?",
+        "a": "Typically a small group: practice leadership, a clinical lead (physician or lead tech), a front-desk / scheduling lead, and an operations or billing lead. Additional roles are pulled in at the configuration and training stages for their part of the workflow." },
+      { "q": "How does ChartNav handle training?",
+        "a": "Short, role-specific sessions tied to the actual work — front desk, technicians, physicians, imaging staff, billing, and practice leadership each get training shaped around what they'll use every day. No generic video library; no weeklong off-site." },
+      { "q": "Is ChartNav only for ophthalmology practices right now?",
+        "a": "Today, yes. Ophthalmology is the operating focus because its workflow is the hardest test a platform can take — imaging-heavy, timing-sensitive, and lane-based. Support for other specialties is a later-stage decision." },
+      { "q": "What happens after go-live?",
+        "a": "Two-week and six-week reviews compare the rollout to the original workflow map. Anything that's drifted is named and addressed. Post-launch, workflow reviews and reporting cadence continue as part of the engagement — not an upsell." }
+    ]
+  },
+
+  "finalCta": {
+    "eyebrow": "NEXT STEP",
+    "headline": "See how a rollout would actually look in your practice.",
+    "body": "We start with a workflow assessment — a plain-English view of how your clinic day runs today, a fit read, and a staged rollout scope if there's a real match.",
+    "ctaPrimary": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" },
+    "note": "Private conversations. No mass outreach."
+  }
+}

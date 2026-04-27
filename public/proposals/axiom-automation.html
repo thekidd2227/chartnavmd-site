@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axiom Automation Co. — Operational Intelligence Report | ARCG Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f11; --surface: #14161a; --surface2: #1b1e24;
+  --border: #2a2d35; --border-light: #33373f;
+  --text: #e8e6e0; --text-muted: #7a7d87; --text-dim: #4a4d57;
+  --amber: #e8a820; --amber-dim: rgba(232,168,32,0.12); --amber-border: rgba(232,168,32,0.3);
+  --red: #e05a38; --red-dim: rgba(224,90,56,0.1);
+  --green: #2eb87a; --green-dim: rgba(46,184,122,0.1);
+  --blue: #3d8ef0; --blue-dim: rgba(61,142,240,0.1); --white: #ffffff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Instrument Sans', sans-serif; font-size: 14px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.5; }
+.cover { min-height: 100vh; display: grid; grid-template-rows: 1fr auto; position: relative; overflow: hidden; background: var(--bg); }
+.cover-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,168,32,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,168,32,0.04) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
+.cover-glow { position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(232,168,32,0.07) 0%, transparent 70%); pointer-events: none; }
+.cover-main { display: flex; flex-direction: column; justify-content: center; padding: 80px 80px 40px; position: relative; z-index: 2; }
+.cover-eyebrow { font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--amber); margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+.cover-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--amber); }
+.cover-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(40px, 6vw, 72px); line-height: 0.95; letter-spacing: -0.02em; color: var(--white); margin-bottom: 8px; }
+.cover-title em { font-style: normal; color: var(--amber); }
+.cover-client { font-family: 'Syne', sans-serif; font-size: clamp(18px, 2.5vw, 28px); font-weight: 500; color: var(--text-muted); margin-top: 16px; margin-bottom: 48px; letter-spacing: -0.01em; }
+.cover-stats { display: flex; gap: 0; border: 1px solid var(--border); width: fit-content; margin-bottom: 56px; }
+.cover-stat { padding: 16px 28px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+.cover-stat:last-child { border-right: none; }
+.stat-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; color: var(--white); }
+.stat-val.red { color: var(--red); } .stat-val.amber { color: var(--amber); } .stat-val.green { color: var(--green); }
+.stat-label { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.cover-classification { display: inline-flex; align-items: center; gap: 8px; background: var(--amber-dim); border: 1px solid var(--amber-border); padding: 10px 18px; font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); width: fit-content; }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.cover-footer { padding: 24px 80px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+.cover-footer-brand { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); }
+.cover-footer-meta { font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); text-align: right; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="cover-grid-bg"></div>
+  <div class="cover-glow"></div>
+  <div class="cover-main">
+    <div class="cover-eyebrow">ARCG Systems · Operational Audit Program</div>
+    <div class="cover-title">Operational<br><em>Intelligence</em><br>Report</div>
+    <div class="cover-client">Axiom Automation Co.</div>
+    <div class="cover-stats">
+      <div class="cover-stat"><span class="stat-val red">0</span><span class="stat-label">Automated Onboarding Flows</span></div>
+      <div class="cover-stat"><span class="stat-val amber">1 tool</span><span class="stat-label">Current Stack</span></div>
+      <div class="cover-stat"><span class="stat-val green">$10K–$50K</span><span class="stat-label">Avg Contract LTV</span></div>
+      <div class="cover-stat"><span class="stat-val red">100%</span><span class="stat-label">Manual Per Client</span></div>
+    </div>
+    <div class="cover-classification">
+      <div class="pulse-dot"></div>
+      Growth blocker identified · Manual delivery ceiling · Scalability constraint active
+    </div>
+  </div>
+  <div class="cover-footer">
+    <div class="cover-footer-brand">ARCG Systems</div>
+    <div class="cover-footer-meta">Prepared for: Edwig Charles &lt;test@arcgsystems.com&gt;<br>Prepared by: Jean-Max Charles Jr. · March 23, 2026 · Confidential</div>
+  </div>
+</div>
+
+<style>
+.nav { position: sticky; top: 0; z-index: 500; background: rgba(14,15,17,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 80px; display: flex; align-items: center; gap: 0; overflow-x: auto; }
+.nav-item { font-family: 'Azeret Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); padding: 16px 20px; white-space: nowrap; text-decoration: none; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+.nav-item:hover { color: var(--amber); border-bottom-color: var(--amber); }
+.nav-pdf { margin-left: auto; font-family: 'Azeret Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); background: var(--amber-dim); border: 1px solid var(--amber-border); padding: 8px 16px; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+.nav-pdf:hover { background: rgba(232,168,32,0.2); }
+.body-wrap { max-width: 1100px; margin: 0 auto; padding: 72px 80px 100px; }
+.section { margin-bottom: 80px; }
+.section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.section-left { display: flex; align-items: baseline; gap: 16px; }
+.section-index { font-family: 'Azeret Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--amber); }
+.section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.01em; color: var(--white); }
+.section-badge { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 5px 12px; border: 1px solid var(--border); color: var(--text-muted); }
+.diagnosis-card { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--red); padding: 36px 40px; position: relative; overflow: hidden; }
+.diagnosis-card::before { content: 'ROOT CAUSE IDENTIFIED'; position: absolute; top: 18px; right: 24px; font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--text-dim); }
+.diagnosis-text { font-size: 16px; line-height: 1.85; color: var(--text); font-weight: 300; }
+.diagnosis-text strong { color: var(--white); font-weight: 600; }
+.diagnosis-text .highlight { background: var(--amber-dim); border-bottom: 1px solid var(--amber-border); color: var(--amber); padding: 0 3px; font-weight: 500; }
+.diagnosis-findings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-top: 28px; border-top: 1px solid var(--border); }
+.finding { background: var(--surface2); padding: 20px 22px; display: flex; flex-direction: column; gap: 6px; }
+.finding-icon { font-size: 18px; } .finding-label { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.finding-value { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+.finding-value.bad { color: var(--red); }
+.wins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.win-card { background: var(--surface); border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.2s; }
+.win-card:hover { border-color: var(--amber-border); }
+.win-rank-bar { height: 3px; background: linear-gradient(90deg, var(--amber), transparent); }
+.win-rank-bar.rank2 { background: linear-gradient(90deg, var(--blue), transparent); }
+.win-rank-bar.rank3 { background: linear-gradient(90deg, var(--green), transparent); }
+.win-inner { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.win-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 42px; line-height: 1; color: var(--border-light); margin-bottom: 12px; }
+.win-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--white); line-height: 1.3; margin-bottom: 12px; }
+.win-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.7; flex: 1; margin-bottom: 20px; }
+.win-metric { background: var(--surface2); border: 1px solid var(--border); padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+.win-metric-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--amber); white-space: nowrap; }
+.win-metric-val.blue { color: var(--blue); } .win-metric-val.green { color: var(--green); }
+.win-metric-label { font-size: 11px; color: var(--text-dim); line-height: 1.3; }
+</style>
+
+<nav class="nav">
+  <div style="display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid var(--border);flex-shrink:0;font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#3d8ef0;background:rgba(61,142,240,0.08);">⚠ EXAMPLE PROPOSAL</div>
+  <a class="nav-item" href="#diagnosis">01 · Diagnosis</a>
+  <a class="nav-item" href="#quick-wins">02 · Quick Wins</a>
+  <a class="nav-item" href="#roadmap">03 · Roadmap</a>
+  <a class="nav-item" href="#stack">04 · Tech Stack</a>
+  <a class="nav-item" href="#pricing">05 · Pricing</a>
+  <a class="nav-item" href="#support">06 · Support</a>
+  <a class="nav-item" href="#rationale">07 · ROI</a>
+  <a class="nav-item" href="#email">08 · Next Step</a>
+  <button class="nav-pdf" onclick="window.print()">↓ Save as PDF</button>
+</nav>
+
+<div class="body-wrap">
+
+  <div class="section" id="diagnosis">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">01</span><span class="section-title">Operational Diagnosis</span></div>
+      <span class="section-badge">Root Cause Analysis</span>
+    </div>
+    <div class="diagnosis-card">
+      <p class="diagnosis-text">
+        Axiom Automation Co.'s core failure is a <strong>missing standardization layer between the sales close and project delivery</strong> — the agency is transitioning from GovCon to commercial work and <span class="highlight">manually setting up every project from scratch</span>, which means every new client engagement begins with a blank slate, a CRM record, and a founder doing 4–8 hours of manual configuration. The problem is not effort or intention — it is the absence of a triggered, templated system that converts a closed deal into a live project automatically. <strong>The current model is not an agency workflow — it is a freelancer workflow at agency scale.</strong> Until the gap between CRM close and project kickoff is automated, headcount cannot be reduced from the critical path, capacity is permanently capped by the founder's available hours, and no meaningful scale is achievable.
+      </p>
+      <div class="diagnosis-findings">
+        <div class="finding"><div class="finding-icon">⚡</div><div class="finding-label">Failure Point</div><div class="finding-value bad">No onboarding automation — every client is a manual rebuild</div></div>
+        <div class="finding"><div class="finding-icon">⏱</div><div class="finding-label">Capacity Ceiling</div><div class="finding-value bad">Founder-dependent setup — scale limited by available hours, not demand</div></div>
+        <div class="finding"><div class="finding-icon">🔗</div><div class="finding-label">Root Cause</div><div class="finding-value bad">CRM close → project delivery gap — no trigger, no template, no system</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="quick-wins">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">02</span><span class="section-title">Top 3 Quick Wins</span></div>
+      <span class="section-badge">Achievable in 30 Days</span>
+    </div>
+    <div class="wins-grid">
+      <div class="win-card">
+        <div class="win-rank-bar"></div>
+        <div class="win-inner">
+          <div class="win-num">01</div>
+          <div class="win-title">CRM Close → Project Auto-Creation</div>
+          <div class="win-body">Wire your existing CRM to Make.com so that the moment a deal is marked closed-won, an Airtable project record is created automatically — with all standard fields pre-populated. Client contact info pulls from the CRM. Project type sets the template. No manual entry. No founder involvement required to open a new project.</div>
+          <div class="win-metric"><div class="win-metric-val">4–6 hrs</div><div class="win-metric-label">recovered per client · eliminates manual project creation entirely</div></div>
+        </div>
+      </div>
+      <div class="win-card">
+        <div class="win-rank-bar rank2"></div>
+        <div class="win-inner">
+          <div class="win-num">02</div>
+          <div class="win-title">Standardized Client Intake via Tally</div>
+          <div class="win-body">Deploy a structured client onboarding questionnaire (Tally) that fires automatically when a project is created. Captures scope, access credentials, tool list, deadlines, and deliverables in a consistent format — once. Replaces back-and-forth email threads that currently delay setup by days. Responses feed directly into the Airtable project record.</div>
+          <div class="win-metric"><div class="win-metric-val blue">2–3 days</div><div class="win-metric-label">removed from onboarding lag · intake captured in minutes, not days</div></div>
+        </div>
+      </div>
+      <div class="win-card">
+        <div class="win-rank-bar rank3"></div>
+        <div class="win-inner">
+          <div class="win-num">03</div>
+          <div class="win-title">Auto Task Generation on Project Open</div>
+          <div class="win-body">When a new Airtable project is created, Make.com generates all standard tasks for that project type — assigned by role, with due dates set from the project start date. No coordinator builds the task list by hand. Delivers directly on the stated primary automation target: "Client onboarding → project setup."</div>
+          <div class="win-metric"><div class="win-metric-val green">~80%</div><div class="win-metric-label">reduction in per-project coordinator setup time · tasks exist before first call</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  .roadmap { display: flex; flex-direction: column; gap: 0; }
+  .phase { display: grid; grid-template-columns: 240px 1fr; border: 1px solid var(--border); border-bottom: none; }
+  .phase:last-child { border-bottom: 1px solid var(--border); }
+  .phase-label { padding: 28px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; background: var(--surface); }
+  .phase-badge { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+  .phase-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; line-height: 1; letter-spacing: -0.02em; }
+  .phase-1 .phase-name { color: var(--blue); } .phase-2 .phase-name { color: var(--amber); } .phase-3 .phase-name { color: var(--green); }
+  .phase-days { font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); }
+  .phase-theme { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .phase-content { padding: 28px 32px; }
+  .phase-item { display: grid; grid-template-columns: auto 1fr; gap: 12px 16px; align-items: start; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .phase-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .phase-arrow { font-size: 10px; color: var(--amber); margin-top: 3px; font-family: 'Azeret Mono', monospace; }
+  .phase-1 .phase-arrow { color: var(--blue); } .phase-3 .phase-arrow { color: var(--green); }
+  .phase-item-title { font-size: 13.5px; font-weight: 600; color: var(--white); margin-bottom: 4px; line-height: 1.3; }
+  .phase-item-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+  .replaces { display: inline-block; margin-top: 6px; font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: var(--text-dim); text-decoration: line-through var(--red); }
+  .stack-table { width: 100%; border-collapse: collapse; }
+  .stack-table thead tr { background: var(--surface); border-bottom: 1px solid var(--border); }
+  .stack-table th { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); padding: 12px 16px; text-align: left; font-weight: 400; }
+  .stack-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; }
+  .stack-table tr:last-child td { border-bottom: none; }
+  .stack-table tbody tr { transition: background 0.15s; }
+  .stack-table tbody tr:hover { background: var(--surface); }
+  .tool-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--amber); display: block; }
+  .tool-sub { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; }
+  .cost-cell { font-family: 'Azeret Mono', monospace; font-size: 12px; color: var(--green); white-space: nowrap; }
+  .cost-cell.free { color: var(--blue); }
+  .why-fit { color: var(--text-muted); font-size: 12.5px; line-height: 1.6; }
+  </style>
+
+  <div class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">03</span><span class="section-title">90-Day Roadmap</span></div>
+      <span class="section-badge">Phased Implementation</span>
+    </div>
+    <div class="roadmap">
+
+      <div class="phase phase-1">
+        <div class="phase-label">
+          <div class="phase-badge">Phase 1 · Days 1–30</div>
+          <div class="phase-name">Foundation</div>
+          <div class="phase-days">Days 1–30</div>
+          <div class="phase-theme">Stop the Bleeding</div>
+        </div>
+        <div class="phase-content">
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Airtable Project Database Build</div><div class="phase-item-body">Configure Airtable as the central project record for all clients — fields for scope, timeline, deliverables, tools, status, and team assignment. All current active projects migrated in. This is the data foundation everything else connects to.<span class="replaces">Replaces: Scattered project tracking across email, notes, and memory</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">CRM → Airtable Trigger (Make.com)</div><div class="phase-item-body">Wire your existing CRM to Make.com: when a deal closes, a new Airtable project record is created automatically with client data mapped from CRM fields. Founder and team are notified. Project status set to "New." Based on your intake, this directly eliminates the manual setup gap at the point of close.<span class="replaces">Replaces: Manually copying client info from CRM into a new project file</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Tally Client Onboarding Intake Form</div><div class="phase-item-body">Deploy a structured client questionnaire that fires via email the moment a project opens. Captures scope, access, tools, timeline, and contact details in one pass. Responses map directly into the Airtable record — no manual data entry required.<span class="replaces">Replaces: Back-and-forth email threads to gather client setup information</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Team Training + Process Documentation</div><div class="phase-item-body">2–5 person team trained on the new intake flow. SOP documented so any team member can manage a new project open without founder involvement.<span class="replaces">Replaces: Founder as single point of knowledge for all new client setup</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase phase-2">
+        <div class="phase-label">
+          <div class="phase-badge">Phase 2 · Days 31–60</div>
+          <div class="phase-name">Integration</div>
+          <div class="phase-days">Days 31–60</div>
+          <div class="phase-theme">Remove Human Routing</div>
+        </div>
+        <div class="phase-content">
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Auto Task Generation by Project Type</div><div class="phase-item-body">When a new Airtable project is created, Make.com generates all standard tasks for that service type — pre-assigned by role, with due dates calculated from project start. This delivers directly on the stated primary automation target from your intake.<span class="replaces">Replaces: Manually building task lists per client from scratch</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Role-Based Assignment Routing</div><div class="phase-item-body">Tasks route automatically to the correct team member based on task type and availability rules set in Airtable. Slack notifications fire when tasks are assigned. No coordinator needed to distribute work.<span class="replaces">Replaces: Founder or coordinator manually assigning tasks per project</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Client Notification Sequences</div><div class="phase-item-body">Automated email sequence sends project kickoff confirmation, milestone updates, and weekly status summaries to clients. Triggered by Airtable status changes — no manual client communication required for standard updates.<span class="replaces">Replaces: Manual project update emails written and sent by hand</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase phase-3">
+        <div class="phase-label">
+          <div class="phase-badge">Phase 3 · Days 61–90</div>
+          <div class="phase-name">Visibility</div>
+          <div class="phase-days">Days 61–90</div>
+          <div class="phase-theme">Operational Control</div>
+        </div>
+        <div class="phase-content">
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Live Project Dashboard (Airtable Interface)</div><div class="phase-item-body">Airtable Interface configured showing all active projects, status by phase, next actions, overdue tasks, and client health. Founder sees the full picture without asking anyone. Based on your intake, with 2–5 people and multiple concurrent clients, this eliminates daily status check-ins entirely.<span class="replaces">Replaces: Checking in manually with team to understand project status</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">Delivery Performance Tracking</div><div class="phase-item-body">Automated weekly report showing: average client setup time, on-time delivery rate, task completion by team member, and open project count. Delivered to founder inbox Monday morning without manual compilation.<span class="replaces">Replaces: No visibility — performance measured only by client complaints</span></div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-arrow">→</div>
+            <div><div class="phase-item-title">System Review + Optimization Pass</div><div class="phase-item-body">Full system audit at Day 90: automation failure rate, task generation accuracy, client intake completion rate. Routing rules adjusted based on 90 days of live data. New project types templated if service offerings have expanded.<span class="replaces">Replaces: No systematic review of delivery operations</span></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section" id="stack">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">04</span><span class="section-title">Recommended Tech Stack</span></div>
+      <span class="section-badge">Implementation Stack</span>
+    </div>
+    <table class="stack-table">
+      <thead><tr><th>Tool</th><th>Purpose</th><th>Why It Fits</th><th>Est. Cost / Month</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tool-name">Airtable</span><span class="tool-sub">Project Database + Dashboard</span></td><td>Central record system for all projects, tasks, clients, and team assignments. The operational spine everything else connects to.</td><td class="why-fit">Flexible enough to serve as both your project tracker and your live ops dashboard — two tools in one. Airtable Interface replaces the need for a separate reporting tool at this stage.</td><td class="cost-cell">$45/mo</td></tr>
+        <tr><td><span class="tool-name">Make.com</span><span class="tool-sub">Automation Engine</span></td><td>Triggers, routing logic, task generation, CRM sync, and notification sequences. The connective tissue of the entire system.</td><td class="why-fit">Connects your existing CRM to Airtable, Tally, and Slack without code. All the automations in the 90-day roadmap run through Make.com. Replaces manual routing across every project.</td><td class="cost-cell">$29/mo</td></tr>
+        <tr><td><span class="tool-name">Tally Forms</span><span class="tool-sub">Client Intake</span></td><td>Structured client onboarding questionnaire deployed automatically when a new project is opened. Responses map into Airtable.</td><td class="why-fit">Free, Airtable-native integration, and takes 20 minutes to deploy. Captures all the data you currently collect manually via email — in one structured pass per client.</td><td class="cost-cell free">Free</td></tr>
+        <tr><td><span class="tool-name">CRM (Existing)</span><span class="tool-sub">Deal Pipeline</span></td><td>Trigger source for all downstream automation. When deal closes → Make.com fires → project created.</td><td class="why-fit">Integrate with existing tool — no migration required. Make.com connects to HubSpot, Pipedrive, Go High Level, and most major CRMs natively. Platform confirmed during validation call.</td><td class="cost-cell">Existing</td></tr>
+        <tr><td><span class="tool-name">Slack</span><span class="tool-sub">Internal Notifications</span></td><td>Team notifications for new project opens, task assignments, overdue alerts, and weekly digest delivery.</td><td class="why-fit">For a 2–5 person team, Slack notifications replace status meetings entirely. Make.com sends structured messages to the right channel based on project type and assignment.</td><td class="cost-cell free">Free tier</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <style>
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid var(--border); }
+  .pkg { padding: 32px 28px; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .pkg:last-child { border-right: none; }
+  .pkg.recommended { background: var(--surface); border-top: 3px solid var(--amber); }
+  .pkg:not(.recommended) { background: var(--bg); }
+  .pkg-rec-label { position: absolute; top: 0; right: 0; background: var(--amber); color: var(--bg); font-family: 'Azeret Mono', monospace; font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; padding: 5px 12px; font-weight: 500; }
+  .pkg-letter { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 48px; line-height: 1; color: var(--border); margin-bottom: 8px; }
+  .pkg.recommended .pkg-letter { color: var(--amber-border); }
+  .pkg-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; line-height: 1.25; }
+  .pkg-outcome { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; font-style: italic; line-height: 1.5; }
+  .pkg-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px; letter-spacing: -0.03em; color: var(--white); line-height: 1; margin-bottom: 4px; }
+  .pkg.recommended .pkg-price { color: var(--amber); }
+  .pkg-price-note { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 24px; }
+  .pkg-divider { height: 1px; background: var(--border); margin: 4px 0 20px; }
+  .pkg-includes-label { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
+  .pkg-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 12.5px; line-height: 1.5; color: var(--text-muted); }
+  .pkg-item::before { content: '✓'; color: var(--green); font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+  .pkg-cta { margin-top: auto; padding-top: 24px; }
+  .pkg-btn { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
+  .pkg-btn:hover { border-color: var(--amber-border); color: var(--amber); }
+  .pkg.recommended .pkg-btn { background: var(--amber); border-color: var(--amber); color: var(--bg); font-weight: 500; }
+  .pkg.recommended .pkg-btn:hover { background: #f0b52a; }
+  .choose-reason { font-size: 11.5px; color: var(--text-dim); line-height: 1.6; }
+  .support-card { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); gap: 0; }
+  .support-left { padding: 36px; border-right: 1px solid var(--border); }
+  .support-right { padding: 36px; }
+  .support-range-label { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+  .support-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px; color: var(--amber); line-height: 1; }
+  .support-list { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .support-item { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--text-muted); line-height: 1.7; }
+  .support-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 7px; }
+  .support-right-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--white); margin-bottom: 14px; }
+  .support-right-body { font-size: 13px; color: var(--text-muted); line-height: 1.75; }
+  </style>
+
+  <div class="section" id="pricing">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">05</span><span class="section-title">Pricing & Implementation Options</span></div>
+      <span class="section-badge">Fixed-Fee Packages</span>
+    </div>
+    <div class="pricing-grid">
+      <div class="pkg">
+        <div class="pkg-letter">A</div>
+        <div class="pkg-name">Foundation System</div>
+        <div class="pkg-outcome">Stops the manual project setup. New clients enter a structured system automatically.</div>
+        <div class="pkg-price">$4,500</div>
+        <div class="pkg-price-note">One-time build · Fixed price</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes-label">What's Included:</div>
+        <div class="pkg-item">Airtable project database build — all standard fields, configured for agency workflow</div>
+        <div class="pkg-item">CRM → Airtable Make.com trigger — deal close fires project creation automatically</div>
+        <div class="pkg-item">Tally client onboarding intake form — maps responses into Airtable project record</div>
+        <div class="pkg-item">All current active projects migrated into Airtable</div>
+        <div class="pkg-item">Team training on new project open process</div>
+        <div class="pkg-item">30-day post-build check-in included</div>
+        <div class="pkg-cta">
+          <button class="pkg-btn">Start Here</button>
+          <div class="choose-reason">Choose this if you need to stop the manual rebuild immediately and want to prove the system before committing to the full build. Phase 2 is a natural next step once Phase 1 runs for 30 days.</div>
+        </div>
+      </div>
+
+      <div class="pkg recommended">
+        <div class="pkg-rec-label">Recommended</div>
+        <div class="pkg-letter">B</div>
+        <div class="pkg-name">Automated Operations System</div>
+        <div class="pkg-outcome">Removes founder from the delivery setup loop entirely. Projects run themselves through kickoff.</div>
+        <div class="pkg-price">$6,500</div>
+        <div class="pkg-price-note">One-time build · Fixed price</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes-label">Everything in A, Plus:</div>
+        <div class="pkg-item">Auto task generation by project type — standard tasks created and assigned the moment a project opens</div>
+        <div class="pkg-item">Role-based task routing — assignments reach the right team member without coordinator involvement</div>
+        <div class="pkg-item">Slack integration — new projects, task assignments, and overdue alerts delivered automatically</div>
+        <div class="pkg-item">Client notification sequences — kickoff confirmation and milestone updates fire automatically</div>
+        <div class="pkg-item">Airtable Interface dashboard — live view of all active projects and delivery status</div>
+        <div class="pkg-item">60-day post-build check-in included</div>
+        <div class="pkg-cta">
+          <button class="pkg-btn">Build This System</button>
+          <div class="choose-reason">Choose this if you want your team out of the manual setup loop entirely. This is the version where the system does the work — and you scale by adding clients, not hours.</div>
+        </div>
+      </div>
+
+      <div class="pkg">
+        <div class="pkg-letter">C</div>
+        <div class="pkg-name">Full Operational Intelligence System</div>
+        <div class="pkg-outcome">Fully scalable agency infrastructure. Every client, project, and deliverable managed from one system.</div>
+        <div class="pkg-price">$9,500</div>
+        <div class="pkg-price-note">One-time build · Fixed price</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-includes-label">Everything in B, Plus:</div>
+        <div class="pkg-item">Delivery performance tracking — weekly automated report: setup time, on-time rate, team output</div>
+        <div class="pkg-item">Client health scoring — automated alerts when client engagement falls below threshold</div>
+        <div class="pkg-item">Expansion-ready project templates — new service types templated as offerings grow</div>
+        <div class="pkg-item">Full SOP documentation + team training session</div>
+        <div class="pkg-item">90-day priority support window included</div>
+        <div class="pkg-cta">
+          <button class="pkg-btn">Go Full System</button>
+          <div class="choose-reason">Choose this if you're building for scale from day one and want the entire delivery operation running as a system — with full visibility and no manual dependencies.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="support">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">06</span><span class="section-title">Ongoing Support</span></div>
+      <span class="section-badge">Post-Build Retainer</span>
+    </div>
+    <div class="support-card">
+      <div class="support-left">
+        <div class="support-range-label">Monthly Retainer Range</div>
+        <div class="support-price">$500 – $1,000<span style="font-size:16px;font-weight:400;color:var(--text-dim)">/month</span></div>
+        <div style="margin-top:6px;font-size:12px;color:var(--text-dim)">Based on system tier and rate of service expansion</div>
+        <div style="margin-top:28px;margin-bottom:12px;font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);">What Support Covers</div>
+        <div class="support-list">
+          <div class="support-item"><div class="support-dot"></div>Make.com automation monitoring — catching trigger failures before they create a broken project setup</div>
+          <div class="support-item"><div class="support-dot"></div>CRM integration adjustments as your deal pipeline or field mapping changes</div>
+          <div class="support-item"><div class="support-dot"></div>New project type templates added within 48 hours as service offerings expand</div>
+          <div class="support-item"><div class="support-dot"></div>Monthly system health report + Airtable optimization recommendations</div>
+          <div class="support-item"><div class="support-dot"></div>Priority response for urgent automation issues — same business day</div>
+        </div>
+      </div>
+      <div class="support-right">
+        <div class="support-right-title">Why Retainer Support Makes Sense for Axiom</div>
+        <div class="support-right-body">
+          You're transitioning from GovCon to agency work — which means your service offerings, project types, and team structure are actively evolving. A system built in Month 1 that isn't maintained will drift from your actual operations inside 90 days. New project types won't have templates. CRM field changes will break triggers. Task routing logic built for 3 service lines won't work for 8.<br><br>
+          The retainer keeps your automation stack aligned with where the business is going — not where it was when we built it. Think of it as having an operations systems engineer available as Axiom scales, without a full-time salary. At $500/month, that's less than half a day of founder time wasted on manual project setup that the system should be handling.<br><br>
+          <strong style="color:var(--amber)">Lower tier ($500):</strong> Foundation or B-tier builds with stable service lines and low change rate.<br>
+          <strong style="color:var(--amber)">Upper tier ($1,000):</strong> Full Intelligence System with active service expansion, new project types, and priority SLA.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  .rationale-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .rationale-card { background: var(--surface); border: 1px solid var(--border); padding: 24px 22px; }
+  .rationale-icon { font-size: 24px; margin-bottom: 12px; }
+  .rationale-number { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; color: var(--amber); line-height: 1; margin-bottom: 4px; }
+  .rationale-label { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+  .rationale-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
+  .rationale-statement { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--green); padding: 24px 28px; font-size: 15px; color: var(--text); line-height: 1.8; font-weight: 300; }
+  .rationale-statement strong { color: var(--green); font-weight: 600; }
+  .email-wrap { border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+  .email-toolbar { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 8px; }
+  .email-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .email-dot-r { background: #e05a38; } .email-dot-y { background: var(--amber); } .email-dot-g { background: var(--green); }
+  .email-toolbar-label { margin-left: 12px; font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase; }
+  .email-fields { padding: 24px 28px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; align-items: baseline; }
+  .email-field-key { font-family: 'Azeret Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+  .email-field-val { font-size: 13px; color: var(--text); }
+  .email-field-val.subject-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); }
+  .email-body { padding: 32px 36px; max-width: 680px; }
+  .email-p { font-size: 14.5px; line-height: 1.9; color: var(--text); font-weight: 300; margin-bottom: 18px; }
+  .email-p strong { color: var(--white); font-weight: 600; }
+  .email-sig { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-dim); line-height: 1.8; }
+  .email-sig strong { display: block; font-size: 14px; font-family: 'Syne', sans-serif; font-weight: 700; color: var(--amber); margin-bottom: 2px; }
+  .certs { font-family: 'Azeret Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 4px; }
+  .site-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 28px 80px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--amber); }
+  .footer-copy { font-family: 'Azeret Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; color: var(--text-dim); }
+  @media print {
+    .nav { display: none; }
+    body::before { display: none; }
+    .cover { page-break-after: always; min-height: auto; padding: 60px; }
+    .section { page-break-inside: avoid; }
+    .pricing-grid, .wins-grid, .diagnosis-findings, .rationale-grid { grid-template-columns: 1fr; }
+    .phase { grid-template-columns: 1fr; }
+    .phase-label { border-right: none; border-bottom: 1px solid var(--border); }
+    .support-card { grid-template-columns: 1fr; }
+    .cover-stats { flex-wrap: wrap; }
+  }
+  @media (max-width: 820px) {
+    .cover-main, .cover-footer, .body-wrap, .nav, .site-footer { padding-left: 28px; padding-right: 28px; }
+    .cover-title { font-size: 36px; }
+    .wins-grid, .pricing-grid, .rationale-grid, .diagnosis-findings { grid-template-columns: 1fr; }
+    .phase { grid-template-columns: 1fr; }
+    .phase-label { border-right: none; border-bottom: 1px solid var(--border); }
+    .support-card { grid-template-columns: 1fr; }
+    .cover-stats { flex-wrap: wrap; }
+  }
+  </style>
+
+  <div class="section" id="rationale">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">07</span><span class="section-title">Why This Investment Makes Sense</span></div>
+      <span class="section-badge">ROI Case</span>
+    </div>
+    <div class="rationale-grid">
+      <div class="rationale-card">
+        <div class="rationale-icon">⏱</div>
+        <div class="rationale-number">~48 hrs</div>
+        <div class="rationale-label">Recovered Per Month</div>
+        <div class="rationale-body">Based on your intake: "manual setup every project from scratch." Estimated at 4–6 hours per client onboarding × under 20 projects monthly, that's <strong style="color:var(--amber)">roughly 48+ hours per month</strong> of manual setup work — based on your intake — that the system handles automatically once Phase 1 is live. (Based on your intake; exact hours validated during the build.)</div>
+      </div>
+      <div class="rationale-card">
+        <div class="rationale-icon">🚀</div>
+        <div class="rationale-number">2–3×</div>
+        <div class="rationale-label">Client Capacity Gain</div>
+        <div class="rationale-body">The stated problem is a hard capacity ceiling — you can only onboard as many clients as you have hours to set up manually. Once setup is automated, the ceiling is removed. A 2-person team running automated onboarding can support 2–3× the current client volume without additional headcount, based on typical agency workflow patterns.</div>
+      </div>
+      <div class="rationale-card">
+        <div class="rationale-icon">📈</div>
+        <div class="rationale-number">$10K–$50K</div>
+        <div class="rationale-label">LTV Per Contract Protected</div>
+        <div class="rationale-body">Each client represents $10K–$50K in lifetime value per your intake. A manual, founder-dependent onboarding process creates churn risk at the exact moment a client is most likely to second-guess their purchase. An automated, professional onboarding experience directly protects this value by reducing delays, confusion, and inconsistency in the first 72 hours.</div>
+      </div>
+    </div>
+    <div class="rationale-statement">
+      The Option B system at <strong>$6,500</strong> addresses the exact problem you named: "manually setting up every project from scratch." At $10K–$50K LTV per client, recovering <strong>one at-risk client engagement</strong> from a rough manual onboarding experience more than covers the entire build. This is not an overhead expense. <strong>This is the infrastructure that lets Axiom grow past the founder's available hours.</strong>
+    </div>
+  </div>
+
+  <div class="section" id="email">
+    <div class="section-header">
+      <div class="section-left"><span class="section-index">08</span><span class="section-title">Next Step — ARCG Proposal Email</span></div>
+      <span class="section-badge">Ready to Send</span>
+    </div>
+    <div class="email-wrap">
+      <div class="email-toolbar">
+        <div class="email-dot email-dot-r"></div>
+        <div class="email-dot email-dot-y"></div>
+        <div class="email-dot email-dot-g"></div>
+        <span class="email-toolbar-label">Draft · Outbound · High Priority</span>
+      </div>
+      <div class="email-fields">
+        <span class="email-field-key">From</span><span class="email-field-val">Jean-Max Charles Jr. &lt;info@arivergroup.com&gt;</span>
+        <span class="email-field-key">To</span><span class="email-field-val">Edwig Charles &lt;test@arcgsystems.com&gt;</span>
+        <span class="email-field-key">Subject</span><span class="email-field-val subject-val">Edwig — your agency can't scale past what you can set up by hand. Here's the fix.</span>
+      </div>
+      <div class="email-body">
+        <p class="email-p">Edwig — I reviewed your intake in full. You told me you <strong>manually set up every project from scratch</strong>, and you're transitioning from GovCon work into a commercial agency model. That combination means you're building a growth business on a process that caps itself every time you close a new client. Every deal you win creates more manual work before you can deliver any value — and that ceiling doesn't move until the system does.</p>
+        <p class="email-p">I've put together a full Operational Intelligence Report for Axiom — diagnosis, 90-day roadmap, tech stack, and three implementation options. The Option B Automated Operations System is what I'd recommend: it wires your existing CRM to Airtable via Make.com so the moment a deal closes, a project is created, tasks are generated, and your client receives a structured onboarding intake — automatically. No manual rebuild. It comes in at <strong>$6,500 one-time, fixed fee</strong>, and based on the setup time you described, it recovers that cost in recovered hours inside the first 60 days.</p>
+        <p class="email-p">I'd like 20 minutes to walk you through the build plan and confirm your CRM platform so I can spec the integration exactly. No pitch, no commitment required — you'll leave with a clear execution path regardless. You also provided your phone number — I'll reach out directly if I don't hear back by end of week. <strong>Or reply with two windows that work and I'll send a calendar link.</strong></p>
+        <div class="email-sig">
+          <strong>Jean-Max Charles Jr.</strong>
+          Founder & President · ARCG Systems<br>Hyattsville, Maryland
+          <div class="certs">SDVOSB · HUBZone · MBE · DBE · SBE Certified Federal Contractor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-brand">ARCG Systems</div>
+  <div class="footer-copy">arcgsystems.com · info@arivergroup.com · Confidential</div>
+</footer>
+
+<!-- ARCG INTERNAL: ASSUMPTIONS & MISSING INFORMATION
+Branch Variable Reset Validation: CONFIRMED PASS. GovCon fields (govconCurrentManagement, govconBreakdownArea, govconPrimaryNeed) are all empty in the submission. Fix 1 is working correctly.
+CRM identity — "CRM" selected but platform not specified. HubSpot, Pipedrive, Go High Level each have different Make.com integration depths. Must confirm during validation call before Phase 1 build begins.
+Tool stack — currentTools = "CRM" only. If Axiom already uses Airtable or Make.com internally (likely, given they are an automation agency), setup hours decrease significantly. Validate during call.
+Team composition — systemUsers = "2–5 people." Role breakdown unknown. Task assignment routing in Phase 2 requires knowing who does what. Clarify during onboarding.
+Volume = Under 20 — consistent with "transitioning" language. Early-stage client load. Volume will increase as the system is built — scope should account for 2–3× current volume within 6 months.
+Project types — "AI / Automation Agency" but specific service lines not captured. Task auto-generation in Phase 2 requires knowing the standard project types (e.g., CRM setup, Zapier build, Airtable build). Map during Phase 1.
+Phone number present: +1 (347) 725-7960 — OUTREACH PRIORITY. For Within-30-days urgency, call before emailing. Call after 48 hours of no email response.
+Budget $5K–$10K aligns with Option B ($6,500) and Option C ($9,500) pricing. Option B is the right fit.
+LTV $10K–$50K — strong. Makes the ROI case easy to make. Reference in all follow-up.
+Disqualified: false — clean lead. High-quality intake.
+Final scope and pricing may adjust slightly following a short validation call, but the overall system direction remains consistent.
+-->
+
+</body>
+</html>

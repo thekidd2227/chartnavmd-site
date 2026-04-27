@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  ============================================================================
+  LEGACY REDIRECT SHIM — DO NOT RE-HOST THE SOURCEDECK APP HERE.
+
+  arcgsystems.com/sourcedeck/ used to host SourceDeck. The product now
+  lives exclusively at https://sourcedeck.app/. This shim exists ONLY so
+  legacy URLs forward correctly. Never put product content in this file.
+  ============================================================================
+-->
+<meta charset="UTF-8">
+<title>SourceDeck — Redirecting…</title>
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url=https://sourcedeck.app/">
+<link rel="canonical" href="https://sourcedeck.app/">
+<style>
+  html,body{margin:0;padding:0;background:#000;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Inter',system-ui,sans-serif;height:100%}
+  .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+  h1{font-size:22px;font-weight:700;margin:0 0 10px;letter-spacing:-0.02em}
+  p{font-size:14px;color:rgba(245,245,247,0.6);margin:0 0 18px;line-height:1.5}
+  a{color:#2997ff;text-decoration:none;font-weight:600}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <h1>Opening SourceDeck…</h1>
+      <p>SourceDeck has its own home at <a href="https://sourcedeck.app/">sourcedeck.app</a>.<br>Redirecting you now.</p>
+      <p style="font-size:12px;color:rgba(245,245,247,0.4)">If you're not redirected automatically, <a href="https://sourcedeck.app/">tap here</a>.</p>
+    </div>
+  </div>
+  <script>
+    // Honor any path suffix (e.g. /sourcedeck/app → /app, /sourcedeck/#pricing → /#pricing)
+    (function(){
+      var p = location.pathname.replace(/^\/sourcedeck\/?/, '/');
+      var dest = 'https://sourcedeck.app' + p + location.search + location.hash;
+      location.replace(dest);
+    })();
+  </script>
+</body>
+</html>

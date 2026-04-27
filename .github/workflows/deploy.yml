@@ -1,0 +1,81 @@
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main, staging]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        # Chartnav production lead flow:
+        #   VITE_CHARTNAV_LEAD_WEBHOOK is inlined by Vite at build time.
+        #   Configure it as a GitHub Actions secret or variable on this repo:
+        #     Repo → Settings → Secrets and variables → Actions → New secret
+        #     Name:  VITE_CHARTNAV_LEAD_WEBHOOK
+        #     Value: <Make.com custom webhook URL>
+        #   Without it, the live Chartnav forms fall back to console.warn and
+        #   leads are NOT delivered to Make. See docs/chartnav-integration.md.
+        env:
+          VITE_CHARTNAV_LEAD_WEBHOOK: ${{ secrets.VITE_CHARTNAV_LEAD_WEBHOOK }}
+        run: npm run build
+      - name: Verify Chartnav webhook is wired into the bundle
+        # Fails the build only if the repo secret was set but Vite somehow
+        # did not inline it — catches silent misconfiguration. Skipped when
+        # the secret is intentionally blank (pre-launch state).
+        run: |
+          if [ -n "${VITE_CHARTNAV_LEAD_WEBHOOK}" ]; then
+            if ! grep -rq "${VITE_CHARTNAV_LEAD_WEBHOOK}" dist/assets; then
+              echo "::error::VITE_CHARTNAV_LEAD_WEBHOOK was set but not found in built bundle" >&2
+              exit 1
+            fi
+            echo "Chartnav webhook inlined into dist/assets OK"
+          else
+            echo "::warning::VITE_CHARTNAV_LEAD_WEBHOOK is not set; Chartnav leads will log to console only"
+          fi
+        env:
+          VITE_CHARTNAV_LEAD_WEBHOOK: ${{ secrets.VITE_CHARTNAV_LEAD_WEBHOOK }}
+      - name: Copy CNAME
+        run: cp CNAME dist/CNAME
+      # NOTE: public/404.html is the spa-github-pages redirect (preserves path via ?/).
+      # index.html carries the matching ingest script. Do NOT overwrite 404.html with
+      # a copy of index.html — that kills the redirect and breaks deep-link routing
+      # on direct navigation (/assessment, /solutions/*, etc.).
+      - name: Verify SPA 404 redirect is present
+        run: |
+          test -f dist/404.html
+          grep -q "SPA redirect" dist/404.html
+      - name: Verify SEO assets (robots.txt + sitemap.xml) are present
+        run: |
+          test -f dist/robots.txt
+          test -f dist/sitemap.xml
+          grep -q "Sitemap:" dist/robots.txt
+          grep -q "arcgsystems.com" dist/sitemap.xml
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

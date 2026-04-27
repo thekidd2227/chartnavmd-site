@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCG Systems — Assessment Form Logic Specification v1.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0A0C12;
+  --panel:    #121621;
+  --panel2:   #171c28;
+  --border:   #272f3d;
+  --blt:      #1e2533;
+  --gold:     #C9941A;
+  --glt:      #e0a820;
+  --gdim:     rgba(201,148,26,0.12);
+  --text:     #E8ECF2;
+  --muted:    #98A3B3;
+  --dim:      #5a6478;
+  --green:    #3ec878;
+  --red:      #e06060;
+  --blue:     #6ea8f7;
+  --teal:     #4ec9b0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.35}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,148,26,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(201,148,26,.018) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 32px 100px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(10,12,18,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 32px;margin:0 -32px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.nav a{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:13px 14px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.nav a:hover{color:var(--gold);border-bottom-color:rgba(201,148,26,.4)}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border);animation:fadeUp .7s ease both}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,58px);font-weight:300;line-height:1.08;letter-spacing:-.5px;margin-bottom:14px}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--gold) 0%,var(--glt) 50%,var(--gold) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite}
+.hero p{font-size:15px;color:var(--muted);max-width:580px;margin-bottom:28px;font-weight:300}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 11px;border-radius:2px}
+.tag-gold{color:var(--gold);border:1px solid rgba(201,148,26,.3);background:var(--gdim)}
+.tag-dim{color:var(--dim);border:1px solid var(--border)}
+.tag-new{color:var(--teal);border:1px solid rgba(78,201,176,.3);background:rgba(78,201,176,.08)}
+.tag-red{color:var(--red);border:1px solid rgba(224,96,96,.3);background:rgba(224,96,96,.08)}
+
+/* SECTION */
+.sec{margin-top:56px;animation:fadeUp .6s ease both}
+.sec-hdr{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--blt)}
+.sec-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);padding:3px 8px;border:1px solid rgba(201,148,26,.25);background:var(--gdim);border-radius:2px;flex-shrink:0;margin-top:4px}
+.sec-ttl h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;letter-spacing:-.2px;margin-bottom:3px}
+.sec-ttl p{font-size:12.5px;color:var(--muted);font-weight:300}
+
+/* PANELS */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:22px 26px;margin-bottom:12px;position:relative}
+.panel::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.panel:hover::before{opacity:1}
+.plbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.plbl::after{content:'';flex:1;height:1px;background:var(--blt)}
+.p2{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:16px 20px;margin-bottom:10px}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl thead th{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+.tbl tbody tr{border-bottom:1px solid var(--blt);transition:background .15s}
+.tbl tbody tr:hover{background:rgba(255,255,255,.012)}
+.tbl td{padding:11px 13px;color:var(--muted);vertical-align:top}
+.tbl td:first-child{color:var(--text);font-weight:500}
+.g{color:var(--gold)!important;font-weight:600!important}
+.gr{color:var(--green)!important}
+.rd{color:var(--red)!important}
+.te{color:var(--teal)!important}
+.bl{color:var(--blue)!important}
+.mo{font-family:'DM Mono',monospace!important;font-size:10.5px!important;color:var(--dim)!important}
+
+/* PILLS */
+.pill{display:inline-block;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:500}
+.p-gold{background:var(--gdim);color:var(--gold);border:1px solid rgba(201,148,26,.25)}
+.p-green{background:rgba(46,157,96,.1);color:var(--green);border:1px solid rgba(46,157,96,.2)}
+.p-red{background:rgba(201,64,64,.1);color:var(--red);border:1px solid rgba(201,64,64,.2)}
+.p-teal{background:rgba(78,201,176,.08);color:var(--teal);border:1px solid rgba(78,201,176,.25)}
+.p-blue{background:rgba(42,107,201,.1);color:var(--blue);border:1px solid rgba(42,107,201,.2)}
+.p-dim{background:transparent;color:var(--dim);border:1px solid var(--border)}
+
+/* BRANCH CARDS */
+.branch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.bcard{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:16px;position:relative;overflow:hidden;transition:border-color .2s}
+.bcard:hover{border-color:rgba(201,148,26,.3)}
+.bcard.new-branch{border-color:rgba(78,201,176,.3)!important}
+.bcard.new-branch::before{content:'NEW';position:absolute;top:8px;right:8px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;color:var(--teal);background:rgba(78,201,176,.1);border:1px solid rgba(78,201,176,.2);border-radius:2px;padding:1px 5px}
+.bcard::after{content:'';position:absolute;bottom:0;right:0;width:40px;height:40px;background:radial-gradient(circle at bottom right,rgba(201,148,26,.05),transparent)}
+.bc-id{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--gold);margin-bottom:5px}
+.bc-trigger{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.4}
+.bc-fields{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);line-height:1.7}
+
+/* CODE */
+.code{background:#0d1017;border:1px solid var(--border);border-radius:3px;padding:16px 20px;font-family:'DM Mono',monospace;font-size:11.5px;color:#a8c0d4;line-height:1.85;overflow-x:auto;margin:8px 0;white-space:pre}
+.code .kw{color:var(--gold)}
+.code .st{color:#7ec8a4}
+.code .cm{color:var(--dim)}
+.code .vr{color:#9cdcfe}
+.code .hl{color:var(--teal)}
+
+/* FLOW DIAGRAM */
+.flow-diagram{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:22px 26px}
+.flow-row{display:flex;align-items:flex-start;gap:14px;padding:11px 0;border-bottom:1px solid var(--blt)}
+.flow-row:last-child{border-bottom:none}
+.flow-step{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);padding:4px 10px;border:1px solid rgba(201,148,26,.25);background:var(--gdim);border-radius:2px;flex-shrink:0;min-width:60px;text-align:center}
+.flow-arr{color:var(--dim);font-size:16px;flex-shrink:0;margin-top:2px}
+.flow-content strong{display:block;font-size:13px;color:var(--text);margin-bottom:3px}
+.flow-content span{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);line-height:1.7}
+
+/* PATH SCENARIOS */
+.path-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.pcard{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:18px 20px;position:relative}
+.pcard.new-path{border-color:rgba(78,201,176,.3)}
+.pcard.new-path::after{content:'NEW';position:absolute;top:10px;right:10px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;color:var(--teal);background:rgba(78,201,176,.1);border:1px solid rgba(78,201,176,.2);border-radius:2px;padding:1px 5px}
+.path-id{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--gold);margin-bottom:6px}
+.path-type{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px}
+.path-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--blt);gap:12px}
+.path-row:last-child{border-bottom:none}
+.path-key{font-size:11px;color:var(--dim);flex-shrink:0;min-width:110px}
+.path-val{font-size:11.5px;color:var(--muted);text-align:right}
+.path-val.emph{color:var(--gold)}
+
+/* RISK CARDS */
+.risk-list{display:flex;flex-direction:column;gap:10px}
+.risk{padding:14px 18px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;display:flex;gap:14px}
+.risk-sev{flex-shrink:0;padding:3px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;height:fit-content;margin-top:2px}
+.risk-body h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.risk-body p{font-size:12px;color:var(--muted);line-height:1.6}
+.risk-impact{font-size:11px;color:var(--dim);margin-top:6px;padding:6px 10px;background:rgba(0,0,0,.2);border-radius:2px;font-style:italic}
+
+/* IMPROVEMENT TABLE */
+.imp-row{display:grid;grid-template-columns:28px 80px 1fr 1fr;gap:0;border-bottom:1px solid var(--blt);align-items:stretch}
+.imp-row.hdr .imp-cell{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:9px 13px;background:rgba(0,0,0,.15)}
+.imp-cell{padding:12px 13px;font-size:12px;color:var(--muted);vertical-align:top}
+.imp-cell:first-child{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);text-align:center}
+.imp-cell:nth-child(2){font-weight:600;color:var(--text)}
+
+/* DIVIDER */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:44px 0}
+
+/* SPEC KEY-VAL */
+.kv{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.kvrow{display:flex;gap:0;border-bottom:1px solid var(--blt)}
+.kvkey{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);padding:8px 13px;min-width:140px;flex-shrink:0;background:rgba(0,0,0,.12)}
+.kvval{font-size:12.5px;color:var(--muted);padding:8px 13px;flex:1}
+.kvval.hi{color:var(--text);font-weight:500}
+
+/* Q SPEC */
+.q-spec{background:var(--panel2);border:1px solid var(--border);border-radius:3px;margin-bottom:14px;overflow:hidden}
+.q-spec-hdr{padding:12px 18px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--blt);display:flex;justify-content:space-between;align-items:center}
+.q-spec-hdr strong{font-size:12.5px;color:var(--text)}
+.q-spec-body{padding:16px 18px}
+.q-row{display:grid;grid-template-columns:120px 1fr;border-bottom:1px solid var(--blt);align-items:start}
+.q-row:last-child{border-bottom:none}
+.q-label{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--dim);padding:9px 13px 9px 0;letter-spacing:.5px}
+.q-value{font-size:12.5px;color:var(--muted);padding:9px 0}
+.q-value.primary{color:var(--text);font-weight:500}
+.opts{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.opt{font-size:11px;color:var(--muted);padding:3px 10px;border:1px solid var(--blt);border-radius:2px;background:rgba(255,255,255,.025)}
+
+/* ROUTING BADGE */
+.route-badge{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;border-radius:2px}
+.route-audit{color:var(--teal);background:rgba(78,201,176,.08);border:1px solid rgba(78,201,176,.2)}
+.route-leads{color:var(--gold);background:var(--gdim);border:1px solid rgba(201,148,26,.25)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+@media(max-width:700px){
+  .branch-grid{grid-template-columns:repeat(2,1fr)}
+  .path-grid{grid-template-columns:1fr}
+  .imp-row{grid-template-columns:1fr}
+  .wrap{padding:0 16px 80px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#overview">Overview</a>
+  <a href="#flow">Form Flow</a>
+  <a href="#questions">Questions</a>
+  <a href="#branching">Branching</a>
+  <a href="#variables">Variables</a>
+  <a href="#paths">Path Scenarios</a>
+  <a href="#output">Output Mapping</a>
+  <a href="#risks">Risks</a>
+  <a href="#improvements">Improvements</a>
+  <a href="#multiselect">Multi-Select</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="eyebrow">ARCG Systems · Internal Documentation</div>
+  <h1>Assessment Form<br><em>Branching Logic Specification</em></h1>
+  <p>Complete technical and operational documentation of the ARCG Systems assessment form — all questions, answer choices, branch conditions, variable names, path scenarios, and email output mapping. Formatted for developer implementation, operator review, and AI system ingestion.</p>
+  <div class="hero-meta">
+    <span class="tag tag-gold">v1.2 · Production</span>
+    <span class="tag tag-new">Healthcare Branch · Multi-Select Diagnostic Fields</span>
+    <span class="tag tag-dim">Source: Assessment.tsx</span>
+    <span class="tag tag-dim">8 Branches · 4 Steps</span>
+    <span class="tag tag-dim">Confidential — ARCG Internal Use</span>
+  </div>
+</header>
+
+<!-- CHANGELOG CALLOUT -->
+<div style="margin-top:32px;padding:18px 24px;background:rgba(78,201,176,.06);border:1px solid rgba(78,201,176,.25);border-radius:3px;position:relative;overflow:hidden">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)"></div>
+  <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:8px">v1.1 → v1.2 Changes — 2026-04-04</div>
+  <div style="font-size:13px;color:var(--muted)">
+    <strong style="color:var(--text)">Added:</strong> Branch 2H — Healthcare / Medical Billing (routes to Audit Intake table, not Leads). Fields: <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal)">healthcarePrimaryIssue, healthcareCurrentSystem, healthcareIdealState</span>. businessType count: 7 → 8. Total branches: 7 → 8. TOTAL_STEPS remains 4.<br>
+    <strong style="color:var(--text)">Updated:</strong> Section 1.1 notification email → <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8aebf8e9edf9f3f9feefe7f9caede7ebe3e6a4e9e5e7">[email&#160;protected]</a>. All routing tables, variable dictionary, flow diagram, and path scenarios updated. Section 1.3 "90-day roadmap" reference removed per operational doctrine.
+    <br><br>
+    <strong style="color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase">▸ v1.2 — 2026-04-04:</strong> <strong style="color:var(--text)">9 diagnostic fields converted to multi-select.</strong> <span style="color:var(--muted)">Fields: govconBreakdownArea, govconPrimaryNeed, agencyBreakdownArea, agencyPrimaryAutomation, staffingPrimaryIssue, servicePrimaryLossPoint, professionalPipelineIssue, healthcarePrimaryIssue, ecommerceBottleneck. UI state: string[]. Submit: .join(", "). Validation: arr.length > 0. Branch clear: resets to []. Downstream: Web3Forms, Make, Airtable all receive clean CSV strings. See §19.</span>
+  </div>
+</div>
+
+<!-- §1 OVERVIEW -->
+<div class="sec" id="overview">
+  <div class="sec-hdr">
+    <div class="sec-num">§1</div>
+    <div class="sec-ttl"><h2>Overview</h2><p>Purpose, captured data, business outcome, target audience, and technical stack</p></div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">1.1 Purpose</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">The ARCG Systems Assessment Form is an intake qualification tool deployed at <strong style="color:var(--gold)">arcgsystems.com/assessment</strong>. Its purpose is to collect structured operational data from prospective clients, route that data to <strong style="color:var(--text)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1574677672666c6661707866557278747c793b767a78">[email&#160;protected]</a></strong>, and trigger a custom workflow plan delivered within <strong style="color:var(--gold)">24 hours</strong>. The form is the primary top-of-funnel conversion mechanism for the website.</p>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">1.2 What the Form Captures</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="p2" style="display:flex;gap:12px;align-items:flex-start;margin:0"><span style="color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0">→</span><div><strong style="font-size:13px;color:var(--text)">Business category</strong> <span style="font-size:12px;color:var(--muted)">— drives Step 2 branch selection (8 options as of v1.1)</span></div></div>
+      <div class="p2" style="display:flex;gap:12px;align-items:flex-start;margin:0"><span style="color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0">→</span><div><strong style="font-size:13px;color:var(--text)">Industry-specific operational context</strong> <span style="font-size:12px;color:var(--muted)">— 1–3 questions, varies by branch</span></div></div>
+      <div class="p2" style="display:flex;gap:12px;align-items:flex-start;margin:0"><span style="color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0">→</span><div><strong style="font-size:13px;color:var(--text)">Universal qualification data</strong> <span style="font-size:12px;color:var(--muted)">— problem description, tools, users, volume, urgency, budget, LTV, desired outcome</span></div></div>
+      <div class="p2" style="display:flex;gap:12px;align-items:flex-start;margin:0"><span style="color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0">→</span><div><strong style="font-size:13px;color:var(--text)">Contact information</strong> <span style="font-size:12px;color:var(--muted)">— business name, contact name, work email</span></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">1.3 Business Outcome</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">On successful submission, ARCG receives a notification email at <strong style="color:var(--text)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fa9b88999d8983898e9f9789ba9d979b9396d4999597">[email&#160;protected]</a></strong> (forwarded to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1a8afa7ae81a0b3a8b7a4b3a6b3aeb4b1efa2aeac">[email&#160;protected]</a>) containing all form fields. The operations team reviews the intake and delivers a custom workflow plan and fixed-fee proposal within <strong style="color:var(--gold)">24 hours</strong>. No discovery call is required before delivery.</p>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">1.4 Target Audience — 8 Business Categories</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">Government Contractors</div></div>
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">AI / Automation Agencies</div></div>
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">Staffing / Workforce</div></div>
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">Service Businesses</div></div>
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">Professional Services</div></div>
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">E-commerce / Online</div></div>
+      <div class="p2" style="margin:0;text-align:center"><div style="font-size:11.5px;color:var(--muted)">Other</div></div>
+      <div class="p2" style="margin:0;text-align:center;border-color:rgba(78,201,176,.3)"><div style="font-size:11.5px;color:var(--teal)">Healthcare / Medical Billing <span style="font-size:9px">NEW</span></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Technical Stack</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:4px">Framework</div><div style="font-size:12.5px;color:var(--muted)">React + TypeScript (Vite)</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:4px">Form State</div><div style="font-size:12.5px;color:var(--muted)">React useState (no external lib)</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:4px">Validation</div><div style="font-size:12.5px;color:var(--muted)">Custom inline per step</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:4px">Submission</div><div style="font-size:12.5px;color:var(--muted)">fetch() POST → api.web3forms.com/submit</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:4px">Anti-spam</div><div style="font-size:12.5px;color:var(--muted)">Honeypot checkbox (botcheck field)</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:4px">Access Key</div><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">4feb412f-17c5-4b04-8036-66f66f5ce5e3</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- §2 FORM FLOW -->
+<div class="sec" id="flow">
+  <div class="sec-hdr">
+    <div class="sec-num">§2</div>
+    <div class="sec-ttl"><h2>Form Flow Summary</h2><p>Step structure, navigation logic, and complete branch flow diagram</p></div>
+  </div>
+
+  <div class="panel" style="margin-bottom:16px">
+    <div class="plbl">Step Structure</div>
+    <table class="tbl">
+      <thead><tr><th>Step</th><th>Label</th><th>Purpose</th><th>Questions</th><th>Branching?</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="g">Business Type</td><td>Identify category to route Step 2</td><td>1 (card select)</td><td><span class="pill p-red">YES — 8 branches</span></td></tr>
+        <tr><td>2</td><td class="g">Your Operation</td><td>Capture industry-specific context</td><td>1–3 (branch-dependent)</td><td><span class="pill p-dim">Content varies</span></td></tr>
+        <tr><td>3</td><td class="g">Scope &amp; Qualification</td><td>Volume, budget, urgency, LTV</td><td>9 (universal)</td><td><span class="pill p-dim">Same all paths</span></td></tr>
+        <tr><td>4</td><td class="g">Contact Info</td><td>Collect contact &amp; trigger submit</td><td>3 (universal)</td><td><span class="pill p-dim">Same all paths</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flow-diagram">
+    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px">Complete Flow Diagram <span style="flex:1;height:1px;background:var(--blt)"></span></div>
+    <div class="flow-row">
+      <div class="flow-step">Step 1</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Select Business Type</strong><span>Single-select card buttons · sets bt variable · determines entire Step 2 content</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2A</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>GovCon Branch</strong><span>govconCurrentManagement · govconBreakdownArea · govconPrimaryNeed</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2B</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Agency Branch</strong><span>agencyBreakdownArea · agencyCurrentOnboarding · agencyPrimaryAutomation</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2C</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Staffing Branch</strong><span>staffingPrimaryIssue · staffingCurrentConfirmation · staffingIdealState</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2D</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Service Business Branch</strong><span>servicePrimaryLossPoint · serviceCurrentLeadHandling</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2E</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Professional Services Branch</strong><span>professionalPipelineIssue</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2F</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>E-commerce Branch</strong><span>ecommerceBottleneck</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">2G</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Other Branch</strong><span>otherBreakdownArea (free textarea)</span></div>
+    </div>
+    <div class="flow-row" style="background:rgba(78,201,176,.04);border-radius:0 0 3px 3px">
+      <div class="flow-step" style="background:rgba(78,201,176,.1);border-color:rgba(78,201,176,.3);color:var(--teal)">2H ★</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong style="color:var(--teal)">Healthcare / Medical Billing Branch <span class="pill p-teal" style="margin-left:6px">NEW</span></strong><span>healthcarePrimaryIssue · healthcareCurrentSystem · healthcareIdealState<br>⚠ Routes to <strong style="color:var(--teal)">Audit Intake table</strong> (tblog9Y7WSLhD4xCp) — NOT the Leads table</span></div>
+    </div>
+    <div class="flow-row" style="border-bottom:1px solid var(--border)">
+      <div class="flow-step" style="background:rgba(0,0,0,.2)">All</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Step 3 — Universal Qualification</strong><span>biggestProblem · currentTools · systemUsers · scaleScope · urgency · budgetRange · volume · averageLifetimeValue · desiredResult</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step" style="background:rgba(0,0,0,.2)">Step 4</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-content"><strong>Contact Information → Submit</strong><span>businessName · contactName · workEmail → fetch() POST → Web3Forms → <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5637243531252f2522333b2516313b373f3a7835393b">[email&#160;protected]</a></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- §3 QUESTIONS -->
+<div class="sec" id="questions">
+  <div class="sec-hdr">
+    <div class="sec-num">§3</div>
+    <div class="sec-ttl"><h2>Question-by-Question Specification</h2><p>All 8 branches with variable names, labels, input types, and answer choices</p></div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="panel">
+    <div class="plbl">Step 1 — Business Type (Q1)</div>
+    <div class="q-spec" style="margin:0">
+      <div class="q-spec-hdr"><strong>businessType — Single-select card buttons (visual grid)</strong><span class="pill p-red">Required</span></div>
+      <div class="q-spec-body">
+        <div class="q-row"><div class="q-label">Label</div><div class="q-value primary">What best describes your business?</div></div>
+        <div class="q-row"><div class="q-label">Input Type</div><div class="q-value">Single-select card buttons (visual grid)</div></div>
+        <div class="q-row"><div class="q-label">Branch Effect</div><div class="q-value">Sets bt variable — determines entire Step 2 content</div></div>
+        <div class="q-row" style="border:none"><div class="q-label">Answer Choices</div><div class="q-value"><div class="opts">
+          <span class="opt">Government Contractor / GovCon</span>
+          <span class="opt">AI / Automation Agency</span>
+          <span class="opt">Staffing / Workforce</span>
+          <span class="opt">Service Business (HVAC, Cleaning, Field Services…)</span>
+          <span class="opt">Professional Services (Legal, Medical, Consulting)</span>
+          <span class="opt">E-commerce / Online Business</span>
+          <span class="opt">Other</span>
+          <span class="opt" style="border-color:rgba(78,201,176,.3);color:var(--teal)">Healthcare / Medical Billing ★ NEW</span>
+        </div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branch cards overview -->
+  <div style="margin-bottom:14px">
+    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:12px;display:flex;align-items:center;gap:8px">All 8 Step 2 Branches <span style="flex:1;height:1px;background:var(--blt)"></span></div>
+    <div class="branch-grid">
+      <div class="bcard"><div class="bc-id">Branch 2A</div><div class="bc-trigger">Government Contractor / GovCon</div><div class="bc-fields">govconCurrentManagement<br>govconBreakdownArea<br>govconPrimaryNeed</div></div>
+      <div class="bcard"><div class="bc-id">Branch 2B</div><div class="bc-trigger">AI / Automation Agency</div><div class="bc-fields">agencyBreakdownArea<br>agencyCurrentOnboarding<br>agencyPrimaryAutomation</div></div>
+      <div class="bcard"><div class="bc-id">Branch 2C</div><div class="bc-trigger">Staffing / Workforce</div><div class="bc-fields">staffingPrimaryIssue<br>staffingCurrentConfirmation<br>staffingIdealState</div></div>
+      <div class="bcard"><div class="bc-id">Branch 2D</div><div class="bc-trigger">Service Business (HVAC…)</div><div class="bc-fields">servicePrimaryLossPoint<br>serviceCurrentLeadHandling</div></div>
+      <div class="bcard"><div class="bc-id">Branch 2E</div><div class="bc-trigger">Professional Services</div><div class="bc-fields">professionalPipelineIssue</div></div>
+      <div class="bcard"><div class="bc-id">Branch 2F</div><div class="bc-trigger">E-commerce / Online</div><div class="bc-fields">ecommerceBottleneck</div></div>
+      <div class="bcard"><div class="bc-id">Branch 2G</div><div class="bc-trigger">Other</div><div class="bc-fields">otherBreakdownArea<br>(free textarea)</div></div>
+      <div class="bcard new-branch"><div class="bc-id" style="color:var(--teal)">Branch 2H</div><div class="bc-trigger" style="color:var(--teal)">Healthcare / Medical Billing</div><div class="bc-fields" style="color:rgba(78,201,176,.6)">healthcarePrimaryIssue<br>healthcareCurrentSystem<br>healthcareIdealState</div></div>
+    </div>
+  </div>
+
+  <!-- Branch 2H detail — new -->
+  <div class="panel" style="border-color:rgba(78,201,176,.3)">
+    <div class="plbl" style="color:var(--teal)">Step 2H — Healthcare / Medical Billing Branch (NEW)</div>
+    <div style="margin-bottom:12px;padding:10px 14px;background:rgba(78,201,176,.05);border:1px solid rgba(78,201,176,.15);border-radius:2px;font-size:12px;color:var(--muted)">
+      ⚠ <strong style="color:var(--teal)">Special routing:</strong> This branch routes to <strong style="color:var(--teal)">Audit Intake table</strong> (tblog9Y7WSLhD4xCp) instead of the standard Leads table (tbl695ilVYkzMxHso). All other branches → Leads.
+    </div>
+    <div class="q-spec" style="margin-bottom:10px">
+      <div class="q-spec-hdr"><strong>healthcarePrimaryIssue</strong><span class="pill p-teal">Required</span></div>
+      <div class="q-spec-body">
+        <div class="q-row"><div class="q-label">Label</div><div class="q-value primary">What is your primary billing challenge?</div></div>
+        <div class="q-row"><div class="q-label">Input Type</div><div class="q-value">Dropdown</div></div>
+        <div class="q-row" style="border:none"><div class="q-label">Options</div><div class="q-value"><div class="opts">
+          <span class="opt">Claim denials</span><span class="opt">Slow collections / A/R days</span><span class="opt">Coding errors</span><span class="opt">Eligibility verification failures</span><span class="opt">Underpayments</span>
+        </div></div></div>
+      </div>
+    </div>
+    <div class="q-spec" style="margin-bottom:10px">
+      <div class="q-spec-hdr"><strong>healthcareCurrentSystem</strong><span class="pill p-teal">Required</span></div>
+      <div class="q-spec-body">
+        <div class="q-row"><div class="q-label">Label</div><div class="q-value primary">What system are you currently using?</div></div>
+        <div class="q-row"><div class="q-label">Input Type</div><div class="q-value">Dropdown</div></div>
+        <div class="q-row" style="border:none"><div class="q-label">Options</div><div class="q-value"><div class="opts">
+          <span class="opt">Manual / spreadsheets</span><span class="opt">Legacy EHR/PM</span><span class="opt">Modern EHR/PM (limited automation)</span><span class="opt">No system</span>
+        </div></div></div>
+      </div>
+    </div>
+    <div class="q-spec">
+      <div class="q-spec-hdr"><strong>healthcareIdealState</strong><span class="pill p-teal">Required</span></div>
+      <div class="q-spec-body">
+        <div class="q-row"><div class="q-label">Label</div><div class="q-value primary">What would your ideal billing operation look like?</div></div>
+        <div class="q-row"><div class="q-label">Input Type</div><div class="q-value">Dropdown</div></div>
+        <div class="q-row" style="border:none"><div class="q-label">Options</div><div class="q-value"><div class="opts">
+          <span class="opt">Automated claim submission</span><span class="opt">Real-time denial alerts</span><span class="opt">Full revenue cycle visibility</span><span class="opt">Reduced A/R days</span>
+        </div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps 3 & 4 -->
+  <div class="panel">
+    <div class="plbl">Step 3 — Scope &amp; Qualification (Universal — all 8 paths)</div>
+    <table class="tbl">
+      <thead><tr><th>#</th><th>Variable</th><th>Label</th><th>Type</th><th>Options</th></tr></thead>
+      <tbody>
+        <tr><td>3.1</td><td class="mo">biggestProblem</td><td>What is the biggest operational problem slowing your business right now?</td><td>Textarea</td><td>Free text · Required</td></tr>
+        <tr><td>3.2</td><td class="mo">currentTools</td><td>What tools do you currently use?</td><td>Dropdown</td><td>CRM · Spreadsheets · Email · QuickBooks · Phone · None · Other</td></tr>
+        <tr><td>3.3</td><td class="mo">systemUsers</td><td>How many people would use this system?</td><td>Dropdown</td><td>Just me · 2–5 · 6–15 · 16+</td></tr>
+        <tr><td>3.4</td><td class="mo">scaleScope</td><td>How many locations, vendors, or teams?</td><td>Dropdown</td><td>1–3 · 4–10 · 11–25 · 25+</td></tr>
+        <tr><td>3.5</td><td class="mo">urgency</td><td>How quickly do you need this solved?</td><td>Dropdown</td><td>Immediately · Within 30 days · 1–3 months · Just exploring</td></tr>
+        <tr><td>3.6</td><td class="mo">budgetRange</td><td>What investment level are you prepared for?</td><td>Dropdown</td><td>Under $1K · $1K–$5K · $5K–$10K · $10K+</td></tr>
+        <tr><td>3.7</td><td class="mo">volume</td><td>How many requests, jobs, or workflows monthly?</td><td>Dropdown</td><td>Under 20 · 20–100 · 100–300 · 300+</td></tr>
+        <tr><td>3.8</td><td class="mo">averageLifetimeValue</td><td>What is the average LTV of a customer or contract?</td><td>Dropdown</td><td>Under $1K · $1K–$10K · $10K–$50K · $50K+</td></tr>
+        <tr><td>3.9</td><td class="mo">desiredResult</td><td>What result matters most right now?</td><td>Dropdown</td><td>Reduce manual work · Increase revenue · Improve execution / control · Scale operations</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Step 4 — Contact Information (Universal)</div>
+    <table class="tbl">
+      <thead><tr><th>#</th><th>Variable</th><th>Label / Placeholder</th><th>Type</th><th>Validation</th></tr></thead>
+      <tbody>
+        <tr><td>4.1</td><td class="mo">businessName</td><td>Business Name / "Your company name"</td><td>Text</td><td>Non-empty string · Required</td></tr>
+        <tr><td>4.2</td><td class="mo">contactName</td><td>Your Name / "First and last name"</td><td>Text</td><td>Non-empty string · Required</td></tr>
+        <tr><td>4.3</td><td class="mo">workEmail</td><td>Work Email / "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="89f0e6fcc9eae6e4f9e8e7f0a7eae6e4">[email&#160;protected]</a>"</td><td>Email</td><td>Non-empty + regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/ · Error: "Enter a valid email address"</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11.5px;color:var(--dim);margin-top:10px;font-style:italic">Support copy below submit: "Your plan arrives within 24 hours. No commitment required."</p>
+  </div>
+</div>
+
+<!-- §4 BRANCHING -->
+<div class="sec" id="branching">
+  <div class="sec-hdr">
+    <div class="sec-num">§4</div>
+    <div class="sec-ttl"><h2>Branching Logic</h2><p>Branch decision table, validation logic, field counts, and Airtable routing by branch</p></div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">4.1 Branch Decision Table — Updated for v1.1</div>
+    <table class="tbl">
+      <thead><tr><th>businessType Value</th><th>Branch</th><th>Fields Shown</th><th>Airtable Destination</th><th>Total Fields</th></tr></thead>
+      <tbody>
+        <tr><td>Government Contractor / GovCon</td><td class="g">2A</td><td>govconCurrentManagement · govconBreakdownArea · govconPrimaryNeed</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr><td>AI / Automation Agency</td><td class="g">2B</td><td>agencyBreakdownArea · agencyCurrentOnboarding · agencyPrimaryAutomation</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr><td>Staffing / Workforce</td><td class="g">2C</td><td>staffingPrimaryIssue · staffingCurrentConfirmation · staffingIdealState</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr><td>Service Business (HVAC…)</td><td class="g">2D</td><td>servicePrimaryLossPoint · serviceCurrentLeadHandling</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr><td>Professional Services</td><td class="g">2E</td><td>professionalPipelineIssue</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr><td>E-commerce / Online Business</td><td class="g">2F</td><td>ecommerceBottleneck</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr><td>Other</td><td class="g">2G</td><td>otherBreakdownArea (textarea)</td><td><span class="route-badge route-leads">Leads</span></td><td>26</td></tr>
+        <tr style="background:rgba(78,201,176,.04)"><td style="color:var(--teal)">Healthcare / Medical Billing ★</td><td class="te">2H NEW</td><td style="color:var(--teal)">healthcarePrimaryIssue · healthcareCurrentSystem · healthcareIdealState</td><td><span class="route-badge route-audit">Audit Intake</span></td><td>26</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(78,201,176,.05);border:1px solid rgba(78,201,176,.15);border-radius:2px;font-size:12px;color:var(--muted)">
+      ★ <strong style="color:var(--teal)">Healthcare is the only branch that routes to Audit Intake.</strong> All 7 other branches route to Leads table. This is enforced in Make PROD-01 (scenario 4583057) routing logic.
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">4.2 Validation Logic Per Step</div>
+    <table class="tbl">
+      <thead><tr><th>Step</th><th>Fields Validated</th><th>Rule</th><th>On Failure</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="mo">businessType</td><td>Non-empty string</td><td>Inline error. Step does not advance.</td></tr>
+        <tr><td>2</td><td>All fields in step2Required[businessType]</td><td>Each non-empty string</td><td>Inline errors per field. Step does not advance.</td></tr>
+        <tr><td>3</td><td>All 9 Step 3 fields</td><td>Each non-empty string</td><td>Inline errors per field. Step does not advance.</td></tr>
+        <tr><td>4</td><td class="mo">businessName · contactName · workEmail</td><td>Non-empty + email regex for workEmail</td><td>Inline errors. Submission does not fire.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">4.3 Branch Field Count Reference</div>
+    <table class="tbl">
+      <thead><tr><th>Branch</th><th>Business Type</th><th>Step 2 Fields</th><th>Total Fields Submitted</th></tr></thead>
+      <tbody>
+        <tr><td>2A</td><td>GovCon</td><td>3</td><td>26 (3 branch + 9 universal + 3 contact + 11 system)</td></tr>
+        <tr><td>2B</td><td>Agency</td><td>3</td><td>26</td></tr>
+        <tr><td>2C</td><td>Staffing</td><td>3</td><td>26</td></tr>
+        <tr><td>2D</td><td>Service</td><td>2</td><td>26 (1 unused branch slot empty)</td></tr>
+        <tr><td>2E</td><td>Professional</td><td>1</td><td>26 (2 unused branch slots empty)</td></tr>
+        <tr><td>2F</td><td>E-commerce</td><td>1</td><td>26 (2 unused branch slots empty)</td></tr>
+        <tr><td>2G</td><td>Other</td><td>1 (textarea)</td><td>26 (2 unused branch slots empty)</td></tr>
+        <tr style="background:rgba(78,201,176,.04)"><td class="te">2H</td><td class="te">Healthcare / Medical Billing ★</td><td>3</td><td>26 — routes to Audit Intake (tblog9Y7WSLhD4xCp)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- §5 VARIABLES -->
+<div class="sec" id="variables">
+  <div class="sec-hdr">
+    <div class="sec-num">§5</div>
+    <div class="sec-ttl"><h2>Variable / Field Dictionary</h2><p>All 29 form variables with type, requirement, use, and possible values</p></div>
+  </div>
+
+  <div class="panel">
+    <table class="tbl">
+      <thead><tr><th>Variable</th><th>Type</th><th>Req.</th><th>Used For</th><th>Possible Values</th></tr></thead>
+      <tbody>
+        <tr><td class="mo">businessType</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Routing, email</td><td>8 values (Step 1 options)</td></tr>
+        <tr style="opacity:.7"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(0,0,0,.1)">── Branch 2A — GovCon ──────────────────────────────────────────</td></tr>
+        <tr><td class="mo">govconCurrentManagement</td><td>String enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Email / phone · Spreadsheets · Mixed tools · Structured system</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">govconBreakdownArea ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Diagnosis, email</td><td>Missed deliverables · Lack of visibility · Communication delays · Compliance / reporting</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">govconPrimaryNeed ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Routing, pricing, email</td><td>Centralized tracking · Automated reporting · Performance monitoring · Compliance tracking</td></tr>
+        <tr style="opacity:.7"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(0,0,0,.1)">── Branch 2B — Agency ──────────────────────────────────────────</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">agencyBreakdownArea ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Diagnosis, email</td><td>Client onboarding · Project execution · Internal coordination · Delivery timelines</td></tr>
+        <tr><td class="mo">agencyCurrentOnboarding</td><td>String enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Manual setup every time · Some templates, still manual · Fully structured process</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">agencyPrimaryAutomation ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Routing, pricing, email</td><td>Client onboarding → project setup · Task generation + assignment · Internal workflow automation</td></tr>
+        <tr style="opacity:.7"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(0,0,0,.1)">── Branch 2C — Staffing ──────────────────────────────────────────</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">staffingPrimaryIssue ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Diagnosis, email</td><td>Shift confirmation · No-shows · Last-minute coverage gaps · Communication with workers</td></tr>
+        <tr><td class="mo">staffingCurrentConfirmation</td><td>String enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Text · Phone · Email · No system</td></tr>
+        <tr><td class="mo">staffingIdealState</td><td>String enum</td><td><span class="pill p-dim">Cond.</span></td><td>Routing, pricing, email</td><td>Auto scheduling + confirmation · Auto replacement if no response · Real-time workforce visibility</td></tr>
+        <tr style="opacity:.7"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(0,0,0,.1)">── Branches 2D–2G ──────────────────────────────────────────────</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">servicePrimaryLossPoint ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Diagnosis, email</td><td>Slow response time · Scheduling issues · Poor lead tracking · Follow-ups</td></tr>
+        <tr><td class="mo">serviceCurrentLeadHandling</td><td>String enum</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Phone only · Email · Manual tracking · CRM (limited use)</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">professionalPipelineIssue ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Diagnosis, email</td><td>Slow response to leads · No follow-up system · Poor intake process</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">ecommerceBottleneck ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-gold">Cond.</span></td><td>Diagnosis, email</td><td>Customer support · Order processing · Returns / refunds</td></tr>
+        <tr><td class="mo">otherBreakdownArea</td><td>Free text</td><td><span class="pill p-dim">Cond.</span></td><td>Diagnosis, email</td><td>Open — no enum constraints</td></tr>
+        <tr style="background:rgba(78,201,176,.04)"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--teal);background:rgba(78,201,176,.06)">── Branch 2H — Healthcare / Medical Billing (NEW) ──────────────</td></tr>
+        <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--gold)">healthcarePrimaryIssue ★</td><td><span style="color:var(--gold);font-weight:600">String[] → CSV</span></td><td><span class="pill p-teal">Cond.</span></td><td>Diagnosis, Audit Intake, email</td><td>Claim denials · Slow collections / A/R days · Coding errors · Eligibility verification failures · Underpayments</td></tr>
+        <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--teal)">healthcareCurrentSystem</td><td>String enum</td><td><span class="pill p-teal">Cond.</span></td><td>Diagnosis, Audit Intake, email</td><td>Manual / spreadsheets · Legacy EHR/PM · Modern EHR/PM (limited automation) · No system</td></tr>
+        <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--teal)">healthcareIdealState</td><td>String enum</td><td><span class="pill p-teal">Cond.</span></td><td>Routing, pricing, Audit Intake, email</td><td>Automated claim submission · Real-time denial alerts · Full revenue cycle visibility · Reduced A/R days</td></tr>
+        <tr style="opacity:.7"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(0,0,0,.1)">── Step 3 — Universal ──────────────────────────────────────────</td></tr>
+        <tr><td class="mo">biggestProblem</td><td>Free text</td><td><span class="pill p-red">YES</span></td><td>Diagnosis, pricing, email</td><td>Open — primary diagnostic input</td></tr>
+        <tr><td class="mo">currentTools</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Diagnosis, pricing, email</td><td>CRM · Spreadsheets · Email · QuickBooks · Phone · None · Other</td></tr>
+        <tr><td class="mo">systemUsers</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Pricing, email</td><td>Just me · 2–5 people · 6–15 people · 16+ people</td></tr>
+        <tr><td class="mo">scaleScope</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Pricing, email</td><td>1–3 · 4–10 · 11–25 · 25+</td></tr>
+        <tr><td class="mo">urgency</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Qualification, routing, email</td><td>Immediately · Within 30 days · 1–3 months · Just exploring</td></tr>
+        <tr><td class="mo">budgetRange</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Pricing, qualification, email</td><td>Under $1K · $1K–$5K · $5K–$10K · $10K+</td></tr>
+        <tr><td class="mo">volume</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Pricing, qualification, email</td><td>Under 20 · 20–100 · 100–300 · 300+</td></tr>
+        <tr><td class="mo">averageLifetimeValue</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Pricing, qualification, email</td><td>Under $1K · $1K–$10K · $10K–$50K · $50K+</td></tr>
+        <tr><td class="mo">desiredResult</td><td>String enum</td><td><span class="pill p-red">YES</span></td><td>Routing, email</td><td>Reduce manual work · Increase revenue · Improve execution / control · Scale operations</td></tr>
+        <tr style="opacity:.7"><td colspan="5" style="padding:6px 13px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(0,0,0,.1)">── Step 4 — Contact ──────────────────────────────────────────</td></tr>
+        <tr><td class="mo">businessName</td><td>String</td><td><span class="pill p-red">YES</span></td><td>Email subject, CRM</td><td>Free text — used in subject line formula</td></tr>
+        <tr><td class="mo">contactName</td><td>String</td><td><span class="pill p-red">YES</span></td><td>Email output, CRM</td><td>Free text</td></tr>
+        <tr><td class="mo">workEmail</td><td>Email string</td><td><span class="pill p-red">YES</span></td><td>Email replyto, CRM</td><td>Valid email format — set as replyto in Web3Forms payload</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Hidden / System Fields (Not Visible to User)</div>
+    <div class="code"><span class="kw">access_key</span>:   <span class="st">"4feb412f-17c5-4b04-8036-66f66f5ce5e3"</span>
+<span class="kw">subject</span>:      <span class="st">"New ARCG Assessment — {businessName} | {businessType}"</span>
+<span class="kw">from_name</span>:    <span class="st">"ARCG Systems Assessment"</span>  <span class="cm">// static</span>
+<span class="kw">replyto</span>:      workEmail value
+<span class="kw">botcheck</span>:     <span class="st">""</span>  <span class="cm">// empty string honeypot — anti-spam</span></div>
+  </div>
+</div>
+
+<!-- §6 PATH SCENARIOS -->
+<div class="sec" id="paths">
+  <div class="sec-hdr">
+    <div class="sec-num">§6</div>
+    <div class="sec-ttl"><h2>Complete Path Scenarios</h2><p>Sample submission data for all 8 paths — including new Healthcare path</p></div>
+  </div>
+
+  <div class="path-grid">
+    <div class="pcard">
+      <div class="path-id">Path A · Branch 2A</div>
+      <div class="path-type">Government Contractor</div>
+      <div class="path-row"><div class="path-key">Management</div><div class="path-val">Spreadsheets</div></div>
+      <div class="path-row"><div class="path-key">Breakdown</div><div class="path-val">Compliance / reporting issues</div></div>
+      <div class="path-row"><div class="path-key">Need</div><div class="path-val">Automated reporting</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$5K–$10K · Immediately</div></div>
+      <div class="path-row"><div class="path-key">LTV</div><div class="path-val">$50K+</div></div>
+      <div class="path-row"><div class="path-key">Business</div><div class="path-val">Apex Federal Services LLC</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">Email Subject</div><div class="path-val" style="font-size:10px">New ARCG Assessment — Apex Federal Services LLC | GovCon</div></div>
+    </div>
+    <div class="pcard">
+      <div class="path-id">Path B · Branch 2D</div>
+      <div class="path-type">Service Business (HVAC)</div>
+      <div class="path-row"><div class="path-key">Loss Point</div><div class="path-val">Slow response time</div></div>
+      <div class="path-row"><div class="path-key">Lead Handling</div><div class="path-val">Phone only</div></div>
+      <div class="path-row"><div class="path-key">Problem</div><div class="path-val" style="font-size:11px">After-hours leads go nowhere. Miss 40% of calls.</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$5K–$10K · Immediately</div></div>
+      <div class="path-row"><div class="path-key">LTV</div><div class="path-val">$1K–$10K</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">Business</div><div class="path-val">Riverside HVAC Co.</div></div>
+    </div>
+    <div class="pcard">
+      <div class="path-id">Path C · Branch 2C</div>
+      <div class="path-type">Staffing / Workforce</div>
+      <div class="path-row"><div class="path-key">Issue</div><div class="path-val">No-shows</div></div>
+      <div class="path-row"><div class="path-key">Confirmation</div><div class="path-val">Text</div></div>
+      <div class="path-row"><div class="path-key">Ideal State</div><div class="path-val">Auto replacement if no response</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$5K–$10K · Immediately</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">Volume</div><div class="path-val">100–300 / mo</div></div>
+    </div>
+    <div class="pcard">
+      <div class="path-id">Path D · Branch 2B</div>
+      <div class="path-type">AI / Automation Agency</div>
+      <div class="path-row"><div class="path-key">Breakdown</div><div class="path-val">Client onboarding</div></div>
+      <div class="path-row"><div class="path-key">Onboarding</div><div class="path-val">Manual setup every time</div></div>
+      <div class="path-row"><div class="path-key">Automate First</div><div class="path-val">Client onboarding → project setup</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$5K–$10K · Within 30 days</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">Desired Result</div><div class="path-val">Scale operations</div></div>
+    </div>
+    <div class="pcard">
+      <div class="path-id">Path E · Branch 2E</div>
+      <div class="path-type">Professional Services</div>
+      <div class="path-row"><div class="path-key">Pipeline Issue</div><div class="path-val">No follow-up system</div></div>
+      <div class="path-row"><div class="path-key">Problem</div><div class="path-val" style="font-size:11px">Consultation leads go cold. No follow-up after first contact.</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$1K–$5K · Within 30 days</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">LTV</div><div class="path-val">$10K–$50K</div></div>
+    </div>
+    <div class="pcard">
+      <div class="path-id">Path F · Branch 2F</div>
+      <div class="path-type">E-commerce / Online</div>
+      <div class="path-row"><div class="path-key">Bottleneck</div><div class="path-val">Customer support</div></div>
+      <div class="path-row"><div class="path-key">Problem</div><div class="path-val" style="font-size:11px">500 support tickets/day, 2 agents, SLA failing.</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$5K–$10K · Immediately</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">Volume</div><div class="path-val">300+ / mo</div></div>
+    </div>
+    <div class="pcard">
+      <div class="path-id">Path G · Branch 2G</div>
+      <div class="path-type">Other</div>
+      <div class="path-row"><div class="path-key">Breakdown</div><div class="path-val" style="font-size:11px">Franchise with 8 units. Compliance tracking is manual. 2 days/month.</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$10K+ · Within 30 days</div></div>
+      <div class="path-row" style="border:none"><div class="path-key">LTV</div><div class="path-val">$10K–$50K</div></div>
+    </div>
+    <!-- Path H — NEW -->
+    <div class="pcard new-path">
+      <div class="path-id" style="color:var(--teal)">Path H · Branch 2H · NEW</div>
+      <div class="path-type" style="color:var(--teal)">Healthcare / Medical Billing</div>
+      <div class="path-row"><div class="path-key">Primary Issue</div><div class="path-val">Claim denials</div></div>
+      <div class="path-row"><div class="path-key">Current System</div><div class="path-val">Legacy EHR/PM</div></div>
+      <div class="path-row"><div class="path-key">Ideal State</div><div class="path-val">Real-time denial alerts</div></div>
+      <div class="path-row"><div class="path-key">Problem</div><div class="path-val" style="font-size:11px">Denial rate 28%. No real-time visibility. A/R over 90 days growing.</div></div>
+      <div class="path-row"><div class="path-key">Budget / Urgency</div><div class="path-val emph">$5K–$10K · Immediately</div></div>
+      <div class="path-row"><div class="path-key">Volume</div><div class="path-val">100–300 claims / mo</div></div>
+      <div class="path-row"><div class="path-key">LTV</div><div class="path-val">$10K–$50K</div></div>
+      <div class="path-row"><div class="path-key">Desired</div><div class="path-val">Improve execution / control</div></div>
+      <div class="path-row"><div class="path-key">Airtable Route</div><div class="path-val"><span class="route-badge route-audit">Audit Intake</span></div></div>
+      <div class="path-row" style="border:none"><div class="path-key">Email Subject</div><div class="path-val" style="font-size:10px">New ARCG Assessment — Metro Billing Group | Healthcare / Medical Billing</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- §7 OUTPUT MAPPING -->
+<div class="sec" id="output">
+  <div class="sec-hdr">
+    <div class="sec-num">§7</div>
+    <div class="sec-ttl"><h2>Email / Output Mapping</h2><p>How form data is routed, formatted, and processed after submission</p></div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">7.1 Owner Email — Dual Routing Based on businessType</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div class="p2">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--gold);margin-bottom:8px">Branches 2A–2G (7 paths)</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:4px">→ Leads Table</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)">tbl695ilVYkzMxHso<br>Airtable base: appfQRV1tGk3sWMCb</div>
+      </div>
+      <div class="p2" style="border-color:rgba(78,201,176,.3)">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--teal);margin-bottom:8px">Branch 2H — Healthcare (NEW)</div>
+        <div style="font-size:13px;color:var(--teal);margin-bottom:4px">→ Audit Intake Table</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)">tblog9Y7WSLhD4xCp<br>Airtable base: appfQRV1tGk3sWMCb</div>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Section in Email</th><th>Fields</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td>Subject Line</td><td>businessName + businessType</td><td><span class="pill p-red">Read First</span></td></tr>
+        <tr><td>Contact Block</td><td>businessName · contactName · workEmail</td><td><span class="pill p-red">Read Second</span></td></tr>
+        <tr><td>Business Profile</td><td>businessType + all populated Step 2 branch fields</td><td>Context — determine branch path</td></tr>
+        <tr><td>Primary Problem</td><td>biggestProblem (textarea)</td><td><span class="pill p-gold">Key diagnostic input</span></td></tr>
+        <tr><td>Operational Sizing</td><td>currentTools · systemUsers · scaleScope · volume · averageLifetimeValue</td><td>Complexity + scope</td></tr>
+        <tr><td>Priority Signals</td><td>urgency · budgetRange · desiredResult</td><td>Pricing + routing decision</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">7.2 Subject Line Formula</div>
+    <div class="code"><span class="vr">New ARCG Assessment</span> — <span class="hl">{businessName}</span> | <span class="hl">{businessType}</span>
+
+<span class="cm">// Example outputs:</span>
+<span class="st">"New ARCG Assessment — Apex Federal Services LLC | Government Contractor / GovCon"</span>
+<span class="st">"New ARCG Assessment — Metro Billing Group | Healthcare / Medical Billing"</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">7.3 Submission States</div>
+    <table class="tbl">
+      <thead><tr><th>State</th><th>Trigger</th><th>User Sees</th><th>Email Sent?</th></tr></thead>
+      <tbody>
+        <tr><td>idle</td><td>Default</td><td>Form with "Get My Workflow Plan" button active</td><td>No</td></tr>
+        <tr><td>submitting</td><td>fetch() fires</td><td>Spinner + "Submitting..." · Button disabled</td><td>In progress</td></tr>
+        <tr><td class="gr">success</td><td>data.success === true</td><td>"Intake Received" screen with gold checkmark. Form hidden.</td><td><span class="pill p-green">YES</span></td></tr>
+        <tr><td class="rd">error</td><td>data.success === false OR catch()</td><td>Red error banner with message. Form still visible for retry.</td><td><span class="pill p-red">NO</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel" style="border-color:rgba(224,96,96,.3)">
+    <div class="plbl" style="color:var(--red)">7.4 No Confirmation Email Currently</div>
+    <p style="font-size:13px;color:var(--muted)">The current implementation only sends an owner notification. No confirmation is sent to <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text)">workEmail</span> after submission. The user sees only the success screen. See Section 9, Recommendation #3 for fix.</p>
+  </div>
+</div>
+
+<!-- §8 RISKS -->
+<div class="sec" id="risks">
+  <div class="sec-hdr">
+    <div class="sec-num">§8</div>
+    <div class="sec-ttl"><h2>Logic Risks / Edge Cases</h2><p>Identified risks ordered by severity — includes new risk introduced by Healthcare branch</p></div>
+  </div>
+
+  <div class="risk-list">
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>Branch Variable Pollution</h4><p>When a user selects GovCon, fills Step 2A, then goes Back and switches to "Service Business" (or any other type including Healthcare), the govcon fields retain their values and are submitted with the new branch's data.</p><div class="risk-impact">Owner email contains irrelevant populated fields from prior branch selection. Data is noisy but not missing.</div></div></div>
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>Healthcare Branch Routing Failure Risk (NEW)</h4><p>If Make PROD-01 routing logic is not updated to check for <span style="font-family:'DM Mono',monospace;font-size:11px">businessType === "Healthcare / Medical Billing"</span>, submissions from Branch 2H will incorrectly route to the Leads table instead of Audit Intake. This is a silent failure — no error is thrown.</p><div class="risk-impact">Healthcare submissions appear in Leads table. Audit Intake stays empty. Owner misses specialized diagnostic context. PROD-01 blueprint must be verified after any schema change.</div></div></div>
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>No Confirmation Email</h4><p>No automated confirmation is sent to workEmail after submission. User sees success screen but receives no email proof of submission.</p><div class="risk-impact">Reduced trust. Users may resubmit thinking data was lost. No record in their inbox.</div></div></div>
+    <div class="risk"><div class="risk-sev p-red">HIGH</div><div class="risk-body"><h4>No Failsafe / Local Storage</h4><p>If Web3Forms fails (network error, API downtime), submission data is permanently lost. No retry mechanism, no localStorage backup, no error logging to any system.</p><div class="risk-impact">Unrecoverable data loss on submission failure. User sees error banner but their intake is gone.</div></div></div>
+    <div class="risk"><div class="risk-sev p-gold">MEDIUM</div><div class="risk-body"><h4>Budget Disqualification Gap</h4><p>Users selecting "Under $1K" are unqualified but receive the same success screen and follow-up process as qualified leads.</p><div class="risk-impact">Wasted review time on leads that can never convert. No DQ logic exists.</div></div></div>
+    <div class="risk"><div class="risk-sev p-gold">MEDIUM</div><div class="risk-body"><h4>Thin Professional Services Branch</h4><p>Branch 2E has only 1 question (professionalPipelineIssue). This is the weakest diagnostic branch — 1 field vs 3 in most others including the new Healthcare branch.</p><div class="risk-impact">Insufficient context to build a meaningful workflow plan. Higher misdiagnosis probability.</div></div></div>
+    <div class="risk"><div class="risk-sev p-gold">MEDIUM</div><div class="risk-body"><h4>Step 3 Question Volume</h4><p>Step 3 has 9 required dropdown fields — the longest single step. On mobile, each dropdown requires multiple taps. No progress indicator within the step.</p><div class="risk-impact">Potential abandonment at Step 3. Most likely drop-off point in the form.</div></div></div>
+    <div class="risk"><div class="risk-sev p-dim">LOW</div><div class="risk-body"><h4>No CRM / Database Storage</h4><p>All submission data exists only in the Web3Forms notification email. No structured database, Airtable, or admin panel stores submissions independently.</p><div class="risk-impact">No pipeline visibility. No queryable submission history. Operational risk at scale.</div></div></div>
+  </div>
+</div>
+
+<!-- §9 IMPROVEMENTS -->
+<div class="sec" id="improvements">
+  <div class="sec-hdr">
+    <div class="sec-num">§9</div>
+    <div class="sec-ttl"><h2>Recommended Improvements</h2><p>Ordered by implementation priority and estimated effort</p></div>
+  </div>
+
+  <div class="panel">
+    <table class="tbl">
+      <thead>
+        <tr><th>#</th><th>Area</th><th>Recommendation</th><th>Implementation Notes</th><th>Effort</th></tr>
+      </thead>
+      <tbody>
+        <tr style="background:rgba(224,96,96,.04)"><td class="g">1</td><td><strong style="color:var(--text)">Branch variable clearing</strong></td><td>When businessType changes, reset all 15+ branch-specific variables to empty string. Includes new healthcare fields.</td><td>In set(): if key === "businessType", reset all govcon*, agency*, staffing*, service*, professional*, ecommerce*, otherBreakdown*, <span style="color:var(--teal)">healthcare*</span> fields to "".</td><td><span class="pill p-red">30 min · CRITICAL</span></td></tr>
+        <tr><td class="g">2</td><td><strong style="color:var(--text)">Urgency routing tag in subject</strong></td><td>Prepend urgency emoji to subject: 🔴 "Immediately" · 🟡 "Within 30 days" · ⚪ otherwise.</td><td>Modify subject generation in submit(). 15 min.</td><td><span class="pill p-gold">15 min · HIGH</span></td></tr>
+        <tr><td class="g">3</td><td><strong style="color:var(--text)">Confirmation email to submitter</strong></td><td>Send automated confirmation to workEmail on success. "We received your intake. Your workflow plan will arrive within 24 hours."</td><td>Add Web3Forms confirmation payload field. No code changes beyond payload.</td><td><span class="pill p-gold">1 hr · HIGH</span></td></tr>
+        <tr><td class="g">4</td><td><strong style="color:var(--text)">Airtable backup storage</strong></td><td>Add parallel Airtable API POST on submission to store all fields + timestamp + submission ID.</td><td>Use Make.com webhook triggered by Web3Forms OR direct Airtable API call from submit() after fetch() success.</td><td><span class="pill p-gold">2–4 hrs · CRITICAL @ SCALE</span></td></tr>
+        <tr><td class="g">5</td><td><strong style="color:var(--text)">Budget disqualification banner</strong></td><td>If budgetRange === "Under $1K", show soft message + add disqualified: true to payload.</td><td>Conditional display in Step 3 after budgetRange selection. Does not block submission.</td><td><span class="pill p-dim">1 hr · MEDIUM</span></td></tr>
+        <tr><td class="g">6</td><td><strong style="color:var(--text)">Expand Professional Services branch</strong></td><td>Add 2 questions: (1) Monthly new clients count; (2) Intake process type.</td><td>Add professionalMonthlyClients, professionalIntakeProcess to state and step2Required.</td><td><span class="pill p-dim">30 min · MEDIUM</span></td></tr>
+        <tr style="background:rgba(78,201,176,.03)"><td class="te">7</td><td><strong style="color:var(--teal)">Healthcare PROD-01 routing verification</strong></td><td>Verify Make PROD-01 blueprint correctly routes Healthcare submissions to Audit Intake. Test with live payload.</td><td>Send test payload with businessType = "Healthcare / Medical Billing" → confirm row appears in Audit Intake, NOT Leads. Verify all 3 healthcare fields populated.</td><td><span class="pill p-teal">30 min · CRITICAL</span></td></tr>
+        <tr><td class="g">8</td><td><strong style="color:var(--text)">Add phone number field</strong></td><td>Optional phoneNumber field in Step 4. Service business operators prefer phone outreach. Keep optional.</td><td>Add phoneNumber: "" to form state. Add as optional field between contactName and workEmail.</td><td><span class="pill p-dim">30 min · MEDIUM</span></td></tr>
+        <tr><td class="g">9</td><td><strong style="color:var(--text)">Split Step 3 into 3a + 3b</strong></td><td>9 required fields causes fatigue. Step 3a: operational context (biggestProblem, currentTools, systemUsers, scaleScope, volume). Step 3b: qualification (urgency, budgetRange, averageLifetimeValue, desiredResult).</td><td>Changes TOTAL_STEPS from 4 to 5. Update stepLabels array. Increases completion rate by reducing per-step cognitive load.</td><td><span class="pill p-dim">2 hrs · CONSIDER @ SCALE</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Priority Implementation Order</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">1</span><span style="font-size:13px;color:var(--text)">Branch variable clearing — includes healthcare* fields</span><span class="pill p-red">30 min · CRITICAL</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0;border-color:rgba(78,201,176,.3)"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal)">2</span><span style="font-size:13px;color:var(--text)">Healthcare PROD-01 routing verification (NEW — HIGH PRIORITY)</span><span class="pill p-teal">30 min · CRITICAL</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">3</span><span style="font-size:13px;color:var(--text)">Urgency routing tag in subject</span><span class="pill p-gold">15 min · HIGH VALUE</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">4</span><span style="font-size:13px;color:var(--text)">Confirmation email to submitter</span><span class="pill p-gold">1 hr · HIGH VALUE</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)">5</span><span style="font-size:13px;color:var(--text)">Airtable backup storage</span><span class="pill p-gold">2–4 hrs · CRITICAL AT SCALE</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim)">6</span><span style="font-size:13px;color:var(--muted)">Budget disqualification banner</span><span class="pill p-dim">1 hr · MEDIUM</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim)">7</span><span style="font-size:13px;color:var(--muted)">Expand Professional Services branch</span><span class="pill p-dim">30 min · MEDIUM</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim)">8</span><span style="font-size:13px;color:var(--muted)">Add phone number field</span><span class="pill p-dim">30 min · MEDIUM</span></div>
+      <div class="p2" style="display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;margin:0"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim)">9</span><span style="font-size:13px;color:var(--muted)">Split Step 3 into 3a + 3b</span><span class="pill p-dim">2 hrs · CONSIDER AT SCALE</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- FOOTER -->
+
+<!-- §10 MULTI-SELECT SPEC -->
+<div class="sec" id="multiselect">
+  <div class="sec-hdr">
+    <div class="sec-num">§10</div>
+    <div class="sec-ttl">
+      <h2>Multi-Select Diagnostic Fields</h2>
+      <p>v1.2 — 9 diagnostic fields converted from single-select to checkbox card multi-select</p>
+    </div>
+  </div>
+
+  <div style="margin-bottom:14px;padding:12px 18px;background:rgba(201,148,26,.06);border:1px solid rgba(201,148,26,.25);border-radius:3px;font-size:12.5px;color:var(--muted)">
+    <strong style="color:var(--gold)">Rule:</strong> Only diagnostic/breakdown/pain-point fields are multi-select.
+    Current state, process, size, urgency, budget, and ideal state remain single-select. 9 converted · 21 kept single-select.
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Fields Converted to Multi-Select ★</div>
+    <table class="tbl">
+      <thead><tr><th>Field</th><th>Branch</th><th>Question</th><th>UI Component</th><th>State Type</th><th>Payload Format</th></tr></thead>
+      <tbody>
+        <tr><td class="mo" style="color:var(--gold)">govconBreakdownArea ★</td><td>2A GovCon</td><td>Where are breakdowns happening most?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">govconPrimaryNeed ★</td><td>2A GovCon</td><td>What do you need most?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">agencyBreakdownArea ★</td><td>2B Agency</td><td>Where does your workflow break down most?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">agencyPrimaryAutomation ★</td><td>2B Agency</td><td>What do you want automated first?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">staffingPrimaryIssue ★</td><td>2C Staffing</td><td>What is your biggest operational issue?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">servicePrimaryLossPoint ★</td><td>2D Service</td><td>Where are you losing jobs or time?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">professionalPipelineIssue ★</td><td>2E Professional</td><td>What is breaking your client pipeline?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr style="background:rgba(78,201,176,.03)"><td class="mo" style="color:var(--gold)">healthcarePrimaryIssue ★</td><td>2H Healthcare</td><td>What are your primary billing challenges?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+        <tr><td class="mo" style="color:var(--gold)">ecommerceBottleneck ★</td><td>2F E-com</td><td>Where is the bottleneck?</td><td>MultiSelectCards</td><td class="mo">string[]</td><td class="mo">"Val1, Val2"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Fields Intentionally Kept Single-Select</div>
+    <table class="tbl">
+      <thead><tr><th>Field</th><th>Reason for Single-Select</th></tr></thead>
+      <tbody>
+        <tr><td class="mo">govconCurrentManagement</td><td>Current process — one state at a time</td></tr>
+        <tr><td class="mo">agencyCurrentOnboarding</td><td>Current process state</td></tr>
+        <tr><td class="mo">staffingCurrentConfirmation</td><td>Current workflow method</td></tr>
+        <tr><td class="mo">staffingIdealState</td><td>Ideal future state — single direction more useful for proposal</td></tr>
+        <tr><td class="mo">serviceCurrentLeadHandling</td><td>Current process</td></tr>
+        <tr><td class="mo">healthcareCurrentSystem</td><td>Current system classification</td></tr>
+        <tr><td class="mo">healthcareIdealState</td><td>Ideal state — single direction</td></tr>
+        <tr><td class="mo">businessType</td><td>Factual classification — drives routing, one value only</td></tr>
+        <tr><td class="mo">All Step 3 fields (9)</td><td>Size, urgency, budget, volume, LTV, desired result — single-value qualification signals</td></tr>
+        <tr><td class="mo">otherBreakdownArea</td><td>Free text textarea — no enum constraints</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Data Model · Serialization · Validation</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px">
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:14px 18px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:7px;letter-spacing:1px">UI STATE TYPE</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--gold)">string[]</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:5px">Array during user interaction. Preserved on back/forward navigation.</div>
+      </div>
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:14px 18px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:7px;letter-spacing:1px">SERIALIZATION</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--gold)">.join(", ")</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:5px">All 9 fields serialized consistently in serializeForm() before fetch() POST.</div>
+      </div>
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:14px 18px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:7px;letter-spacing:1px">VALIDATION RULE</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--gold)">arr.length &gt; 0</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:5px">Error: "Select at least one option." Arrays reset to [] on businessType switch.</div>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Rule</th><th>Implementation</th></tr></thead>
+      <tbody>
+        <tr><td>Require at least 1 selection</td><td class="mo">arr.length &gt; 0  (replaces str !== "")</td></tr>
+        <tr><td>Error message</td><td>"Select at least one option."</td></tr>
+        <tr><td>Branch clear on businessType switch</td><td class="mo">reset to []  (not "")</td></tr>
+        <tr><td>Preserve on Back/Next navigation</td><td>useState array — not cleared on step change</td></tr>
+        <tr><td>Submission serialization</td><td class="mo">serializeForm() converts all string[] → .join(", ") before POST</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">Downstream Compatibility — Web3Forms · Make · Airtable</div>
+    <table class="tbl">
+      <thead><tr><th>System</th><th>Field arrives as</th><th>Example value</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Web3Forms owner email</td><td>String field in key-value list</td><td class="mo">"Missed deliverables, Compliance / reporting issues"</td><td><span class="pill p-green">✅ Compatible</span></td></tr>
+        <tr><td>Make PROD-01 webhook</td><td>String — no arrays sent</td><td class="mo">"Claim denials, Coding errors"</td><td><span class="pill p-green">✅ Compatible</span></td></tr>
+        <tr><td>Airtable Notes field</td><td>Readable string</td><td class="mo">"No follow-up system, Poor intake process"</td><td><span class="pill p-green">✅ Compatible</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="plbl">QA Results — 4 Branches Verified</div>
+    <table class="tbl">
+      <thead><tr><th>Branch</th><th>Renders</th><th>Multiple selections</th><th>Min 1 validation</th><th>Sample payload</th><th>Branch switch clears</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--gold);font-weight:600">2A GovCon</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"Missed deliverables, Compliance / reporting issues"</td><td><span class="pill p-green">→ []</span></td></tr>
+        <tr style="background:rgba(78,201,176,.03)"><td style="color:var(--teal)">2H Healthcare</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"Claim denials, Coding errors"</td><td><span class="pill p-green">→ []</span></td></tr>
+        <tr><td>2E Professional</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"No follow-up system, Poor intake process"</td><td><span class="pill p-green">→ []</span></td></tr>
+        <tr><td>2F E-commerce</td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td><span class="pill p-green">✅</span></td><td class="mo">"Customer support, Order processing"</td><td><span class="pill p-green">→ []</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CHANGE LOG -->
+<div class="sec">
+  <div class="sec-hdr">
+    <div class="sec-num">LOG</div>
+    <div class="sec-ttl">
+      <h2>Change Log</h2>
+      <p>Audit trail of all form modifications</p>
+    </div>
+  </div>
+  <div style="padding:16px 20px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;margin-bottom:10px">
+    <div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--gold);letter-spacing:1px;margin-bottom:5px">2026-04-04 · Form v1.1 → v1.2</div>
+    <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:7px">Multi-Select Diagnostic Fields Added</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8">
+      <strong style="color:var(--text)">Converted (9 fields):</strong> govconBreakdownArea, govconPrimaryNeed, agencyBreakdownArea, agencyPrimaryAutomation, staffingPrimaryIssue, servicePrimaryLossPoint, professionalPipelineIssue, healthcarePrimaryIssue, ecommerceBottleneck.<br><br>
+      <strong style="color:var(--text)">Data model:</strong> Stored as string[] in React useState during interaction. Serialized as comma-separated string via .join(", ") before Web3Forms POST. All downstream systems receive clean readable strings — no arrays, no [object Object].<br><br>
+      <strong style="color:var(--text)">Validation:</strong> arr.length &gt; 0 replaces str !== "". Error: "Select at least one option." Branch clearing resets arrays to [] on businessType switch.<br><br>
+      <strong style="color:var(--text)">UX:</strong> MultiSelectCards component — checkbox pill cards, ARCG gold selected state, "X selected" count indicator, mobile-friendly flex-wrap. No native browser multi-select used.<br><br>
+      <strong style="color:var(--text)">File:</strong> src/pages/Assessment.tsx · <strong style="color:var(--text)">Who:</strong> Jean-Max Charles Jr. via Claude · 2026-04-04
+    </div>
+  </div>
+  <div style="padding:16px 20px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;margin-bottom:10px">
+    <div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--gold);letter-spacing:1px;margin-bottom:5px">2026-04-04 · Form v1.0 → v1.1</div>
+    <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:7px">Healthcare / Medical Billing Branch Added</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8">
+      Branch 2H added with variables: healthcarePrimaryIssue, healthcareCurrentSystem, healthcareIdealState. Routes exclusively to Audit Intake table (tblog9Y7WSLhD4xCp). Routing verified 2026-04-04 07:21 via live test payload — confirmed record in Audit Intake, not Leads.<br>
+      <strong style="color:var(--text)">Who:</strong> Jean-Max Charles Jr. via Claude · 2026-04-04
+    </div>
+  </div>
+</div>
+
+<footer style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+  <div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--text);margin-bott

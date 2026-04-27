@@ -1,0 +1,100 @@
+{
+  "client": {
+    "businessName": "Sentinel Defense Solutions LLC",
+    "contactName": "Marcus Thorne",
+    "industry": "Government Contracting (Defense Logistics)",
+    "date": "March 21, 2026",
+    "volume": "4 DoD bases, ~50 active sub-vendors, 4 weekly reports, 1 monthly master report",
+    "problemArea": "Compliance Reporting & Data Aggregation"
+  },
+  "executiveSummary": {
+    "p1": "Sentinel Defense Solutions is operating at contract risk. The manual process of aggregating SLA performance and vendor diversity spend data from three disconnected systems — a legacy ERP, Outlook, and Excel — is consuming 15–20 hours of project manager capacity every week and has already produced a cure notice due to inaccurate diversity spend reporting.",
+    "p2": "ARCG Systems will replace this fragmented manual process with a centralized compliance intelligence system: automated data aggregation, a real-time dashboard, and scheduled report generation that requires zero manual data entry. The result is 100% on-time report delivery, elimination of data errors, and full restoration of PM capacity to contract management."
+  },
+  "diagnosis": {
+    "p1": "The root cause of Sentinel's compliance failure is the absence of a single data layer connecting the ERP, email, and spreadsheet environments. Each system holds a fragment of the compliance picture, and the only integration mechanism is a human being manually pulling, reconciling, and formatting data across all three. At 4 bases and 50 sub-vendors, that process is not just slow — it is structurally guaranteed to produce errors.",
+    "p2": "The cure notice is a direct consequence of this architecture. When data lives in three places and humans are the integration layer, inaccuracies are not exceptions — they are the expected output. The fix is not more oversight or better spreadsheets. The fix is a system that pulls, validates, and reports automatically, removing the human from the data pipeline entirely."
+  },
+  "quickWins": {
+    "win1": {
+      "title": "Automated ERP + Email Data Pull",
+      "body": "Connect the legacy ERP and Outlook to a central Airtable database via Make.com. SLA performance and vendor spend data flows in automatically on a defined schedule, eliminating the 10–12 hours per week currently spent on manual data gathering across 4 bases."
+    },
+    "win2": {
+      "title": "Real-Time Compliance Dashboard",
+      "body": "Deploy a Power BI dashboard fed by the central database. Project managers see live SLA status and diversity spend figures for all 4 bases without opening a spreadsheet. Reduces error-checking time by an estimated 4–5 hours per week and surfaces compliance gaps before they become cure notices."
+    },
+    "win3": {
+      "title": "Scheduled Report Generation",
+      "body": "Configure Make.com to auto-generate the weekly SLA reports and monthly diversity spend master report from the live database, formatted to the approved government templates. Reports are generated and staged for review — no manual assembly required. Eliminates the remaining 3–4 hours of weekly report-building labor."
+    }
+  },
+  "roadmap": {
+    "phase1": {
+      "title": "Foundation — Centralized Data Layer",
+      "tools": "Make.com, Airtable, Legacy ERP API",
+      "body": "Establish the single source of truth. Connect the legacy ERP and Outlook to an Airtable base structured around your 4 bases, 50 sub-vendors, and SLA/diversity spend data fields. All data flows in automatically on a daily sync. This phase eliminates manual data gathering entirely.",
+      "output": "Live Airtable database with automated daily sync from ERP and Outlook. Zero manual data entry required from day 31 forward."
+    },
+    "phase2": {
+      "title": "Integration — Automated Report Generation",
+      "tools": "Make.com, Power BI, Approved Report Templates",
+      "body": "Wire the central database to your approved government report templates. Make.com generates the weekly SLA reports and monthly diversity spend master report on schedule, formatted correctly, and staged for PM review before submission. Power BI dashboard goes live for real-time compliance visibility across all 4 bases.",
+      "output": "Automated weekly and monthly report generation. Power BI dashboard live. PM review time reduced to under 30 minutes per report cycle."
+    },
+    "phase3": {
+      "title": "Scale & Visibility — Alerts and Oversight Layer",
+      "tools": "Zapier, Power BI Alerts, Custom Notification Rules",
+      "body": "Add proactive alerting so compliance issues are flagged before they become violations. Zapier triggers notifications when SLA thresholds are at risk or diversity spend percentages fall below required levels. Monthly performance review process is built into the system — no manual tracking required.",
+      "output": "Proactive compliance alert system active. Monthly performance review automated. Full operational visibility across all 4 bases with zero manual reporting overhead."
+    }
+  },
+  "whyItWorks": {
+    "p1": "Every recommendation in this system traces directly to the failure points Sentinel identified: three disconnected data sources, manual reconciliation, and humans as the integration layer. The system we are building removes the human from the data pipeline and replaces manual steps with automated, scheduled execution.",
+    "p2": "The technology stack is deliberately conservative. Make.com and Airtable are proven in environments with legacy ERP constraints — they connect via API without requiring ERP modifications. Power BI is already familiar to DoD-adjacent organizations and satisfies the reporting visibility requirement without introducing new software training overhead.",
+    "p3": "The 90-day timeline is structured so that the highest-risk item — the manual data pull — is eliminated in Phase 1. By day 31, the cure notice risk is gone. Phases 2 and 3 build on a stable foundation rather than racing to fix everything at once."
+  },
+  "beforeAfter": {
+    "row1": { "area": "Compliance Reporting", "before": "15–20 hrs/week manual assembly", "after": "Automated, zero manual data entry" },
+    "row2": { "area": "Data Accuracy",        "before": "Human error, active cure notice risk", "after": "Single validated source of truth" },
+    "row3": { "area": "PM Capacity",           "before": "Consumed by data entry and formatting", "after": "Restored to contract management" }
+  },
+  "techStack": {
+    "tool1": { "name": "Make.com",        "purpose": "Workflow automation engine",     "why": "Connects legacy ERP and Outlook to Airtable without requiring ERP code changes", "cost": "$29/mo" },
+    "tool2": { "name": "Airtable",        "purpose": "Central compliance database",    "why": "Structured relational database with real-time sync, built for multi-base, multi-vendor data models", "cost": "$20/user/mo" },
+    "tool3": { "name": "Power BI",        "purpose": "Compliance dashboard",           "why": "Native Excel integration, DoD-familiar interface, real-time SLA and diversity spend visibility", "cost": "$20/user/mo" },
+    "tool4": { "name": "Zapier",          "purpose": "Alert and notification layer",   "why": "Triggers compliance alerts when SLA thresholds are missed or diversity spend falls below required levels", "cost": "$25/mo" },
+    "tool5": { "name": "Google Workspace","purpose": "Document collaboration and staging", "why": "Lightweight, accessible from any base location, integrates with Make.com for report staging and review", "cost": "$12/user/mo" }
+  },
+  "pricing": {
+    "optionA": {
+      "price": "$4,500",
+      "scope": "Phase 1 only — centralized data layer, ERP/Outlook integration, Airtable database setup. Eliminates manual data gathering.",
+      "support": "$650/month"
+    },
+    "optionB": {
+      "price": "$7,500",
+      "scope": "Phases 1–2 — full data integration plus automated report generation and Power BI compliance dashboard. Eliminates manual reporting entirely.",
+      "support": "$950/month"
+    },
+    "optionC": {
+      "price": "$11,500",
+      "scope": "All 3 phases — complete compliance intelligence system including proactive alerting, monthly performance review automation, and full operational visibility across all 4 bases.",
+      "support": "$1,400/month"
+    }
+  },
+  "assumptions": {
+    "a1": { "title": "ERP API or Export Access", "body": "Sentinel provides read-level API access or scheduled data exports from the legacy ERP. No ERP code modifications are required." },
+    "a2": { "title": "Approved Report Templates", "body": "Sentinel provides the approved government-format templates for the weekly SLA reports and monthly diversity spend master report before Phase 2 begins." },
+    "a3": { "title": "PM Availability", "body": "One designated PM is available for two working sessions (2 hours each) during Phase 1 to validate data mapping and field definitions." },
+    "a4": { "title": "Sub-Vendor Data Consistency", "body": "Sub-vendor spend and classification data follows a consistent format across all 4 bases. Any format discrepancies will be identified and resolved during Phase 1." },
+    "a5": { "title": "Scope Stability", "body": "The 90-day timeline assumes no major scope additions after kickoff. Additional bases, new report types, or ERP migrations are scoped separately." }
+  },
+  "email": {
+    "firstName": "Marcus",
+    "subject": "The Cure Notice Was a System Problem — Here's the Fix",
+    "p1": "Marcus, the cure notice you received wasn't a people problem — it was a structural one. When three disconnected systems are the only source of compliance data and humans are the integration layer, inaccurate reports aren't a risk, they're the expected output.",
+    "p2": "We've mapped the exact failure points in your current process and designed a system that eliminates manual data gathering, automates your weekly SLA and monthly diversity spend reports, and gives your PMs a real-time compliance dashboard across all 4 bases. Our recommended Automated Operations System covers Phases 1 and 2 at $7,500.",
+    "p3": "I'd like to walk you through the 90-day build plan on a 30-minute call this week. Reply here or book directly at arcgsystems.com."
+  }
+}
