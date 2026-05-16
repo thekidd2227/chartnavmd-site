@@ -17,25 +17,34 @@ here.
 
 ## Pre-flight (do **not** start until each is checked)
 
-- [ ] **Decision log entry in
+- [x] **Decision log entry in
       [`deployment-topology.md`](./deployment-topology.md) is
       filled in** — confirmed by operator that
       `thekidd2227/chartnavmd-site` is the intended canonical
-      source.
-- [ ] **GitHub Pages workflow quarantined.**
+      source. *(Done 2026-05-16.)*
+- [x] **GitHub Pages workflow quarantined.**
       `.github/workflows/deploy.yml` has been moved to
       `.github/workflows/deploy.yml.disabled` (GitHub Actions only
       loads `*.yml`/`*.yaml`; the `.disabled` extension is the
       hard kill switch). A README in the same directory explains
-      why.
-- [ ] **`origin/main` reconciled.** `origin/main` is currently
-      effectively empty (`.gitkeep` only); the actual content is
-      on local `main` as commit `48e1cf0` and has never been
-      pushed. Operator decision required: either force-push local
-      `main` to origin (preserving current local history) or
-      rebase the unsynced commit onto `origin/main`. Either way,
-      do this **before** opening a follow-up PR that wires
-      Vercel.
+      why. *(Done 2026-05-16.)*
+- [x] **`origin/main` reconciled.** Force-pushed local `main`
+      (rewritten history with secrets scrubbed) to `origin/main`
+      via `git push --force-with-lease`. The previous `.gitkeep`
+      placeholder is gone. *(Done 2026-05-16.)*
+- [x] **Production auto-deploy on Git push BLOCKED.** Both
+      `chartnavmd-site` (canonical) and `chartnavmd-site-gqbw`
+      (duplicate) Vercel projects have
+      `commandForIgnoringBuildStep` set to skip any build where
+      `$VERCEL_ENV = production`. Preview builds still run. This
+      MUST stay in place until cutover. *(Done 2026-05-16.
+      See incident note in deployment-topology.md.)*
+- [ ] **Duplicate Vercel project `chartnavmd-site-gqbw` decision.**
+      Currently Git-connected to the same repo and shadow-building
+      previews. Holds no custom-domain aliases. Decide: delete it
+      (cleanest), disconnect Git on it, or leave it blocked. **Do
+      not** delete in this PR — confirm first that no automation
+      depends on it.
 
 ---
 
@@ -151,11 +160,15 @@ swallow them.)
 
 ## Vercel connection plan (prepared — do not execute in this PR)
 
-Operator should run these steps **only after** preview parity has
-been signed off on a non-production branch and the migration
-checklist is fully green.
+> **Update 2026-05-16:** Steps 1, 3, and 4 below have already been
+> completed (the Git connection was latent at project creation and
+> `origin/main` has been reconciled). The risk that remains is on
+> step 5: production cutover. Until the Ignored Build Step is
+> deliberately removed, **no `main` push will deploy to
+> production**, which means parity work can proceed on branches
+> without fear of accidentally promoting the live alias.
 
-### 1. Reconcile `origin/main`
+### 1. Reconcile `origin/main` *(done 2026-05-16)*
 
 ```bash
 cd ~/chartnavmd-site
@@ -168,6 +181,16 @@ git log --oneline main..origin/main
 # depending on.
 git push --force-with-lease origin main
 ```
+
+> ⚠️ **Known footgun (recorded for the next operator):** the first
+> push to `origin/main` will trigger Vercel's GitHub-App-driven
+> production build for any project whose `link.productionBranch` is
+> `main`, **regardless of whether the project was previously
+> "deployed via CLI."** If `autoAssignCustomDomains: true` is set
+> on the project (default), the new build will also automatically
+> claim the project's custom domain aliases. That is exactly how
+> the 2026-05-16 incident happened. **Set the Ignored Build Step
+> before the force-push next time.**
 
 ### 2. Stage a Vercel-build branch with preview parity
 
@@ -239,23 +262,39 @@ against live by:
 Production cutover is a **separate PR**, not this one. The
 cutover PR should:
 
-1. Merge the migration branch into `main`.
-2. On the merge, Vercel will auto-build and promote the new
+1. **Remove the Ignored Build Step** on `chartnavmd-site` (and
+   `chartnavmd-site-gqbw` if it still exists) as the first
+   commit of the cutover PR, **only** when ready to deploy:
+
+   ```bash
+   TOKEN=$(python3 -c "import json; print(json.load(open('/Users/jean-maxcharles/Library/Application Support/com.vercel.cli/auth.json'))['token'])")
+   TEAM=team_AWLiPcDB2y6NCsLovfXNufgq
+   PROJ=prj_vtlrTeSk6BormQMXNgD36sR5BRmm
+   curl -sS -X PATCH "https://api.vercel.com/v10/projects/$PROJ?teamId=$TEAM" \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"commandForIgnoringBuildStep":null}'
+   ```
+
+2. Merge the migration branch into `main`.
+3. On the merge, Vercel will auto-build and promote the new
    production deployment, replacing the hand-coded static site.
-3. Within the same window:
+4. Within the same window:
    - Save a copy of the current 30-file static deploy. Either
      `vercel pull` the production output before cutover, or
      download the live HTML/CSS/JS/MP4 set via `wget --mirror`.
      Store under `archive/legacy-static-deploy/` in this repo on
      a separate branch so it's never lost.
-   - Disable the GitHub Pages workflow permanently (remove the
+   - Delete the GitHub Pages workflow permanently (remove the
      `.disabled` file, not just rename it).
-4. Watch the production deployment in Vercel for the first hour
+5. Watch the production deployment in Vercel for the first hour
    for runtime errors, 404s, broken links, broken videos.
-5. Have the rollback path written down: `vercel rollback
-   <previous-deployment-id>`, where the previous deployment ID is
-   `dpl_B7rvzJNYmmuW3YpEEPBD5ZiMAvAJ` (the current production
-   deployment as of 2026-05-16 12:50 UTC).
+6. **Rollback path** (test it before cutting over):
+   `vercel promote dpl_B7rvzJNYmmuW3YpEEPBD5ZiMAvAJ --scope jeanmaxcharles-3486s-projects`.
+   This is the same command that was used to recover from the
+   2026-05-16 incident; it returns the `chartnavmd.com` aliases
+   to the hand-coded deployment in seconds. Keep this command in
+   the PR description.
 
 ---
 

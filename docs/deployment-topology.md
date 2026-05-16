@@ -16,13 +16,32 @@ until the topology is reconciled**.
 - **Vercel project:** `chartnavmd-site` (`prj_vtlrTeSk6BormQMXNgD36sR5BRmm`)
   in scope `jeanmaxcharles-3486's projects` (team_id `team_AWLiPcDB2y6NCsLovfXNufgq`),
   Hobby plan.
-- **Git connection:** **NONE.** The Vercel project is not connected to
-  any GitHub repository.
-- **Deploy method:** direct CLI upload — `vercel deploy --prod` of a
-  pre-built 30-file static folder. Confirmed by the build log:
-  *"Retrieving list of deployment files… Downloading 30 deployment
-  files… Build Completed in /vercel/output [61ms]."* A 61 ms build is
-  a no-op — the artifact is uploaded, not built on Vercel.
+- **Git connection:** **CONNECTED to `thekidd2227/chartnavmd-site`,
+  production branch `main`.** (Corrected 2026-05-16 — see the
+  incident note below. Earlier in this same investigation this
+  field was reported as "NONE" because `vercel project inspect`
+  does not print the `link` field; the full project JSON via
+  `vercel api /v10/projects/<id>` shows `link.type: "github"`,
+  `link.repo: "chartnavmd-site"`, `link.repoId: 1223022324`,
+  `link.productionBranch: "main"`. `autoAssignCustomDomains` is
+  also `true`, so any new production deployment automatically
+  inherits the `chartnavmd.com` / `www.chartnavmd.com` aliases.)
+- **How `dpl_B7rvzJNYmmuW3YpEEPBD5ZiMAvAJ` got there:** direct CLI
+  upload — `vercel deploy --prod` of a pre-built 30-file static
+  folder. Confirmed by the build log: *"Retrieving list of
+  deployment files… Downloading 30 deployment files… Build Completed
+  in /vercel/output [61ms]."* A 61 ms build is a no-op — the
+  artifact was uploaded, not built on Vercel. (Vercel's Git auto-build
+  was always wired in parallel, but no one had pushed to `main`
+  yet — origin/main only held a `.gitkeep`. The first real push to
+  `main` did trigger Vercel; that's how this PR's investigation
+  discovered the connection. See the incident note.)
+- **Going forward, Git-driven production deploys are blocked:** the
+  Vercel project's **Ignored Build Step** is now set to
+  `bash -c 'if [ "$VERCEL_ENV" = production ]; then echo HOLD_PRODUCTION_DEPLOYS_FROM_GIT_PUSH; exit 0; else exit 1; fi'`.
+  This skips builds when `$VERCEL_ENV = production` (i.e., on push to
+  `main`) but lets preview builds proceed (so PRs continue to get
+  preview URLs).
 - **Deploy source folder:** **unknown / not present on this machine.**
   No directory in `~`, `~/Desktop`, `~/Documents`, or `~/Downloads`
   contains the hand-coded `__CN_I18N__`, `lang-toggle.js`, `reveal.js`
@@ -432,6 +451,74 @@ needed.
 
 ---
 
+## Incident: 2026-05-16 ~18:55 UTC — unintended production deploy
+
+**Summary.** A force-push of local `main` to `origin/main` (authorized
+by the operator solely to reconcile the empty-initializer
+`origin/main` so that a docs-only PR could be opened) cascaded into
+an unintended production deployment of the React/Vite build of this
+repo. The live `chartnavmd.com` briefly served the unprepared SPA
+instead of the hand-coded marketing site. Rolled back within minutes.
+
+**Timeline (UTC).**
+
+- `12:50` — last known-good hand-coded production deployment
+  `dpl_B7rvzJNYmmuW3YpEEPBD5ZiMAvAJ` (the one the migration plan
+  was supposed to preserve).
+- `18:53` — `git push --force-with-lease origin main` (authorized
+  for PR opening). Vercel's GitHub App saw the push and started a
+  production build for both `chartnavmd-site` and the duplicate
+  `chartnavmd-site-gqbw`.
+- `18:55` — build completed, deployment
+  `dpl_3ZFSSNoyBXEZMJnJpsHgWhpidKtJ` promoted to production.
+  `autoAssignCustomDomains: true` moved the `chartnavmd.com` /
+  `www.chartnavmd.com` aliases to the new deployment automatically.
+- `19:00` — incident detected. `curl -sI https://chartnavmd.com/`
+  showed `content-length: 4419` (SPA shell) instead of `49090`
+  (hand-coded HTML).
+- `19:03` — `vercel promote dpl_B7rvzJNYmmuW3YpEEPBD5ZiMAvAJ`
+  returned the aliases to the hand-coded deployment. Live site
+  restored.
+- `19:04` — Ignored Build Step set on both `chartnavmd-site` and
+  `chartnavmd-site-gqbw` to block future production deploys via
+  Git push.
+
+**Root cause.** Two compounding misunderstandings:
+
+1. The earlier topology investigation reported "Git connection:
+   NONE" based on `vercel project inspect` output. That command
+   does not surface the `link` field of a project. The Git
+   connection had existed since project creation (29 April 2026,
+   `link.createdAt: 1777455747578`); it was simply latent because
+   no commit had ever been pushed to `origin/main` until 18:53 UTC
+   today.
+2. `autoAssignCustomDomains: true` is the Vercel default and means
+   "any new production deployment claims the project's custom
+   domains automatically." Even with a Git-connected project, this
+   behavior is what makes a push to `main` capable of replacing a
+   live alias without explicit intent.
+
+**Mitigations now in place.**
+
+- `commandForIgnoringBuildStep` set on `chartnavmd-site` and
+  `chartnavmd-site-gqbw` to skip any production-environment build.
+  Preview builds (PRs, non-`main` branches) still run, so iteration
+  on parity work can proceed.
+- This PR documents the corrected understanding so the next
+  operator does not repeat the assumption.
+
+**Still required (separate, not in this PR).**
+
+- Decide whether `chartnavmd-site-gqbw` should be deleted or just
+  left blocked. It has no custom-domain aliases and is shadowing
+  every push.
+- When the parity branch is ready, the cutover PR must explicitly
+  remove the Ignored Build Step (or change it to no-op for the
+  intended target) at the same time as the merge — not before, not
+  after.
+
+---
+
 ## Decisions log
 
 | Date | Decision | By |
@@ -441,3 +528,6 @@ needed.
 | 2026-05-16 | **Migration strategy:** preview-parity-first. No production deploy until a preview deployment from a non-`main` branch has been visually and behaviorally signed off against the live page. Cutover is a separate PR, not this one. Steps written in [`vercel-migration-checklist.md`](./vercel-migration-checklist.md). | operator |
 | 2026-05-16 | **GitHub Pages workflow quarantined.** `.github/workflows/deploy.yml` renamed to `deploy.yml.disabled` so GitHub Actions cannot load it. Removed permanently as part of the cutover PR, not before. Reason: the workflow targets GitHub Pages but DNS now points to Vercel — leaving it active is a footgun. | this PR |
 | 2026-05-16 | **No production deploy was made by this PR.** This is deployment-source documentation cleanup only. The live chartnavmd.com page is unchanged. | this PR |
+| 2026-05-16 | **Correction:** Vercel project was Git-connected to `thekidd2227/chartnavmd-site` with productionBranch=`main` from inception. The earlier "Git connection: NONE" finding was wrong; `vercel project inspect` does not surface the `link` field. Verified via `vercel api /v10/projects/...`. | follow-up to PR #1 |
+| 2026-05-16 | **Incident:** force-push of `main` (authorized for PR opening) inadvertently triggered a production deploy of the React build. `chartnavmd.com` briefly served the unprepared SPA. Rolled back via `vercel promote dpl_B7rvzJNYmmuW3YpEEPBD5ZiMAvAJ` within ~3 minutes. Live site restored to the hand-coded version. | follow-up to PR #1 |
+| 2026-05-16 | **Production deploys blocked.** `commandForIgnoringBuildStep` set on both `chartnavmd-site` (`prj_vtlrTeSk6BormQMXNgD36sR5BRmm`) and the duplicate `chartnavmd-site-gqbw` (`prj_tiddSHYnRjKF0ZyZFDSNoNywLnU2`). The step skips any build where `$VERCEL_ENV = production`. Preview builds still run. Removing this block is now a deliberate, audited step in the cutover PR. | follow-up to PR #1 |
