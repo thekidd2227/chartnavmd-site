@@ -5,3 +5,15 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Secrets — never commit the runnable variants of credential-bearing
+# operator playbooks. The `.example.md` versions are the only
+# checked-in copies. See docs/claude-commands/arcg-make-audit.example.md.
+docs/claude-commands/arcg-make-audit.md
+docs/claude-commands/*-secrets.md
+*.secrets.md
+config.env
+secrets.env
+
+# Vercel local-link state (project IDs and short-lived OIDC tokens).
+.vercel/
