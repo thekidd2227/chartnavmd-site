@@ -9,6 +9,7 @@ import {
   RevealController,
 } from "@/components/chartnav/Sections";
 import { VideoShowcase } from "@/components/chartnav/VideoShowcase";
+import { PlatformLayers } from "@/components/chartnav/PlatformLayers";
 
 export default function ChartnavHome() {
   return (
@@ -79,12 +80,13 @@ export default function ChartnavHome() {
       ]}
     >
       <RevealController>
-        {/* Deal-closing flow: Hero → Video Proof → Before/After → Pain → Product Proof → Trust → CTA */}
+        {/* Hero → Video → Before/After → Problem → Proof → Platform → Trust → CTA */}
         <Hero />
         <VideoShowcase />
         <BeforeAfter />
         <Problem />
         <ProductProof />
+        <PlatformLayers id="platform" />
         <TrustEnv />
         <FinalCta />
       </RevealController>
