@@ -1,4 +1,3 @@
-/* ============================================================
    Chartnav — med-tech light design system (scoped)
    ------------------------------------------------------------
    Everything is namespaced under `.chartnav-root` so styles
@@ -47,16 +46,6 @@
   --cn-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --cn-max: 1240px;
 
-  /* ---------- Dark accent tokens (platform-layers section) ---------- */
-  --cn-gold:            #c9a84c;
-  --cn-gold-muted:      rgba(201, 168, 76, 0.55);
-  --cn-gold-border:     rgba(201, 168, 76, 0.18);
-  --cn-surface-subtle:  rgba(255, 255, 255, 0.03);
-  --cn-surface-card:    rgba(255, 255, 255, 0.045);
-  --cn-text-primary:    rgba(255, 255, 255, 0.92);
-  --cn-text-muted-dark: rgba(255, 255, 255, 0.45);
-  --cn-border-subtle:   rgba(255, 255, 255, 0.08);
-
   /* ---------- Base ---------- */
   background: var(--color-bg);
   color: var(--color-text);
@@ -69,4 +58,2064 @@
   flex-direction: column;
   font-variant-ligatures: common-ligatures;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.chartnav-root *,
+.chartnav-root *::before,
+.chartnav-root *::after { box-sizing: border-box; }
+
+/* ---------- Typography ---------- */
+.chartnav-root h1,
+.chartnav-root h2,
+.chartnav-root h3,
+.chartnav-root h4 {
+  font-family: inherit;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.chartnav-root h1 {
+  font-size: clamp(32px, 4.6vw, 48px);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  /* Balance multi-line headings so no single word is orphaned on the last
+     line. Native widow prevention, supported in modern evergreen browsers;
+     older browsers fall back to normal wrapping with no regression. */
+  text-wrap: balance;
+}
+.chartnav-root h2 {
+  font-size: clamp(26px, 3.2vw, 48px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.chartnav-root h3 {
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.chartnav-root h4 {
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.chartnav-root p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1.65;
+  /* Prevent single-word orphans on the last line of body paragraphs. */
+  text-wrap: pretty;
+}
+
+.chartnav-root a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 150ms var(--cn-ease);
+}
+.chartnav-root a:hover { color: var(--color-primary-hover); }
+
+.chartnav-root :focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.chartnav-root ::selection {
+  background: var(--color-primary-tint);
+  color: var(--color-primary-active);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Skip link ---------- */
+.cn-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 10px 16px;
+  font-weight: 600;
+  z-index: 1000;
+  border-radius: var(--cn-radius-sm);
+}
+.cn-skip-link:focus { left: 8px; top: 8px; }
+
+/* ---------- Container ---------- */
+.cn-container {
+  max-width: var(--cn-max);
+  margin: 0 auto;
+  padding: 0 32px;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .cn-container { padding: 0 20px; }
+}
+
+/* ---------- Eyebrow ---------- */
+.cn-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+/* ---------- Buttons ---------- */
+.cn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--cn-radius-md);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: background 160ms var(--cn-ease),
+              color 160ms var(--cn-ease),
+              border-color 160ms var(--cn-ease),
+              box-shadow 160ms var(--cn-ease),
+              transform 90ms var(--cn-ease);
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.cn-btn:active { transform: translateY(1px); }
+.cn-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.cn-btn--primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.cn-btn--primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: #fff;
+}
+.cn-btn--primary:active { background: var(--color-primary-active); }
+
+.cn-btn--ghost {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+.cn-btn--ghost:hover {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.cn-btn--text {
+  background: transparent;
+  color: var(--color-primary);
+  padding: 0;
+  min-height: auto;
+  border: none;
+  font-weight: 600;
+}
+.cn-btn--text:hover { color: var(--color-primary-hover); }
+.cn-btn--text::after {
+  content: "";
+  display: inline-block;
+  width: 0; height: 1px;
+  background: currentColor;
+  transition: width 200ms var(--cn-ease);
+}
+.cn-btn--text:hover::after { width: 1em; }
+
+/* ===== Nav ===== */
+.cn-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  background: rgba(255, 255, 255, 0.78);
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms var(--cn-ease), background 200ms var(--cn-ease);
+}
+.cn-nav[data-scrolled="true"] {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: var(--color-border);
+}
+
+.cn-nav__inner {
+  max-width: var(--cn-max);
+  margin: 0 auto;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 72px;
+}
+@media (max-width: 768px) {
+  .cn-nav__inner { padding: 10px 20px; min-height: 64px; }
+}
+
+.cn-brand {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.1;
+  color: var(--color-text);
+}
+.cn-brand:hover { color: var(--color-text); }
+.cn-brand__icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: block;
+}
+.cn-brand__text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.cn-brand__mark {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-size: 19px;
+  color: var(--color-text);
+}
+.cn-brand__mark-a { color: var(--color-text); }
+.cn-brand__mark-b { color: var(--color-primary); }
+
+/* Inline branded wordmark — use anywhere inside .chartnav-root where the
+   product name appears in running text. "Chart" inherits the surrounding
+   text color; "Nav" renders in teal. */
+.cn-brand-text { white-space: nowrap; }
+.cn-brand-text__a { color: inherit; font-weight: inherit; }
+.cn-brand-text__b { color: var(--color-primary); font-weight: inherit; }
+h1 .cn-brand-text__a, h2 .cn-brand-text__a, h3 .cn-brand-text__a { font-weight: inherit; }
+.cn-brand-tm {
+  font-size: 0.52em;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-left: 0.12em;
+  line-height: 0;
+  position: relative;
+  top: -0.55em;
+  letter-spacing: 0;
+}
+.cn-brand__mark .cn-brand-tm {
+  color: var(--color-text-muted);
+  font-size: 0.48em;
+}
+.cn-brand__sub {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+  font-weight: 500;
+}
+@media (max-width: 420px) {
+  .cn-brand__icon { width: 34px; height: 34px; flex-basis: 34px; }
+  .cn-brand__mark { font-size: 17px; }
+  .cn-brand__sub  { font-size: 9px; }
+}
+
+.cn-nav__links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  margin: 0 auto 0 16px;
+  padding: 0;
+}
+.cn-nav__links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 6px 2px;
+  position: relative;
+  /* Keep multi-word labels (e.g. "Why ChartNav") on one line so the
+     nav rail's vertical rhythm stays consistent. The alignment bug
+     reported on /chartnav was this label wrapping to two lines while
+     every other tab was single-line. */
+  white-space: nowrap;
+}
+.cn-nav__links a:hover { color: var(--color-text); }
+@media (max-width: 1023px) {
+  .cn-nav__links { display: none; }
+}
+
+.cn-nav__cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+@media (max-width: 640px) {
+  .cn-nav__cta .cn-btn--ghost { display: none; }
+}
+
+.cn-hamburger {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  width: 40px; height: 40px;
+  border-radius: var(--cn-radius-md);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+@media (max-width: 1023px) {
+  .cn-hamburger { display: inline-flex; }
+}
+
+.cn-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 24px 32px;
+}
+.cn-drawer__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px; height: 40px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--cn-radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cn-drawer__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cn-drawer__list a {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.cn-drawer__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+.cn-drawer__actions .cn-btn { width: 100%; }
+
+/* ===== Section shell =====
+   Section vertical rhythm — tightened to a premium, deliberate
+   cadence so consecutive `.cn-section`s don't stack 2×96 = 192px
+   of dead space between them. Desktop stacks 2×64 = 128px at the
+   consecutive-section boundary (via the collapse rule below).
+
+   A single section still has 72px on the non-adjoining side, which
+   keeps hero→first-section and last-section→footer breathing room.
+*/
+.cn-section { padding: 72px 0; }
+@media (max-width: 1023px) { .cn-section { padding: 56px 0; } }
+@media (max-width: 768px)  { .cn-section { padding: 48px 0; } }
+
+.cn-section--alt {
+  background: var(--color-surface-alt);
+  border-block: 1px solid var(--color-border);
+}
+
+/* Consecutive section collapse — every second-in-a-row section
+   trims its top padding so the composite gap between two sections
+   doesn't stack two full paddings (2×72 = 144px would still read
+   too loose on alt↔plain transitions, which are the dominant
+   boundary on every ChartNav page).
+
+   Applies uniformly across every ChartNav page because every
+   shipped section (Summary, Rationale, Modules, Roles, Flow,
+   Continuity, Ophthalmology, Implementation, Faq, Assessment,
+   Implementation phases, etc.) renders with the `.cn-section`
+   class. Alt ↔ plain transitions keep their bg-tint boundary
+   intact because this only adjusts padding, not background.
+
+   Visible gap after this rule (last content of section A → section
+   header of section B):
+     desktop (72 bottom + 56 top + ~17 header geometry) ≈ 145px
+     tablet  (56 bottom + 40 top + ~17)                 ≈ 113px
+     mobile  (48 bottom + 32 top + ~17)                 ≈ 97px
+*/
+.cn-section + .cn-section,
+.cn-section + .cn-section.cn-section--alt,
+.cn-section--alt + .cn-section {
+  padding-top: 56px;
+}
+@media (max-width: 1023px) {
+  .cn-section + .cn-section,
+  .cn-section + .cn-section.cn-section--alt,
+  .cn-section--alt + .cn-section { padding-top: 40px; }
+}
+@media (max-width: 768px) {
+  .cn-section + .cn-section,
+  .cn-section + .cn-section.cn-section--alt,
+  .cn-section--alt + .cn-section { padding-top: 32px; }
+}
+
+/* Trust-strip rhythm — pull `.cn-trust` into the same section-rhythm
+   collapse rules as `.cn-section`. Without this, the
+   `cn-hero → cn-trust → cn-section` boundaries each open an
+   uncollapsed gap:
+     hero  pad-bottom 56 + trust pad-top 24                      = 80 px
+     trust pad-bottom 24 + section pad-top 72 + eyebrow margin 16 = 112 px
+   Both read as a misalignment between the sticky nav and the first
+   content the visitor lands on when scrolling. Collapse them by
+   trimming the *adjacent* element's leading padding only, never
+   inflating the trust strip's own height (the trust strip's
+   white-on-cream contrast band is intentional and must stay tight).
+*/
+.cn-hero + .cn-trust { margin-top: -32px; }   /* close hero→trust gap */
+.cn-trust + .cn-section,
+.cn-trust + .cn-section--alt,
+.cn-section + .cn-trust + .cn-section,
+.cn-section--alt + .cn-trust + .cn-section,
+.cn-section + .cn-trust + .cn-section--alt {
+  /* The section that lands DIRECTLY after the trust strip uses the
+     same compressed top padding as a consecutive-section collapse,
+     so the trust→section boundary reads at the documented ~96 px
+     desktop visual gap (24 trust pad-bottom equiv + 56 collapse +
+     16 eyebrow margin) instead of the original 112 px. */
+  padding-top: 40px;
+}
+@media (max-width: 1023px) {
+  .cn-hero + .cn-trust { margin-top: -24px; }
+  .cn-trust + .cn-section,
+  .cn-trust + .cn-section--alt { padding-top: 28px; }
+}
+@media (max-width: 768px) {
+  .cn-hero + .cn-trust { margin-top: -16px; }
+  .cn-trust + .cn-section,
+  .cn-trust + .cn-section--alt { padding-top: 24px; }
+}
+
+.cn-section__header { max-width: 760px; margin: 0 auto; text-align: center; }
+.cn-section__header h2 {
+  /* `text-wrap: balance` evens the line-lengths of a multi-line
+     center-aligned headline so it never reads as ragged centered
+     text. Falls back gracefully on browsers that don't support it. */
+  text-wrap: balance;
+}
+/* The eyebrow + h2 get the full 760 for their own geometry, but
+   the lead paragraph under the h2 sits on a tighter 640 measure so
+   center-aligned lines don't run past the readable width. Matches
+   `.cn-centered-body` + `.cn-final__body` for one shared axis.
+
+   `text-wrap: balance` (also for the centered <p>) evens the visual
+   width of each line so center-aligned body copy doesn't ragged-
+   wrap into a stair-stepped triangle. This addresses the alignment
+   issue on /chartnav/platform and /chartnav/ophthalmology where
+   centered body paragraphs read as visually unbalanced. */
+/* Lead paragraph that follows the h2 — block-centered (auto margins)
+   but lines flush-left so multi-line leads don't ragged-center.
+   Selector excludes the eyebrow (rendered as a `<p>` BEFORE the h2). */
+.cn-section__header h2 + p {
+  margin: 16px auto 0;
+  max-width: 640px;
+  text-align: left;
+  color: var(--color-text-secondary);
+  font-size: 17px;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+.cn-centered-body,
+.cn-final__body {
+  text-wrap: balance;
+}
+@media (max-width: 768px) {
+  .cn-section__header h2 + p {
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
+}
+
+/* -----------------------------------------------------------------
+   Section body — normalized gap between section header and content.
+   Every block that immediately follows a `.cn-section__header`
+   (whether it's a `.cn-points` grid, a `.cn-reality-list`, or a
+   one-off `div`) lines up on the same 40px baseline. This replaces
+   scattered `style={{ marginTop: 28|32|40|48 }}` in page files.
+
+   Additional helper:
+     `.cn-section__body`  — explicit opt-in for blocks that aren't
+       the immediate sibling of the header (e.g. nested inside a
+       wrapper) but still need the same spacing rhythm.
+   ----------------------------------------------------------------- */
+.cn-section__header + *,
+.cn-section__body {
+  margin-top: 40px;
+}
+@media (max-width: 768px) {
+  .cn-section__header + *,
+  .cn-section__body {
+    margin-top: 32px;
+  }
+}
+
+/* -----------------------------------------------------------------
+   `.cn-stack` — generic vertical stack inside a section. Used when
+   the content is a list of article cards (subspec cards, phase
+   blocks, etc.) with no fixed column count. Replaces scattered
+   `style={{ display: "grid", gap: 20 }}` inline declarations.
+   ----------------------------------------------------------------- */
+.cn-stack {
+  display: grid;
+  gap: 20px;
+}
+
+/* ===== Hero =====
+   Matches the section rhythm. Hero's bottom padding is slightly
+   trimmed from the original 80 → 56px because it lives directly
+   above a `.cn-section` whose top padding now provides the
+   breathing room.
+*/
+.cn-hero {
+  padding: 80px 0 56px;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 1023px) { .cn-hero { padding: 64px 0 48px; } }
+@media (max-width: 768px)  { .cn-hero { padding: 56px 0 40px; } }
+.cn-hero::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -120px;
+  width: 640px;
+  height: 640px;
+  background: radial-gradient(closest-side,
+              rgba(11, 110, 121, 0.08),
+              rgba(11, 110, 121, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.cn-hero__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 64px;
+  align-items: center;
+}
+@media (max-width: 1023px) {
+  .cn-hero__grid { grid-template-columns: 1fr; gap: 40px; }
+}
+.cn-hero__copy h1 {
+  margin: 0 0 20px;
+  max-width: 720px;
+  color: var(--color-text);
+}
+.cn-hero__copy p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 620px;
+  margin-bottom: 28px;
+}
+.cn-hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 640px) {
+  .cn-hero__ctas { flex-direction: column; align-items: stretch; }
+  .cn-hero__ctas .cn-btn { width: 100%; }
+}
+
+.cn-composite {
+  position: relative;
+  aspect-ratio: 5 / 5;
+  max-width: 560px;
+  width: 100%;
+  margin-left: auto;
+}
+@media (max-width: 1023px) { .cn-composite { margin: 0 auto; } }
+
+/* ===== Trust strip =====
+   Padding tightened to 18px (was 24px) so the trust strip reads as a
+   crisp boundary band rather than a third spacer between hero and the
+   first content section. The collapse rules in `.cn-trust + .cn-section`
+   above also trim the following section's top padding so the
+   sticky-nav → trust → first-section rhythm reads tight at every
+   viewport. */
+.cn-trust {
+  padding: 18px 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.cn-trust__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 24px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+.cn-trust__list li { display: inline-flex; align-items: center; gap: 24px; }
+.cn-trust__list li + li::before {
+  content: "·";
+  color: var(--color-primary);
+  display: inline-block;
+  margin-right: 16px;
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.7;
+}
+@media (max-width: 768px) {
+  .cn-trust__list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 0 20px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cn-trust__list li { scroll-snap-align: start; flex-shrink: 0; }
+}
+
+/* ===== Cards ===== */
+.cn-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 24px;
+  transition: border-color 200ms var(--cn-ease),
+              box-shadow 200ms var(--cn-ease),
+              transform 200ms var(--cn-ease);
+}
+@media (hover: hover) {
+  .cn-card:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03),
+                0 8px 24px -12px rgba(15, 23, 42, 0.08);
+  }
+}
+.cn-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.cn-card p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+.cn-card__icon {
+  color: var(--color-primary);
+  margin-bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  background: var(--color-primary-soft);
+  border-radius: var(--cn-radius-md);
+}
+
+/* Grids */
+.cn-grid-3, .cn-grid-3x3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.cn-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.cn-grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (max-width: 1023px) {
+  .cn-grid-3, .cn-grid-3x3 { grid-template-columns: repeat(2, 1fr); }
+  .cn-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .cn-grid-3, .cn-grid-3x3, .cn-grid-4, .cn-grid-2x2 { grid-template-columns: 1fr; }
+}
+
+.cn-cta-row { margin-top: 40px; text-align: center; }
+
+/* ===== Problem ===== */
+.cn-problem__body {
+  margin: 20px auto 40px;
+  max-width: 760px;
+  /* Block-centered, left-aligned text — multi-line bodies read better
+     flush-left than ragged-center. */
+  text-align: left;
+  font-size: 17px;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Audience ===== */
+.cn-audience-grid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+@media (max-width: 768px) {
+  .cn-audience-grid { grid-template-columns: 1fr; }
+}
+.cn-audience-row {
+  padding: 24px;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+}
+.cn-audience-row:nth-child(2n) { border-right: none; }
+@media (max-width: 768px) {
+  .cn-audience-row { border-right: none; }
+}
+.cn-audience-row h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 6px;
+}
+.cn-audience-row p { font-size: 14.5px; color: var(--color-text-secondary); }
+
+/* ===== Shift table ===== */
+.cn-shift-wrap {
+  /* margin-top from global `.cn-section__header + *` rule. */
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  overflow: hidden;
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--color-surface);
+}
+.cn-shift { width: 100%; border-collapse: collapse; font-size: 15px; }
+.cn-shift thead th {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 14px 20px;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+.cn-shift td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+.cn-shift td:first-child { color: var(--color-text-secondary); }
+.cn-shift td:last-child  { color: var(--color-text); font-weight: 500; }
+.cn-shift tr:last-child td { border-bottom: none; }
+@media (max-width: 768px) {
+  .cn-shift, .cn-shift thead, .cn-shift tbody, .cn-shift tr, .cn-shift td, .cn-shift th {
+    display: block;
+    width: 100%;
+  }
+  .cn-shift thead { display: none; }
+  .cn-shift tr { border-bottom: 1px solid var(--color-border); padding: 14px 0; }
+  .cn-shift tr:last-child { border-bottom: none; }
+  .cn-shift td { padding: 8px 20px; border: none; }
+  .cn-shift td:first-child::before {
+    content: "Before";
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .cn-shift td:last-child::before {
+    content: "With Chartnav";
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 6px;
+  }
+}
+
+/* ===== Methodology ===== */
+.cn-steps {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 1023px) { .cn-steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .cn-steps { grid-template-columns: 1fr; } }
+
+.cn-step {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 24px;
+}
+.cn-step__num {
+  width: 32px; height: 32px;
+  background: var(--color-primary-soft);
+  border-radius: var(--cn-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+.cn-step h3 { font-size: 17px; font-weight: 600; margin: 0 0 8px; color: var(--color-text); }
+.cn-step p { font-size: 14.5px; color: var(--color-text-secondary); }
+
+.cn-method__callout {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--color-text);
+  padding: 16px 24px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-tint);
+  border-radius: var(--cn-radius-md);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== Outcomes ===== */
+.cn-outcome {
+  padding: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+}
+.cn-outcome h3 { font-size: 17px; font-weight: 600; margin: 0 0 8px; color: var(--color-text); }
+.cn-outcome p  { font-size: 14.5px; color: var(--color-text-secondary); }
+
+/* ===== Proof ===== */
+.cn-proof__body {
+  margin: 16px auto 40px;
+  max-width: 760px;
+  text-align: left;
+  font-size: 17px;
+  color: var(--color-text-secondary);
+}
+.cn-proof__cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  max-width: 1040px;
+  margin: 0 auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  overflow: hidden;
+}
+.cn-proof__col {
+  padding: 28px 32px;
+  border-right: 1px solid var(--color-border);
+}
+.cn-proof__col:last-child { border-right: none; }
+.cn-proof__col h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--color-text);
+}
+.cn-proof__col p { font-size: 14.5px; color: var(--color-text-secondary); }
+@media (max-width: 768px) {
+  .cn-proof__cols { grid-template-columns: 1fr; }
+  .cn-proof__col { border-right: none; border-bottom: 1px solid var(--color-border); }
+  .cn-proof__col:last-child { border-bottom: none; }
+}
+
+/* ===== Workflow ===== */
+.cn-workflow {
+  background: var(--color-surface-alt);
+  border-block: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+.cn-workflow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right,  rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.cn-workflow__inner { position: relative; z-index: 1; }
+.cn-workflow__figure { margin: 40px 0 28px; }
+.cn-workflow__svg { width: 100%; height: auto; display: block; }
+.cn-workflow__svg-desktop { display: block; }
+.cn-workflow__svg-mobile  { display: none; }
+@media (max-width: 1023px) {
+  .cn-workflow__svg-desktop { display: none; }
+  .cn-workflow__svg-mobile  { display: block; }
+}
+.cn-workflow__micro {
+  margin: 0 auto;
+  max-width: 720px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  display: grid;
+  gap: 6px;
+}
+.cn-workflow__cta-row { margin-top: 24px; text-align: center; }
+
+/* ===== Final CTA =====
+   Matches the section rhythm — 80px/0/80px block on desktop so the
+   last section → final-CTA boundary doesn't stack 72+96 = 168px of
+   dead space.
+*/
+.cn-final {
+  padding: 80px 0;
+  text-align: center;
+  background: var(--color-primary-soft);
+  border-top: 1px solid var(--color-primary-tint);
+  border-bottom: 1px solid var(--color-primary-tint);
+}
+@media (max-width: 1023px) { .cn-final { padding: 64px 0; } }
+@media (max-width: 768px)  { .cn-final { padding: 56px 0; } }
+/* If a .cn-section precedes the final CTA, collapse the adjoining
+   gap the same way we do for section ↔ section. */
+.cn-section + .cn-final,
+.cn-section--alt + .cn-final { padding-top: 64px; }
+@media (max-width: 1023px) {
+  .cn-section + .cn-final,
+  .cn-section--alt + .cn-final { padding-top: 48px; }
+}
+@media (max-width: 768px) {
+  .cn-section + .cn-final,
+  .cn-section--alt + .cn-final { padding-top: 40px; }
+}
+.cn-final h2 { color: var(--color-text); }
+.cn-final__body {
+  max-width: 640px;
+  margin: 12px auto 28px;
+  color: var(--color-text-secondary);
+  font-size: 17px;
+}
+.cn-final__ctas {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .cn-final__ctas { flex-direction: column; align-items: stretch; padding: 0 20px; }
+  .cn-final__ctas .cn-btn { width: 100%; }
+}
+.cn-final__note {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ===== Footer ===== */
+.cn-footer {
+  padding: 56px 0 28px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Footer brand lockup — real product logo sits at the top of the footer. */
+.cn-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+}
+.cn-footer__brand-mark { flex: 0 0 44px; width: 44px; height: 44px; display: block; }
+.cn-footer__brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.cn-footer__brand-wordmark {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+.cn-footer__brand-wordmark .cn-brand-text__b { color: var(--color-primary); }
+.cn-footer__brand-caption {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+}
+@media (max-width: 560px) {
+  .cn-footer__brand { gap: 12px; margin-bottom: 32px; padding-bottom: 24px; }
+  .cn-footer__brand-mark { flex-basis: 36px; width: 36px; height: 36px; }
+  .cn-footer__brand-wordmark { font-size: 20px; }
+  .cn-footer__brand-caption { font-size: 11px; }
+}
+.cn-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  margin-bottom: 40px;
+}
+@media (max-width: 768px) { .cn-footer__grid { grid-template-columns: repeat(2, 1fr); gap: 32px; } }
+@media (max-width: 480px) { .cn-footer__grid { grid-template-columns: 1fr; } }
+.cn-footer__group h4 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+.cn-footer__group ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.cn-footer__group a { font-size: 14px; color: var(--color-text-secondary); }
+.cn-footer__group a:hover { color: var(--color-primary); }
+.cn-footer__legal {
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.cn-footer__legal ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 16px; flex-wrap: wrap; }
+/* Legal line: inline-flex so the brand text, separator, and email
+   wrap as a single rhythmic unit at narrow widths instead of
+   stacking on a hard-coded `marginLeft` inline style. */
+.cn-footer__legal-line {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+.cn-footer__legal-email { color: var(--color-text-secondary); }
+.cn-footer__legal-email:hover { color: var(--color-primary); }
+
+/* ===== Modal ===== */
+.cn-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px;
+  overflow-y: auto;
+}
+@media (max-width: 640px) { .cn-modal-overlay { padding: 24px 12px; } }
+.cn-modal {
+  width: 100%;
+  max-width: 560px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-xl);
+  padding: 28px;
+  position: relative;
+  box-shadow: 0 20px 48px -16px rgba(15, 23, 42, 0.2);
+}
+.cn-modal__close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 36px; height: 36px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  border-radius: var(--cn-radius-md);
+  cursor: pointer;
+}
+.cn-modal__close:hover { color: var(--color-text); border-color: var(--color-border-strong); }
+.cn-modal h2 { font-size: 22px; margin: 0 0 6px; color: var(--color-text); }
+.cn-modal__sub { font-size: 14px; color: var(--color-text-secondary); margin: 0 0 20px; }
+
+/* ===== Form ===== */
+.cn-field { display: grid; gap: 6px; margin-bottom: 14px; }
+.cn-field label {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+.cn-field input,
+.cn-field select,
+.cn-field textarea {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--cn-radius-md);
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 160ms var(--cn-ease), box-shadow 160ms var(--cn-ease);
+}
+.cn-field textarea { resize: vertical; min-height: 96px; }
+.cn-field input::placeholder,
+.cn-field textarea::placeholder { color: var(--color-text-muted); }
+.cn-field input:focus,
+.cn-field select:focus,
+.cn-field textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+.cn-field[data-error="true"] input,
+.cn-field[data-error="true"] select,
+.cn-field[data-error="true"] textarea { border-color: var(--color-danger); }
+.cn-field__error {
+  color: var(--color-danger);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 500;
+}
+.cn-field--row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 640px) { .cn-field--row { grid-template-columns: 1fr; } }
+.cn-field--honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
+.cn-form__actions { display: flex; gap: 10px; margin-top: 18px; }
+.cn-form__actions .cn-btn { flex: 1; }
+.cn-form__banner {
+  padding: 10px 14px;
+  border-radius: var(--cn-radius-md);
+  font-size: 14px;
+  margin-bottom: 14px;
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+.cn-form__note {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Grouped form sections (used in the Workflow Assessment) */
+.cn-form-section {
+  margin: 20px 0 6px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+}
+.cn-form-section:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.cn-form-section__hd {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cn-form-section__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.cn-form-section__caption {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Helper text under a field label */
+.cn-field__helper {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  margin: 0 0 6px;
+}
+
+/* Coming-soon notice for non-ophthalmology practice types */
+.cn-form__notice {
+  margin: 10px 0 16px;
+  padding: 12px 14px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-tint);
+  color: var(--color-text);
+  border-radius: var(--cn-radius-md);
+  font-size: 13.5px;
+  line-height: 1.55;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cn-form__notice strong { color: var(--color-primary); }
+
+/* Chip group (ophthalmology subspecialties + imaging modalities) */
+.cn-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.cn-chips__item {
+  padding: 8px 12px;
+  border-radius: var(--cn-radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 140ms var(--cn-ease),
+              background 140ms var(--cn-ease),
+              color 140ms var(--cn-ease);
+}
+.cn-chips__item:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+.cn-chips__item.is-on {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ===== Reveal (visible by default; reveal is a no-op polish hook) ===== */
+[data-reveal] { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chartnav-root *,
+  .chartnav-root *::before,
+  .chartnav-root *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Hide ARCG site-wide chat widget on Chartnav routes */
+body.chartnav-active .woot-widget-bubble,
+body.chartnav-active .woot-widget-holder,
+body.chartnav-active #cw-bubble-holder,
+body.chartnav-active #cw-widget-holder,
+body.chartnav-active [class*="chatwoot"] {
+  display: none !important;
+}
+
+/* ============================================================
+   PLATFORM PAGE — product-level components
+   (scoped to .chartnav-root via the rest of this stylesheet)
+   ============================================================ */
+
+/* Platform summary grid — 5 layer cards */
+.cn-layers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  /* margin-top from global `.cn-section__header + *` rule. */
+}
+@media (max-width: 1023px) { .cn-layers { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .cn-layers { grid-template-columns: 1fr; } }
+
+.cn-layer {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 20px 18px 22px;
+}
+.cn-layer__num {
+  font-size: 11px; letter-spacing: 0.14em; font-weight: 600;
+  color: var(--color-primary); margin-bottom: 10px;
+}
+.cn-layer__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--cn-radius-md);
+  margin-bottom: 12px;
+}
+.cn-layer h3 { font-size: 15.5px; line-height: 1.3; font-weight: 700; margin: 0 0 6px; color: var(--color-text); }
+.cn-layer p  { font-size: 13.5px; line-height: 1.5; color: var(--color-text-secondary); margin: 0; }
+
+/* Rationale points */
+.cn-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  /* margin-top inherits from `.cn-section__header + *` (40px desktop /
+     32px ≤768px) so every points grid aligns to the same header→body
+     rhythm without a per-class override drift. When a points grid
+     follows a `.cn-centered-body` paragraph (the common case on the
+     Rationale section), we tighten that gap below so the cards
+     feel anchored to the paragraph instead of floating 40px away. */
+  align-items: stretch;
+}
+.cn-centered-body + .cn-points { margin-top: 32px; }
+@media (max-width: 768px) {
+  .cn-centered-body + .cn-points { margin-top: 24px; }
+}
+@media (max-width: 1023px) { .cn-points { grid-template-columns: 1fr; } }
+.cn-point {
+  padding: 22px;
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-surface);
+  border-radius: 0 var(--cn-radius-md) var(--cn-radius-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* Stretch so all three cards share one baseline under the
+     centered paragraph — fixes the height imbalance visible
+     when one card's body wraps to more lines than another. */
+  height: 100%;
+}
+.cn-point h3 { font-size: 16px; font-weight: 700; margin: 0; color: var(--color-text); line-height: 1.3; }
+.cn-point p  { font-size: 14.5px; color: var(--color-text-secondary); margin: 0; line-height: 1.55; text-wrap: pretty; }
+
+/* Module detail cards — margin-top inherits from the global
+   `.cn-section__header + *` rule (40px desktop / 32px mobile). */
+.cn-modules { display: grid; gap: 20px; }
+.cn-module {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-xl);
+  padding: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 32px;
+}
+@media (max-width: 900px) {
+  .cn-module { grid-template-columns: 1fr; padding: 24px; gap: 24px; }
+}
+
+.cn-module__head { display: flex; flex-direction: column; }
+.cn-module__num {
+  font-size: 12px; letter-spacing: 0.16em; font-weight: 700;
+  color: var(--color-primary); margin-bottom: 12px;
+}
+.cn-module__icon {
+  width: 48px; height: 48px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--cn-radius-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.cn-module__name {
+  font-size: 22px; font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.01em; margin: 0 0 8px; color: var(--color-text);
+}
+.cn-module__tagline { font-size: 15.5px; color: var(--color-text-secondary); margin: 0 0 20px; line-height: 1.55; }
+
+.cn-module__users {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto;
+}
+.cn-chip {
+  display: inline-flex; align-items: center;
+  padding: 5px 10px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--cn-radius-pill);
+}
+.cn-chip--neutral {
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.cn-module__body { display: grid; gap: 20px; }
+.cn-module__group h4 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.cn-module__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.cn-module__list li {
+  font-size: 14.5px; line-height: 1.5;
+  color: var(--color-text);
+  padding-left: 20px; position: relative;
+}
+.cn-module__list li::before {
+  content: ""; position: absolute;
+  left: 2px; top: 10px; width: 10px; height: 2px;
+  background: var(--color-primary);
+  border-radius: 1px;
+}
+.cn-module__list--dim li { color: var(--color-text-secondary); }
+.cn-module__list--dim li::before { background: var(--color-text-muted); }
+
+.cn-module__objects { display: flex; flex-wrap: wrap; gap: 6px; }
+.cn-module__outcome {
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+  font-size: 14.5px;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* Role-based views — table */
+.cn-roles {
+  margin-top: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.cn-role-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--color-border);
+}
+.cn-role-row:last-child { border-bottom: none; }
+.cn-role-row--head {
+  background: var(--color-surface-alt);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+.cn-role-row--head > div { padding: 14px 20px; }
+.cn-role-row > div { padding: 20px; }
+.cn-role-row__role {
+  font-weight: 700; color: var(--color-primary);
+  font-size: 15px;
+  border-right: 1px solid var(--color-border);
+}
+.cn-role-row > div + div:not(.cn-role-row__role) {
+  border-right: 1px solid var(--color-border);
+  font-size: 14.5px; color: var(--color-text-secondary); line-height: 1.55;
+}
+.cn-role-row > div:last-child { border-right: none; }
+@media (max-width: 900px) {
+  .cn-role-row { grid-template-columns: 1fr; }
+  .cn-role-row--head { display: none; }
+  .cn-role-row__role { border-right: none; border-bottom: 1px solid var(--color-border); padding-bottom: 8px; }
+  .cn-role-row > div { border-right: none; }
+  .cn-role-row > div + div:not(.cn-role-row__role) { padding-top: 4px; }
+  .cn-role-row > div + div:not(.cn-role-row__role)::before {
+    content: attr(data-label); display: block;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 700; color: var(--color-text-muted); margin-bottom: 4px;
+  }
+}
+
+/* Flow strip — system flow */
+.cn-flow {
+  /* margin-top from global `.cn-section__header + *` rule. */
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 32px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  position: relative;
+}
+@media (max-width: 1023px) {
+  .cn-flow { grid-template-columns: 1fr; padding: 24px; }
+}
+.cn-flow__step { position: relative; padding: 4px 4px 4px 0; }
+.cn-flow__step__num {
+  display: inline-block;
+  font-size: 11px; letter-spacing: 0.14em; font-weight: 700;
+  color: var(--color-primary); margin-bottom: 8px;
+}
+.cn-flow__step h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--color-text); }
+.cn-flow__step p  { font-size: 13px; line-height: 1.55; color: var(--color-text-secondary); }
+.cn-flow__step + .cn-flow__step::before {
+  content: "→";
+  position: absolute;
+  left: -14px; top: 24px;
+  color: var(--color-primary);
+  font-size: 14px; font-weight: 700;
+  opacity: 0.6;
+}
+@media (max-width: 1023px) {
+  .cn-flow__step + .cn-flow__step::before {
+    content: "↓"; left: 4px; top: -12px;
+  }
+}
+
+.cn-connectors {
+  margin-top: 24px;
+  display: grid;
+  gap: 8px;
+  padding: 20px 24px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-tint);
+  border-radius: var(--cn-radius-md);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cn-connectors p {
+  font-size: 14px; line-height: 1.55; color: var(--color-text); margin: 0;
+  padding-left: 18px; position: relative;
+}
+.cn-connectors p::before {
+  content: "·"; position: absolute; left: 4px; top: -2px;
+  color: var(--color-primary); font-size: 22px; font-weight: 700; line-height: 1;
+}
+
+/* Continuity points */
+.cn-continuity {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (max-width: 720px) { .cn-continuity { grid-template-columns: 1fr; } }
+.cn-continuity > div {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 22px;
+}
+.cn-continuity h3 {
+  font-size: 16px; font-weight: 700; margin: 0 0 8px;
+  color: var(--color-text);
+}
+.cn-continuity p { font-size: 14.5px; color: var(--color-text-secondary); line-height: 1.55; margin: 0; }
+
+/* Ophthalmology-first */
+.cn-subspec {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+@media (max-width: 720px) { .cn-subspec { grid-template-columns: 1fr; } }
+.cn-subspec > div {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 20px;
+}
+.cn-subspec h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+}
+.cn-subspec p { font-size: 14px; color: var(--color-text-secondary); margin: 0; line-height: 1.55; }
+
+/* Implementation steps */
+.cn-impl-steps {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  counter-reset: cn-impl;
+  list-style: none;
+  padding: 0;
+}
+@media (max-width: 900px)  { .cn-impl-steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px)  { .cn-impl-steps { grid-template-columns: 1fr; } }
+.cn-impl-steps > li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 20px;
+}
+.cn-impl-steps > li > span.num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 700; font-size: 13px;
+  border-radius: var(--cn-radius-pill);
+  margin-bottom: 12px;
+}
+.cn-impl-steps h3 { font-size: 15px; font-weight: 700; margin: 0 0 6px; color: var(--color-text); }
+.cn-impl-steps p  { font-size: 14px; color: var(--color-text-secondary); line-height: 1.55; margin: 0; }
+
+/* FAQ */
+.cn-faq { margin-top: 32px; max-width: 860px; margin-left: auto; margin-right: auto; }
+.cn-faq details {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-md);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.cn-faq details[open] {
+  border-color: var(--color-primary-tint);
+}
+.cn-faq summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 18px 20px;
+  font-size: 15.5px; font-weight: 600;
+  color: var(--color-text);
+  display: flex; align-items: center; gap: 16px;
+  transition: background 140ms var(--cn-ease);
+}
+.cn-faq summary:hover { background: var(--color-surface-alt); }
+.cn-faq summary::-webkit-details-marker { display: none; }
+.cn-faq summary .q-toggle {
+  margin-left: auto; flex-shrink: 0;
+  color: var(--color-primary); font-size: 18px; font-weight: 700;
+  transition: transform 200ms var(--cn-ease);
+}
+.cn-faq details[open] summary .q-toggle { transform: rotate(45deg); }
+.cn-faq__body {
+  padding: 0 20px 20px;
+  color: var(--color-text-secondary);
+  font-size: 14.5px; line-height: 1.65;
+}
+
+/* Inline bridge CTA (used on ophthalmology + implementation blocks) */
+.cn-bridge-cta { margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+/* ============================================================
+   Ophthalmology page
+   ============================================================ */
+
+/* Operational-realities list — compact, clinical feel.
+   margin-top inherits from global `.cn-section__header + *` rule. */
+.cn-reality-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  align-items: stretch;
+  /* Equal-height rows so neighboring cards line up at the bottom
+     even when one carries a longer body string. */
+  grid-auto-rows: 1fr;
+}
+/* Orphan-row centering — when a .cn-reality-list carries an odd
+   number of items (5, 7, 9, …) the trailing single card otherwise
+   left-aligns and the section reads as visually unbalanced. Center
+   it across both tracks at half-width so it sits centered under
+   the rail above. */
+@media (min-width: 901px) {
+  .cn-reality-list > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 8px);
+    justify-self: center;
+  }
+}
+/* Anchor the card grid to the paragraph above (`.cn-centered-body`)
+   with a tighter gap, matching the Rationale pattern. */
+.cn-centered-body + .cn-reality-list { margin-top: 32px; }
+@media (max-width: 768px) {
+  .cn-centered-body + .cn-reality-list { margin-top: 24px; }
+}
+@media (max-width: 900px) { .cn-reality-list { grid-template-columns: 1fr; } }
+.cn-reality-list > li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 20px 22px;
+}
+.cn-reality-list > li h3 {
+  font-size: 15px; font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 6px;
+}
+.cn-reality-list > li p {
+  font-size: 14px; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0;
+}
+
+/* Imaging modalities — compact chip-style tiles */
+.cn-modalities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.cn-modalities > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-pill);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  gap: 6px;
+}
+.cn-modalities > span svg { color: var(--color-primary); }
+
+/* Ophthalmic workflow steps — reuse cn-step shell, tweak size */
+.cn-opht-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+@media (max-width: 900px) { .cn-opht-steps { grid-template-columns: 1fr; } }
+.cn-opht-steps > li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cn-opht-steps > li h3 {
+  font-size: 14.5px; font-weight: 700;
+  color: var(--color-text); margin: 0;
+}
+.cn-opht-steps > li p {
+  font-size: 13.5px; line-height: 1.5;
+  color: var(--color-text-secondary); margin: 0;
+}
+
+/* ============================================================
+   IMPLEMENTATION PAGE — phase blocks
+   ============================================================ */
+
+/* Phase block layout */
+.cn-phase {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--cn-radius-xl);
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .cn-phase { grid-template-columns: 1fr; padding: 22px 24px; gap: 18px; }
+}
+.cn-phase__meta {}
+.cn-phase__num {
+  font-size: 11px; letter-spacing: 0.16em; font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary); margin-bottom: 8px;
+}
+.cn-phase__title {
+  font-size: 20px; font-weight: 700; line-height: 1.2;
+  color: var(--color-text); margin: 0 0 6px;
+}
+.cn-phase__timing {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  border-radius: var(--cn-radius-pill);
+  margin-top: 10px;
+}
+.cn-phase__body { display: grid; gap: 20px; }
+.cn-phase__section-hd {
+  font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; font-weight: 700;
+  color: var(--color-text-muted); margin: 0 0 10px;
+}
+.cn-phase__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.cn-phase__list li {
+  font-size: 14.5px; line-height: 1.5;
+  color: var(--color-text-secondary);
+  padding-left: 18px; position: relative;
+}
+.cn-phase__list li::before {
+  content: ""; position: absolute;
+  left: 2px; top: 9px; width: 8px; height: 2px;
+  background: var(--color-primary); border-radius: 1px;
+}
+.cn-phase__outcome {
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-tint);
+  border-radius: var(--cn-radius-md);
+  padding: 14px 18px;
+  font-size: 14px; line-height: 1.55; color: var(--color-text);
+}
+
+/* ============================================================
+   PLATFORM PAGE — platform-layers showcase section
+   Scoped entirely under .chartnav-root to prevent bleed.
+   ============================================================ */
+
+.chartnav-root .platform-layers {
+  padding: 96px 0;
+}
+
+.chartnav-root .platform-layers__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.chartnav-root .platform-layers__header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.chartnav-root .platform-layers__eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.chartnav-root .platform-layers__title {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+
+.chartnav-root .platform-layers__subtitle {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  text-wrap: pretty;
+}
+
+/* Stack */
+.chartnav-root .platform-layers__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+/* Individual layer card */
+.chartnav-root .platform-layers__item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  position: relative;
+  transition: background 200ms var(--cn-ease),
+              border-color 200ms var(--cn-ease),
+              transform 200ms var(--cn-ease),
+              box-shadow 200ms var(--cn-ease);
+  cursor: default;
+}
+
+/* Rounded corners only on first and last */
+.chartnav-root .platform-layers__item:first-child {
+  border-radius: var(--cn-radius-lg) var(--cn-radius-lg) 0 0;
+}
+.chartnav-root .platform-layers__item:last-child {
+  border-radius: 0 0 var(--cn-radius-lg) var(--cn-radius-lg);
+}
+
+/* Collapse duplicate borders between items */
+.chartnav-root .platform-layers__item + .platform-layers__item {
+  margin-top: -1px;
+}
+
+/* Hover lift */
+@media (hover: hover) {
+  .chartnav-root .platform-layers__item:hover {
+    background: var(--color-surface-alt);
+    border-color: var(--color-border-strong);
+    z-index: 1;
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 0 var(--color-primary),
+                0 4px 24px -8px rgba(15, 23, 42, 0.1);
+  }
+}
+
+/* Icon badge */
+.chartnav-root .platform-layers__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--cn-radius-md);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 200ms var(--cn-ease), color 200ms var(--cn-ease);
+}
+
+.chartnav-root .platform-layers__item:hover .platform-layers__icon {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* Text block */
+.chartnav-root .platform-layers__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chartnav-root .platform-layers__layer-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.chartnav-root .platform-layers__name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chartnav-root .platform-layers__desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Tag group */
+.chartnav-root .platform-layers__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  max-width: 240px;
+}
+
+.chartnav-root .platform-layers__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--cn-radius-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+  transition: background 200ms var(--cn-ease), color 200ms var(--cn-ease),
+              border-color 200ms var(--cn-ease);
+}
+
+.chartnav-root .platform-layers__item:hover .platform-layers__tag {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-color: var(--color-primary-tint);
+}
+
+/* Arrow connector between stack items */
+.chartnav-root .platform-layers__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  color: var(--color-primary);
+  opacity: 0.4;
+  position: relative;
+  z-index: 2;
+}
+
+/* Mobile: collapse to single column, hide tags */
+@media (max-width: 767px) {
+  .chartnav-root .platform-layers__item {
+    grid-template-columns: 44px 1fr;
+    padding: 18px 20px;
+  }
+  .chartnav-root .platform-layers__tags {
+    display: none;
+  }
+  .chartnav-root .platform-layers__name {
+    font-size: 16px;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 639px) {
+  .chartnav-root .platform-layers {
+    padding: 64px 0;
+  }
+  .chartnav-root .platform-layers__arrow {
+    display: none;
+  }
 }
