@@ -216,6 +216,58 @@
     ],
     "cta": { "label": "Request a Workflow Assessment", "action": "open-assessment-modal" }
   },
+  "platformLayers": {
+    "eyebrow": "Platform Architecture",
+    "headline": "Built for the way ophthalmology works.",
+    "subhead": "Three integrated layers that connect your team, your data, and your clinical decisions.",
+    "phases": [
+      {
+        "phase": "Layer 01",
+        "label": "Workflow Spine",
+        "descriptor": "Structure before intelligence",
+        "features": [
+          { "title": "Eye-linked data model",        "sub": "OD and OS as first-class data objects" },
+          { "title": "Live visit state engine",      "sub": "Real status, not navigation scaffolding" },
+          { "title": "Physician action rail",        "sub": "Three-tier priority — what needs attention now" },
+          { "title": "Evidence timeline",            "sub": "Metadata-only audit, no clinical free text" },
+          { "title": "Technician intake",            "sub": "Dynamic completeness by visit type" },
+          { "title": "Signed-lock governance",       "sub": "Role-aware, immutable, auditable" },
+          { "title": "Provider review workflow",     "sub": "Human sign-off at every clinical stage" },
+          { "title": "Structured encounter output",  "sub": "Clean coded visits, handed to your RCM" }
+        ]
+      },
+      {
+        "phase": "Layer 02",
+        "label": "Clinical Intelligence",
+        "descriptor": "The moat begins here",
+        "features": [
+          { "title": "Anti-VEGF operating rail",      "sub": "Interval, auth, inventory, bilateral" },
+          { "title": "Glaucoma progression cockpit",  "sub": "IOP + VF + OCT — one synthesized view" },
+          { "title": "Disease staging engine",        "sub": "Protocol triggers on every stage change" },
+          { "title": "Cataract surgical workflow",    "sub": "From counseling to conversion to outcomes" },
+          { "title": "Medication safety engine",      "sub": "Ophthalmic-specific, preservative-aware" },
+          { "title": "Procedure automation",          "sub": "Templates, lot tracking, complication capture" },
+          { "title": "Subspecialty workspace",        "sub": "Retina, glaucoma, cornea — each sees its own view" },
+          { "title": "Note validation",               "sub": "Laterality, staging, follow-up — checked before sign" }
+        ]
+      },
+      {
+        "phase": "Layer 03",
+        "label": "Cognitive Compression",
+        "descriptor": "The physician's real problem solved",
+        "features": [
+          { "title": "What changed",                  "sub": "Delta synthesis, visit over visit" },
+          { "title": "What is overdue",               "sub": "Follow-up, VF, auth, refill — surfaced" },
+          { "title": "What needs action today",       "sub": "Blocks checkout — resolved before they leave" },
+          { "title": "What is progressing",           "sub": "Stable, progressing, rapid — classified" },
+          { "title": "FHIR integration layer",        "sub": "Bidirectional R4 — works with your EHR" },
+          { "title": "IRIS quality capture",          "sub": "MIPS-ready, built-in, not retrofitted" },
+          { "title": "Imaging metadata linkage",      "sub": "OCT, VF, topography — encounter-linked" },
+          { "title": "Structured physician capture",  "sub": "Dictate findings — AI structures, you confirm" }
+        ]
+      }
+    ]
+  },
   "finalCta": {
     "eyebrow": "NEXT STEP",
     "headline": "See what ChartNav would change in your clinic.",

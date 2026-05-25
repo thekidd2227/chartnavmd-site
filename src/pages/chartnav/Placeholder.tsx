@@ -1,6 +1,7 @@
 import { ChartnavShell } from "@/components/chartnav/ChartnavShell";
 import { Eyebrow, Button, BrandText, IconGold } from "@/components/chartnav/primitives";
 import { useForms } from "@/components/chartnav/FormsContext";
+import { PlatformLayers } from "@/components/chartnav/PlatformLayers";
 
 /** Splits a string on the literal "ChartNav" and wraps each occurrence with
  *  the two-tone <BrandText /> treatment so placeholder H1/body text carries
@@ -69,14 +70,14 @@ function Inner({ eyebrow, title, body }: { eyebrow: string; title: string; body:
 
 export function PlatformPage() {
   return (
-    <ChartnavPlaceholder
-      eyebrow="PLATFORM"
-      title="The ChartNav platform — detail coming soon."
-      body="We're preparing a deeper walkthrough of charting, imaging workflow, intake, scheduling, front-office coordination, billing visibility, reporting, and role-based views. In the meantime, the homepage covers the full scope — or request a walkthrough."
+    <ChartnavShell
+      title="Platform — ChartNav"
+      description="The ChartNav platform: charting, imaging, intake, scheduling, front-office coordination, billing visibility, and reporting — built for ophthalmology."
       canonical="/chartnav/platform"
-      metaTitle="Platform — ChartNav"
-      metaDescription="The ChartNav platform: charting, imaging, intake, scheduling, front-office coordination, billing visibility, and reporting — built for ophthalmology."
-    />
+      noIndex
+    >
+      <PlatformLayers id="platform" />
+    </ChartnavShell>
   );
 }
 
